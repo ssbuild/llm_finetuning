@@ -26,6 +26,9 @@ train_info_args = {
     'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',
     'config_name': '/data/nlp/pre_models/torch/bloom/bloom-560m/config.json',
     'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-560m',
+    # 'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-1b7',
+    # 'config_name': '/data/nlp/pre_models/torch/bloom/bloom-1b7/config.json',
+    # 'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-1b7',
     'convert_onnx': False, # 转换onnx模型
     'do_train': True,
     'train_file':  [ './data/finetune_train_examples.json'],

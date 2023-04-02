@@ -18,8 +18,8 @@
 
 
 
-## 4. bloom 预训练模型下载
-
+## 4. bloom 预训练模型下载，大小尺寸可自行选择
+    
 - [bloom预训练模型](https://huggingface.co/bigscience)
 
 
