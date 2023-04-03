@@ -6,7 +6,7 @@ from typing import List, Tuple
 import torch
 from deep_training.nlp.models.lora import LoraModel, LoraArguments
 from deep_training.nlp.models.transformer import TransformerForCausalLM
-from transformers import BloomForCausalLM
+from transformers import PreTrainedModel
 from data_utils import postprocess
 
 
@@ -46,7 +46,7 @@ class MyTransformer(MyTransformerLM, with_pl=True):
             model.print_trainable_parameters()
             self.set_model(model, copy_attr=False)
 
-    def get_bloom_model(self) -> BloomForCausalLM:
+    def get_llm_model(self) -> PreTrainedModel:
         if self.lora_args is not None and self.lora_args.with_lora:
             return self.backbone.model.model
         return self.backbone.model

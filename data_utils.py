@@ -16,7 +16,7 @@ from deep_training.nlp.models.lora import LoraArguments
 from deep_training.utils.func import is_chinese_char
 from fastdatasets.record import load_dataset as Loader, RECORD, WriterObject, gfile
 from tqdm import tqdm
-from transformers import BloomTokenizerFast,BloomConfig, HfArgumentParser
+from transformers import PreTrainedTokenizer,AutoConfig, HfArgumentParser
 
 train_info_args = {
     'devices': 1,
@@ -26,9 +26,15 @@ train_info_args = {
     'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',
     'config_name': '/data/nlp/pre_models/torch/bloom/bloom-560m/config.json',
     'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-560m',
+
     # 'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-1b7',
     # 'config_name': '/data/nlp/pre_models/torch/bloom/bloom-1b7/config.json',
     # 'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-1b7',
+
+    # 'model_name_or_path': '/data/nlp/pre_models/torch/opt/opt-350m',
+    # 'config_name': '/data/nlp/pre_models/torch/opt/opt-350m/config.json',
+    # 'tokenizer_name': '/data/nlp/pre_models/torch/opt/opt-350m',
+
     'convert_onnx': False, # 转换onnx模型
     'do_train': True,
     'train_file':  [ './data/finetune_train_examples.json'],
@@ -60,7 +66,7 @@ train_info_args = {
 
 
     'optimizer_betas': (0.9, 0.999),
-    'train_batch_size': 4,
+    'train_batch_size': 2,
     'eval_batch_size': 2,
     'test_batch_size': 2,
     'learning_rate': 2e-5,  #
@@ -169,7 +175,7 @@ class NN_DataHelper(DataHelper):
     def on_data_process(self, data: typing.Any, mode: str):
         self.index += 1
 
-        tokenizer: BloomConfig
+        tokenizer: AutoConfig
         max_seq_length = self.max_seq_length_dict[mode]
         tokenizer = self.tokenizer
 

@@ -12,7 +12,7 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
 from pytorch_lightning.strategies import DeepSpeedStrategy
 from torch.utils.data import DataLoader, IterableDataset
-from transformers import HfArgumentParser,BloomTokenizerFast
+from transformers import HfArgumentParser,PreTrainedTokenizer
 from data_utils import NN_DataHelper, data_conf, train_info_args, get_deepspeed_config
 from models import MyTransformer
 

@@ -1,10 +1,12 @@
 
-
+## 介绍
+    Large language Model fintuning
+    
+    bloom , opt , gpt, gpt2 ,gpt3 ,llama
 
 ## 1.安装
-  - pip install -i https://pypi.org/simple -U deep_training>=0.1.0rc0 transformers>=4.26.1 deepspeed
-  - 为了统一各种问题， deep_training 最低要求 0.1.0rc0,下载安装地址: https://pypi.org/project/deep-training/0.1.0rc0/#files
-
+  - pip install -i https://pypi.org/simple -U deep_training>=0.1.0 transformers>=4.26.1 deepspeed
+  - 为了统一各种问题， deep_training 最低要求 0.1.0
 
 
 
@@ -21,6 +23,7 @@
 ## 4. bloom 预训练模型下载，大小尺寸可自行选择
     
 - [bloom预训练模型](https://huggingface.co/bigscience)
+- [opt预训练模型](https://huggingface.co/facebook)
 
 
 ## 5.数据示例

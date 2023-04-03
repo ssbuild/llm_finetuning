@@ -4,7 +4,7 @@
 import torch
 from deep_training.data_helper import ModelArguments, TrainingArguments, DataArguments
 from deep_training.nlp.models.lora import LoraArguments
-from transformers import HfArgumentParser,BloomConfig,BloomTokenizerFast
+from transformers import HfArgumentParser,AutoConfig,PreTrainedTokenizer
 
 from data_utils import train_info_args, NN_DataHelper, postprocess
 from models import MyTransformer, Generate
@@ -19,7 +19,7 @@ if __name__ == '__main__':
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
     tokenizer, _, _, _ = dataHelper.load_tokenizer_and_config()
 
-    config = BloomConfig.from_pretrained('./best_ckpt')
+    config = AutoConfig.from_pretrained('./best_ckpt')
     lora_args = LoraArguments.from_pretrained('./best_ckpt')
 
     assert lora_args.inference_mode == True
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     # 加载lora权重
     pl_model.backbone.from_pretrained(pl_model.backbone.model, pretrained_model_name_or_path = './best_ckpt', lora_config = lora_args)
 
-    model = pl_model.get_bloom_model()
+    model = pl_model.get_llm_model()
 
     model.eval()
     model.cuda()

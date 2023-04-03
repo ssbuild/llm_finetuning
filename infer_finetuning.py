@@ -11,7 +11,7 @@ from collections import OrderedDict
 import torch
 from deep_training.data_helper import ModelArguments, DataArguments, TrainingArguments
 from deep_training.nlp.models.lora import LoraArguments
-from transformers import HfArgumentParser,BloomConfig
+from transformers import HfArgumentParser,AutoConfig,AutoConfig
 
 from data_utils import train_info_args, postprocess, NN_DataHelper, get_deepspeed_config
 from models import MyTransformer, Generate
@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     ###################### 注意 选最新权重
     # 选择最新的权重 ， 根据时间排序 选最新的
-    config = BloomConfig.from_pretrained('./best_ckpt')
+    config = AutoConfig.from_pretrained('./best_ckpt')
     if deep_config is None:
         train_weight = './best_ckpt/last-v3.ckpt'
         assert os.path.exists(train_weight)
@@ -54,7 +54,7 @@ if __name__ == '__main__':
         pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args)
         pl_model.load_state_dict(state_dict=weights_dict_new, strict=False)
 
-    model = pl_model.get_bloom_model()
+    model = pl_model.get_llm_model()
 
 
 
