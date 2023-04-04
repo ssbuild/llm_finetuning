@@ -75,7 +75,8 @@ if __name__ == '__main__':
     # 保存最小loss模型
     if lora_args.with_lora:
         assert deepspeed_config is None, ValueError('lora mode does not support deepspeed')
-        checkpoint_callback = MySimpleModelCheckpoint(monitor="loss",
+        checkpoint_callback = MySimpleModelCheckpoint(
+            # monitor="loss",
                                                       every_n_epochs=1,
                                                       every_n_train_steps=2000 // training_args.gradient_accumulation_steps,
                                                       # 模型参数
@@ -83,7 +84,8 @@ if __name__ == '__main__':
                                                       training_args=training_args,
                                                       lora_args=lora_args, )
     else:
-        checkpoint_callback = ModelCheckpoint('./best_ckpt', monitor='loss',
+        checkpoint_callback = ModelCheckpoint('./best_ckpt',
+                                              # monitor='loss',
                                               save_weights_only=False,
                                               save_last=True,
                                               save_top_k=1,

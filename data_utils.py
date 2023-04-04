@@ -1,7 +1,6 @@
 # @Time    : 2023/1/22 16:22
 # @Author  : tk
 # @FileName: data_utils.py
-# 数据集 https://github.com/ssbuild/poetry_tang
 
 import copy
 import json
