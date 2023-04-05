@@ -13,7 +13,7 @@ from deep_training.data_helper import DataHelper, ModelArguments, TrainingArgume
 from deep_training.nlp.models.lora import LoraArguments
 from fastdatasets.record import load_dataset as Loader, RECORD, WriterObject, gfile
 from transformers import PreTrainedTokenizer, HfArgumentParser
-from data_processer import DataStrategy, TokenSliding, TokenSupervision
+from data_processer import DataStrategy, TokenSupervision,TokenUnSupervision
 
 train_info_args = {
     'devices': 1,
@@ -94,11 +94,12 @@ train_info_args = {
 
 
 data_conf = {
-    'strategy': DataStrategy.sliding,  # 数据策略选项
-    DataStrategy.sliding: {
+    'strategy': DataStrategy.sup,  # 数据策略选项
+    DataStrategy.sup: {
         'stride':  int(train_info_args['max_seq_length'] / 3 * 2),
     },
-    DataStrategy.supervision: {
+    DataStrategy.unsup: {
+        'stride':  int(train_info_args['max_seq_length'] / 3 * 2),
     },
 
 }
@@ -126,7 +127,8 @@ class NN_DataHelper(DataHelper):
 
     def __init__(self, *args, **kwargs):
         super(NN_DataHelper, self).__init__(*args, **kwargs)
-        assert data_conf[DataStrategy.sliding]['stride'] > 0
+        assert data_conf[DataStrategy.sup]['stride'] > 0
+        assert data_conf[DataStrategy.unsup]['stride'] > 0
 
 
     def on_data_ready(self):
@@ -145,10 +147,10 @@ class NN_DataHelper(DataHelper):
 
 
         strategy = data_conf['strategy']
-        if strategy == DataStrategy.sliding:
-            ds = TokenSliding.process(tokenizer, config=config,  max_seq_length=max_seq_length, examples=examples,**data_conf[strategy])
-        elif strategy == DataStrategy.supervision:
-            ds = TokenSupervision.process(tokenizer, config=config,  max_seq_length=max_seq_length, examples=examples, **data_conf[strategy])
+        if strategy == DataStrategy.sup:
+            ds = TokenSupervision.process(tokenizer, config=config,  max_seq_length=max_seq_length, examples=examples,**data_conf[strategy])
+        elif strategy == DataStrategy.unsup:
+            ds = TokenUnSupervision.process(tokenizer, config=config,  max_seq_length=max_seq_length, examples=examples, **data_conf[strategy])
         else:
             raise ValueError('Invalid strategy', strategy)
         if not ds:

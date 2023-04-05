@@ -9,11 +9,11 @@ from transformers import PreTrainedTokenizer
 
 
 class DataStrategy(Enum):
-    sliding = 1
-    supervision = 2
+    sup = 1
+    unsup = 2
 
 
-class TokenSliding:
+class TokenUnSupervision:
     @classmethod
     def process(cls, tokenizer: PreTrainedTokenizer,config,stride, max_seq_length, examples):
         input_ids_all = []
@@ -54,45 +54,40 @@ class TokenSliding:
         return ds
 
 
-
-
 class TokenSupervision:
     @classmethod
     def process(cls, tokenizer: PreTrainedTokenizer,config,stride, max_seq_length, examples):
-        raise NotImplemented
-    #     input_ids_all = []
-    #     for idx, (question, answer) in enumerate(examples):
-    #         text = question + answer
-    #         ids = tokenizer.encode(text=text)
-    #         if len(ids) <= 3:
-    #             continue
-    #         input_ids_all += ids
-    #
-    #     # decoder_start_token_id = self.config.decoder_start_token_id
-    #     decoder_start_token_id = config.bos_token_id
-    #     pos = 0
-    #     ds = []
-    #     while pos < len(input_ids_all):
-    #         input_ids = [decoder_start_token_id] + input_ids_all[pos: pos + max_seq_length - 1]
-    #         pos += stride
-    #
-    #         if len(input_ids) <= 5:
-    #             continue
-    #         seqlen = np.asarray(len(input_ids), dtype=np.int32)
-    #         pad_len = max_seq_length - seqlen
-    #         input_ids = np.asarray(input_ids, dtype=np.int32)
-    #         attention_mask = np.asarray([1] * len(input_ids), dtype=np.int32)
-    #         labels = np.asarray(copy.deepcopy(input_ids), dtype=np.int32)
-    #         if pad_len:
-    #             pad_val = tokenizer.pad_token_id
-    #             input_ids = np.pad(input_ids, (0, pad_len), 'constant', constant_values=(pad_val, pad_val))
-    #             attention_mask = np.pad(attention_mask, (0, pad_len), 'constant', constant_values=(0, 0))
-    #             labels = np.pad(labels, (0, pad_len), 'constant', constant_values=(-100, -100))
-    #         d = {
-    #             'input_ids': input_ids,
-    #             'attention_mask': attention_mask,
-    #             'labels': labels,
-    #             'seqlen': seqlen
-    #         }
-    #         ds.append(d)
-    #     return ds
+        ds = []
+        for idx, (question, answer) in enumerate(examples):
+            a_ids = tokenizer.encode(text=question,add_special_tokens=False)[max_seq_length-2]
+            b_ids = tokenizer.encode(text=answer, add_special_tokens=False)
+            assert len(b_ids)
+            input_ids_all = a_ids + b_ids + [config.eos_token_id]
+            labels_all = [-100] * len(a_ids) + b_ids + [config.eos_token_id]
+            pos = 0
+            while pos < len(input_ids_all):
+                input_ids = [config.bos_token_id] + input_ids_all[pos: pos + max_seq_length - 1]
+                labels = [config.bos_token_id] + labels_all[pos: pos + max_seq_length - 1]
+                pos += stride
+
+                if len(input_ids) <= 5:
+                    continue
+                seqlen = np.asarray(len(input_ids), dtype=np.int32)
+                pad_len = max_seq_length - seqlen
+                input_ids = np.asarray(input_ids, dtype=np.int32)
+                attention_mask = np.asarray([1] * len(input_ids), dtype=np.int32)
+                labels = np.asarray(labels, dtype=np.int32)
+                if pad_len:
+                    pad_val = tokenizer.pad_token_id
+                    input_ids = np.pad(input_ids, (0, pad_len), 'constant', constant_values=(pad_val, pad_val))
+                    attention_mask = np.pad(attention_mask, (0, pad_len), 'constant', constant_values=(0, 0))
+                    labels = np.pad(labels, (0, pad_len), 'constant', constant_values=(-100, -100))
+                d = {
+                    'input_ids': input_ids,
+                    'attention_mask': attention_mask,
+                    'labels': labels,
+                    'seqlen': seqlen
+                }
+                ds.append(d)
+        return ds
+
