@@ -24,6 +24,7 @@
     
 - [bloom预训练模型](https://huggingface.co/bigscience)
 - [opt预训练模型](https://huggingface.co/facebook)
+- [llama预训练模型](https://huggingface.co/decapoda-research)
 
 
 ## 5.数据示例
