@@ -13,7 +13,8 @@ from deep_training.data_helper import DataHelper, ModelArguments, TrainingArgume
 from deep_training.nlp.models.lora import LoraArguments
 from fastdatasets.record import load_dataset as Loader, RECORD, WriterObject, gfile
 from transformers import PreTrainedTokenizer, HfArgumentParser
-from data_processer import DataStrategy, TokenSupervision,TokenUnSupervision
+from data_processer import DataStrategy, TokenSupervision, TokenUnSupervision, DEFAULT_EOS_TOKEN, DEFAULT_BOS_TOKEN, \
+    DEFAULT_UNK_TOKEN
 
 train_info_args = {
     'devices': 1,
@@ -226,6 +227,14 @@ if __name__ == '__main__':
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
     tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config()
     config.decoder_start_token_id = config.bos_token_id
+
+    if "llama" in model_args.model_name_or_path:
+        tokenizer.add_special_tokens({
+            "eos_token": DEFAULT_EOS_TOKEN,
+            "bos_token": DEFAULT_BOS_TOKEN,
+            "unk_token": DEFAULT_UNK_TOKEN,
+        })
+
     # 缓存数据集
     # 检测是否存在 output/dataset_0-train.record ，不存在则制作数据集
     if data_args.do_train:

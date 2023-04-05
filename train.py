@@ -13,6 +13,8 @@ from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
 from pytorch_lightning.strategies import DeepSpeedStrategy
 from torch.utils.data import DataLoader, IterableDataset
 from transformers import HfArgumentParser,PreTrainedTokenizer
+
+from data_processer import DEFAULT_EOS_TOKEN, DEFAULT_UNK_TOKEN, DEFAULT_BOS_TOKEN
 from data_utils import NN_DataHelper, data_conf, train_info_args, get_deepspeed_config
 from models import MyTransformer
 
@@ -115,6 +117,13 @@ if __name__ == '__main__':
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
     tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config()
     config.decoder_start_token_id = config.bos_token_id
+
+    if "llama" in model_args.model_name_or_path:
+        tokenizer.add_special_tokens({
+            "eos_token": DEFAULT_EOS_TOKEN,
+            "bos_token": DEFAULT_BOS_TOKEN,
+            "unk_token": DEFAULT_UNK_TOKEN,
+        })
 
     # 额外参数
     checkpoint_callback.tokenizer = tokenizer

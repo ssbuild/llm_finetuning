@@ -7,6 +7,10 @@ from enum import Enum
 import numpy as np
 from transformers import PreTrainedTokenizer
 
+DEFAULT_PAD_TOKEN = "[PAD]"
+DEFAULT_EOS_TOKEN = "</s>"
+DEFAULT_BOS_TOKEN = "</s>"
+DEFAULT_UNK_TOKEN = "</s>"
 
 class DataStrategy(Enum):
     sup = 1
