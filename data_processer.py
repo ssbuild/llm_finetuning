@@ -16,6 +16,26 @@ class DataStrategy(Enum):
     sup = 1
     unsup = 2
 
+class TokenIdsFinal:
+    @classmethod
+    def process(cls,tokenizer,input_ids,labels,max_seq_length):
+        seqlen = np.asarray(len(input_ids), dtype=np.int32)
+        pad_len = max_seq_length - seqlen
+        input_ids = np.asarray(input_ids, dtype=np.int32)
+        attention_mask = np.asarray([1] * len(input_ids), dtype=np.int32)
+        labels = np.asarray(labels, dtype=np.int32)
+        if pad_len:
+            pad_val = tokenizer.pad_token_id
+            input_ids = np.pad(input_ids, (0, pad_len), 'constant', constant_values=(pad_val, pad_val))
+            attention_mask = np.pad(attention_mask, (0, pad_len), 'constant', constant_values=(0, 0))
+            labels = np.pad(labels, (0, pad_len), 'constant', constant_values=(-100, -100))
+        d = {
+            'input_ids': input_ids,
+            'attention_mask': attention_mask,
+            'labels': labels,
+            'seqlen': seqlen
+        }
+        return d
 
 class TokenUnSupervision:
     @classmethod
@@ -38,22 +58,8 @@ class TokenUnSupervision:
 
             if len(input_ids) <= 5:
                 continue
-            seqlen = np.asarray(len(input_ids), dtype=np.int32)
-            pad_len = max_seq_length - seqlen
-            input_ids = np.asarray(input_ids, dtype=np.int32)
-            attention_mask = np.asarray([1] * len(input_ids), dtype=np.int32)
-            labels = np.asarray(copy.deepcopy(input_ids), dtype=np.int32)
-            if pad_len:
-                pad_val = tokenizer.pad_token_id
-                input_ids = np.pad(input_ids, (0, pad_len), 'constant', constant_values=(pad_val, pad_val))
-                attention_mask = np.pad(attention_mask, (0, pad_len), 'constant', constant_values=(0, 0))
-                labels = np.pad(labels, (0, pad_len), 'constant', constant_values=(-100, -100))
-            d = {
-                'input_ids': input_ids,
-                'attention_mask': attention_mask,
-                'labels': labels,
-                'seqlen': seqlen
-            }
+
+            d = TokenIdsFinal.process(tokenizer,input_ids,copy.deepcopy(input_ids),max_seq_length)
             ds.append(d)
         return ds
 
@@ -73,25 +79,7 @@ class TokenSupervision:
                 input_ids = [config.bos_token_id] + input_ids_all[pos: pos + max_seq_length - 1]
                 labels = [config.bos_token_id] + labels_all[pos: pos + max_seq_length - 1]
                 pos += stride
-
-                if len(input_ids) <= 5:
-                    continue
-                seqlen = np.asarray(len(input_ids), dtype=np.int32)
-                pad_len = max_seq_length - seqlen
-                input_ids = np.asarray(input_ids, dtype=np.int32)
-                attention_mask = np.asarray([1] * len(input_ids), dtype=np.int32)
-                labels = np.asarray(labels, dtype=np.int32)
-                if pad_len:
-                    pad_val = tokenizer.pad_token_id
-                    input_ids = np.pad(input_ids, (0, pad_len), 'constant', constant_values=(pad_val, pad_val))
-                    attention_mask = np.pad(attention_mask, (0, pad_len), 'constant', constant_values=(0, 0))
-                    labels = np.pad(labels, (0, pad_len), 'constant', constant_values=(-100, -100))
-                d = {
-                    'input_ids': input_ids,
-                    'attention_mask': attention_mask,
-                    'labels': labels,
-                    'seqlen': seqlen
-                }
+                d = TokenIdsFinal.process(tokenizer, input_ids, labels, max_seq_length)
                 ds.append(d)
         return ds
 
