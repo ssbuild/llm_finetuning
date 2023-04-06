@@ -4,10 +4,6 @@
 import os
 import re
 from collections import OrderedDict
-
-# @Time    : 2023/3/19 18:15
-# @Author  : tk
-# @FileName: infer
 import torch
 from deep_training.data_helper import ModelArguments, DataArguments, TrainingArguments
 from deep_training.nlp.models.lora import LoraArguments
