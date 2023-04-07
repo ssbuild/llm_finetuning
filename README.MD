@@ -23,11 +23,16 @@
 ## 4. bloom 预训练模型下载，大小尺寸可自行选择
     
 - [bloom预训练模型](https://huggingface.co/bigscience)
+- [bloom第三方中文训练模型](https://huggingface.co/Langboat/bloom-6b4-zh)
 - [opt预训练模型](https://huggingface.co/facebook)
 - [llama预训练模型](https://huggingface.co/decapoda-research)
 
 
 ## 5.数据示例
+
+[中文第三方数据集](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M)
+
+
     给出一种qa 数据示例
     单条数据示例1
     {
