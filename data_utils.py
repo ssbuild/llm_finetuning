@@ -83,7 +83,9 @@ train_info_args = {
     'with_lora': False,  # 是否启用lora模块
     'inference_mode': False, # 推理模型, 不需要手动设置
     'r': 8,
-    'target_modules': ['query_key_value'],
+    'target_modules': ['query_key_value'], # bloom,gpt_neox
+    #'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
+    #'target_modules': ['c_attn'], #gpt2
     'target_dtype': '32',
     'lora_alpha': 32,
     # 'enable_lora': [True],
