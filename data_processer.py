@@ -69,7 +69,7 @@ class TokenSupervision:
     def process(cls, tokenizer: PreTrainedTokenizer,config,stride, max_seq_length, examples):
         ds = []
         for idx, (question, answer) in enumerate(examples):
-            a_ids = tokenizer.encode(text=question,add_special_tokens=False)[max_seq_length-2]
+            a_ids = tokenizer.encode(text=question,add_special_tokens=False)[:max_seq_length-2]
             b_ids = tokenizer.encode(text=answer, add_special_tokens=False)
             assert len(b_ids)
             input_ids_all = a_ids + b_ids + [config.eos_token_id]
