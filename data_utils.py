@@ -195,6 +195,7 @@ class NN_DataHelper(DataHelper):
                     answers_list = session['a']
                     q = preprocess('Human：' + q + '\nAssistant：')
                     answers = preprocess('\n'.join(answers_list))
+                    assert len(answers),ValueError('answer cannot empty')
                     sub.append((q, answers))
                 D.append(copy.deepcopy(sub))
                 sub.clear()
