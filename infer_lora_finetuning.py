@@ -3,7 +3,7 @@
 # @FileName: infer_lora_finetuning
 import torch
 from deep_training.data_helper import ModelArguments, TrainingArguments, DataArguments
-from deep_training.nlp.models.lora import LoraArguments
+from deep_training.nlp.models.lora import AdaLoraArguments
 from transformers import HfArgumentParser,AutoConfig,PreTrainedTokenizer
 
 from data_utils import train_info_args, NN_DataHelper, postprocess
@@ -12,7 +12,7 @@ from models import MyTransformer, Generate
 
 if __name__ == '__main__':
     train_info_args['seed'] = None
-    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, LoraArguments))
+    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, AdaLoraArguments))
     model_args, training_args, data_args, _ = parser.parse_dict(train_info_args)
 
 
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     tokenizer, _, _, _ = dataHelper.load_tokenizer_and_config()
 
     config = AutoConfig.from_pretrained('./best_ckpt')
-    lora_args = LoraArguments.from_pretrained('./best_ckpt')
+    lora_args = AdaLoraArguments.from_pretrained('./best_ckpt')
 
     assert lora_args.inference_mode == True
 

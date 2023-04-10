@@ -4,7 +4,7 @@
 from typing import List, Tuple
 
 import torch
-from deep_training.nlp.models.lora import LoraModel, LoraArguments
+from deep_training.nlp.models.lora.v2 import LoraModel, AdaLoraArguments
 from deep_training.nlp.models.transformer import TransformerForCausalLM
 from transformers import PreTrainedModel
 from data_utils import postprocess
@@ -42,7 +42,7 @@ class MyTransformerLM(TransformerForCausalLM):
 
 class MyTransformer(MyTransformerLM, with_pl=True):
     def __init__(self, *args, **kwargs):
-        lora_args: LoraArguments = kwargs.pop('lora_args', None)
+        lora_args: AdaLoraArguments = kwargs.pop('lora_args', None)
         super(MyTransformer, self).__init__(*args, **kwargs)
         self.lora_args = lora_args
         if lora_args is not None and lora_args.with_lora:
