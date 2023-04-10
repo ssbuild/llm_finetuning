@@ -1,3 +1,5 @@
+## 注意事项
+    llama 要求transformers >= 4.28
 
 ## 介绍
     Large language Model fintuning
