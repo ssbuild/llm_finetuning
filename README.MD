@@ -8,8 +8,8 @@
     bloom , opt , gpt, gpt2 ,gpt3 ,llama
 
 ## 1.安装
-  - pip install -i https://pypi.org/simple -U deep_training>=0.1.0 transformers>=4.26.1 deepspeed
-  - 为了统一各种问题， deep_training 最低要求 0.1.0
+  - pip install -i https://pypi.org/simple -U deep_training>=0.1.1 transformers>=4.26.1 deepspeed
+  - 为了统一各种问题， deep_training 最低要求 0.1.1
 
 
 
