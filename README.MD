@@ -1,5 +1,6 @@
 ## 注意事项
     llama 要求transformers >= 4.28
+    llama 词典等下载地址 https://huggingface.co/hf-internal-testing/llama-tokenizer
 
 ## 介绍
     Large language Model fintuning
