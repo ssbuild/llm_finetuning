@@ -20,7 +20,6 @@ from data_processer import DataStrategy, TokenSupervision, TokenUnSupervision, D
 lora_info_args = {
     'with_lora': False,  # 是否启用lora模块
     'lora_type': 'lora',
-    'inference_mode': False,  # 推理模型, 不需要手动设置
     'r': 8,
     'target_modules': ['query_key_value'],  # bloom,gpt_neox
     # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
@@ -32,9 +31,8 @@ lora_info_args = {
 }
 
 adalora_info_args = {
-    'with_lora': False,  # 是否启用lora模块
+    'with_lora': False,  # 是否启用adalora模块
     'lora_type': 'adalora',
-    'inference_mode': False,  # 推理模型, 不需要手动设置
     'r': 8,
     'target_modules': ['query_key_value'],  # bloom,gpt_neox
     # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
@@ -43,6 +41,17 @@ adalora_info_args = {
     'lora_dropout': 0.1,
     'fan_in_fan_out': False,
     'bias': 'none',  # Bias type for Lora. Can be 'none', 'all' or 'lora_only'"
+
+    'target_r':8, # Target Lora matrix dimension.
+    'init_r': 12, #Intial Lora matrix dimension.
+    'tinit': 0, #The steps of initial warmup.
+    'tfinal': 0, #The steps of final warmup.
+    'deltaT': 1, #Step interval of rank allocation.
+    'beta1': 0.85, #Hyperparameter of EMA.
+    'beta2': 0.85, #Hyperparameter of EMA.
+    'orth_reg_weight': 0.5, #The orthogonal regularization coefficient.
+    'total_step': None, #The total training steps.
+    'rank_pattern': None, #The saved rank pattern.
 }
 
 train_info_args = {

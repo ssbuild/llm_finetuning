@@ -2,6 +2,8 @@
     llama 要求transformers >= 4.28
     llama 词典等下载地址 https://huggingface.co/hf-internal-testing/llama-tokenizer
 
+    dev 分支加一些新功能和想法 如果求稳定
+
 ## 更新详情
     2023年4月11日 升级 lora v2 , 增加adalora
 
