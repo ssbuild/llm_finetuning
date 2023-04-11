@@ -16,16 +16,15 @@ from transformers import PreTrainedTokenizer, HfArgumentParser
 from data_processer import DataStrategy, TokenSupervision, TokenUnSupervision, DEFAULT_EOS_TOKEN, DEFAULT_BOS_TOKEN, \
     DEFAULT_UNK_TOKEN
 
-
+# 默认禁用lora 相关模块 , lora 和 adalora 只能同时启用一个
 lora_info_args = {
-    'with_lora': True,  # 是否启用lora模块
+    'with_lora': False,  # 是否启用lora模块
     'lora_type': 'lora',
     'inference_mode': False,  # 推理模型, 不需要手动设置
     'r': 8,
     'target_modules': ['query_key_value'],  # bloom,gpt_neox
     # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
     # 'target_modules': ['c_attn'], #gpt2
-    'target_dtype': '32',
     'lora_alpha': 32,
     'lora_dropout': 0.1,
     'fan_in_fan_out': False,
@@ -40,7 +39,6 @@ adalora_info_args = {
     'target_modules': ['query_key_value'],  # bloom,gpt_neox
     # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
     # 'target_modules': ['c_attn'], #gpt2
-    'target_dtype': '32',
     'lora_alpha': 32,
     'lora_dropout': 0.1,
     'fan_in_fan_out': False,
