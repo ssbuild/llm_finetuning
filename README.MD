@@ -2,14 +2,16 @@
     llama 要求transformers >= 4.28
     llama 词典等下载地址 https://huggingface.co/hf-internal-testing/llama-tokenizer
 
+## 更新详情
+    2023年4月11日 升级 lora v2 , 增加adalora
+
 ## 介绍
     Large language Model fintuning
     
     bloom , opt , gpt, gpt2 ,gpt3 ,llama
 
 ## 1.安装
-  - pip install -i https://pypi.org/simple -U deep_training>=0.1.1 transformers>=4.26.1 deepspeed
-  - 为了统一各种问题， deep_training 最低要求 0.1.1
+  - pip install -i https://pypi.org/simple -U deep_training>=0.1.2 transformers>=4.26.2 deepspeed
 
 
 

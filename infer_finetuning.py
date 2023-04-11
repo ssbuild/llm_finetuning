@@ -6,7 +6,7 @@ import re
 from collections import OrderedDict
 import torch
 from deep_training.data_helper import ModelArguments, DataArguments, TrainingArguments
-from deep_training.nlp.models.lora.v2 import AdaLoraArguments
+from deep_training.nlp.models.lora.v2 import LoraArguments
 from transformers import HfArgumentParser,AutoConfig,AutoConfig
 
 from data_utils import train_info_args, postprocess, NN_DataHelper, get_deepspeed_config
@@ -16,8 +16,8 @@ deep_config = get_deepspeed_config()
 
 if __name__ == '__main__':
 
-    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, AdaLoraArguments))
-    model_args, training_args, data_args, lora_args = parser.parse_dict(train_info_args)
+    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, LoraArguments))
+    model_args, training_args, data_args, _ = parser.parse_dict(train_info_args)
 
 
 

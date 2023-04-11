@@ -10,11 +10,42 @@ import typing
 import numpy as np
 import torch
 from deep_training.data_helper import DataHelper, ModelArguments, TrainingArguments, DataArguments
-from deep_training.nlp.models.lora.v2 import AdaLoraArguments
+from deep_training.nlp.models.lora.v2 import LoraArguments,LoraConfig
 from fastdatasets.record import load_dataset as Loader, RECORD, WriterObject, gfile
 from transformers import PreTrainedTokenizer, HfArgumentParser
 from data_processer import DataStrategy, TokenSupervision, TokenUnSupervision, DEFAULT_EOS_TOKEN, DEFAULT_BOS_TOKEN, \
     DEFAULT_UNK_TOKEN
+
+
+lora_info_args = {
+    'with_lora': True,  # 是否启用lora模块
+    'lora_type': 'lora',
+    'inference_mode': False,  # 推理模型, 不需要手动设置
+    'r': 8,
+    'target_modules': ['query_key_value'],  # bloom,gpt_neox
+    # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
+    # 'target_modules': ['c_attn'], #gpt2
+    'target_dtype': '32',
+    'lora_alpha': 32,
+    'lora_dropout': 0.1,
+    'fan_in_fan_out': False,
+    'bias': 'none',  # Bias type for Lora. Can be 'none', 'all' or 'lora_only'"
+}
+
+adalora_info_args = {
+    'with_lora': False,  # 是否启用lora模块
+    'lora_type': 'adalora',
+    'inference_mode': False,  # 推理模型, 不需要手动设置
+    'r': 8,
+    'target_modules': ['query_key_value'],  # bloom,gpt_neox
+    # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
+    # 'target_modules': ['c_attn'], #gpt2
+    'target_dtype': '32',
+    'lora_alpha': 32,
+    'lora_dropout': 0.1,
+    'fan_in_fan_out': False,
+    'bias': 'none',  # Bias type for Lora. Can be 'none', 'all' or 'lora_only'"
+}
 
 train_info_args = {
     'devices': 1,
@@ -87,18 +118,9 @@ train_info_args = {
     'do_lower_case': False,
 
     ##############  lora模块
-    'with_lora': True,  # 是否启用lora模块
-    'lora_type': 'adalora',
-    'inference_mode': False,  # 推理模型, 不需要手动设置
-    'r': 8,
-    'target_modules': ['query_key_value'],  # bloom,gpt_neox
-    # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
-    # 'target_modules': ['c_attn'], #gpt2
-    'target_dtype': '32',
-    'lora_alpha': 32,
-    'lora_dropout': 0.1,
-    'fan_in_fan_out': False,
-    'bias': 'none',  # Bias type for Lora. Can be 'none', 'all' or 'lora_only'"
+    'lora': {**lora_info_args},
+    'adalora': {**adalora_info_args},
+
 }
 
 
@@ -234,8 +256,9 @@ class NN_DataHelper(DataHelper):
 
 
 if __name__ == '__main__':
-    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, AdaLoraArguments))
+    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, LoraArguments))
     model_args, training_args, data_args, lora_args = parser.parse_dict(train_info_args)
+    lora_args = lora_args.config
 
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
     tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config()

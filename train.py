@@ -3,7 +3,7 @@ import logging
 
 import torch
 from deep_training.data_helper import ModelArguments, DataArguments, TrainingArguments
-from deep_training.nlp.models.lora.v2 import AdaLoraArguments
+from deep_training.nlp.models.lora.v2 import LoraArguments, LoraConfig
 from deep_training.utils.trainer import SimpleModelCheckpoint
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
@@ -18,7 +18,7 @@ from models import MyTransformer
 class MySimpleModelCheckpoint(SimpleModelCheckpoint):
     def __init__(self, *args, **kwargs):
         super(MySimpleModelCheckpoint, self).__init__(*args, **kwargs)
-        lora_args: AdaLoraArguments = self.external_kwargs['lora_args']
+        lora_args:LoraConfig= self.external_kwargs['lora_args']
         if lora_args.with_lora:
             self.weight_file = './best_ckpt'
             self.last_weight_file = './last_ckpt'
@@ -26,7 +26,7 @@ class MySimpleModelCheckpoint(SimpleModelCheckpoint):
     def load_model_from_ckpt(self):
         model_args = self.external_kwargs['model_args']
         training_args = self.external_kwargs['training_args']
-        lora_args = AdaLoraArguments.from_pretrained(self.last_weight_file)
+        lora_args = LoraArguments.from_pretrained(self.last_weight_file)
         pl_module = MyTransformer(lora_args=lora_args,
                               config=config,
                               model_args=model_args,
@@ -41,7 +41,7 @@ class MySimpleModelCheckpoint(SimpleModelCheckpoint):
             self, trainer: "pl.Trainer", pl_module: "pl.LightningModule"
     ) -> None:
 
-        lora_args : AdaLoraArguments =  self.external_kwargs['lora_args']
+        lora_args : LoraArguments =  self.external_kwargs['lora_args']
         # 保存权重
         if not lora_args.with_lora:
             super(MySimpleModelCheckpoint, self).on_save_model(trainer, pl_module)
@@ -64,11 +64,11 @@ class MySimpleModelCheckpoint(SimpleModelCheckpoint):
 
 
 if __name__ == '__main__':
-    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, AdaLoraArguments))
+    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, LoraArguments))
     model_args, training_args, data_args, lora_args = parser.parse_dict(train_info_args)
+    lora_args = lora_args.config
 
     deepspeed_config = get_deepspeed_config()
-
     # 保存最小loss模型
     if lora_args.with_lora:
         assert deepspeed_config is None, ValueError('lora mode does not support deepspeed')
@@ -177,7 +177,7 @@ if __name__ == '__main__':
             model.save_pretrained('huggingface_model', max_shard_size='10GB')
         else:
             # 加载权重
-            lora_args = AdaLoraArguments.from_pretrained('./best_ckpt')
+            lora_args = LoraArguments.from_pretrained('./best_ckpt')
             pl_module = MyTransformer(lora_args=lora_args,
                                       config=config,
                                       model_args=model_args,
