@@ -59,17 +59,17 @@ train_info_args = {
     'data_backend': 'record',
     'model_type': 'bloom',
     # 预训练模型路径 , 从0训练，则置空
-    'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',
-    'config_name': '/data/nlp/pre_models/torch/bloom/bloom-560m/config.json',
-    'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-560m',
+    # 'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',
+    # 'config_name': '/data/nlp/pre_models/torch/bloom/bloom-560m/config.json',
+    # 'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-560m',
 
     # 'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-1b7',
     # 'config_name': '/data/nlp/pre_models/torch/bloom/bloom-1b7/config.json',
     # 'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-1b7',
 
-    # 'model_name_or_path': '/data/nlp/pre_models/torch/opt/opt-350m',
-    # 'config_name': '/data/nlp/pre_models/torch/opt/opt-350m/config.json',
-    # 'tokenizer_name': '/data/nlp/pre_models/torch/opt/opt-350m',
+    'model_name_or_path': '/data/nlp/pre_models/torch/opt/opt-350m',
+    'config_name': '/data/nlp/pre_models/torch/opt/opt-350m/config.json',
+    'tokenizer_name': '/data/nlp/pre_models/torch/opt/opt-350m',
 
     #llama transformer >= 4.28
     # 'model_name_or_path': '/data/nlp/pre_models/torch/llama/llama-7b-hf',

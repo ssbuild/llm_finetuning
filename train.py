@@ -19,7 +19,7 @@ class MySimpleModelCheckpoint(SimpleModelCheckpoint):
     def __init__(self, *args, **kwargs):
         super(MySimpleModelCheckpoint, self).__init__(*args, **kwargs)
         lora_args:LoraConfig= self.external_kwargs['lora_args']
-        if lora_args.with_lora:
+        if lora_args is not None:
             self.weight_file = './best_ckpt'
             self.last_weight_file = './last_ckpt'
 
@@ -43,7 +43,7 @@ class MySimpleModelCheckpoint(SimpleModelCheckpoint):
 
         lora_args : LoraArguments =  self.external_kwargs['lora_args']
         # 保存权重
-        if not lora_args.with_lora:
+        if lora_args is None:
             super(MySimpleModelCheckpoint, self).on_save_model(trainer, pl_module)
         else:
             monitor_candidates = self._monitor_candidates(trainer)
@@ -70,24 +70,25 @@ if __name__ == '__main__':
 
     deepspeed_config = get_deepspeed_config()
     # 保存最小loss模型
-    if lora_args.with_lora:
+    if lora_args is not None:
         assert deepspeed_config is None, ValueError('lora mode does not support deepspeed')
         checkpoint_callback = MySimpleModelCheckpoint(
             # monitor="loss",
-                                                      every_n_epochs=1,
-                                                      every_n_train_steps=2000 // training_args.gradient_accumulation_steps,
-                                                      # 模型参数
-                                                      model_args=model_args,
-                                                      training_args=training_args,
-                                                      lora_args=lora_args, )
+            every_n_epochs=1,
+            every_n_train_steps=2000 // training_args.gradient_accumulation_steps,
+            # 模型参数
+            model_args=model_args,
+            training_args=training_args,
+            lora_args=lora_args, )
     else:
-        checkpoint_callback = ModelCheckpoint('./best_ckpt',
-                                              # monitor='loss',
-                                              save_weights_only=False,
-                                              save_last=True,
-                                              save_top_k=1,
-                                              # every_n_train_steps=1000,
-                                              every_n_epochs=1)
+        checkpoint_callback = ModelCheckpoint(
+            # monitor='loss',
+            './best_ckpt',
+            save_weights_only=False,
+            save_last=True,
+            save_top_k=1,
+            # every_n_train_steps=1000,
+            every_n_epochs=1)
 
     strategy = 'ddp' if torch.cuda.device_count() > 1 else 'auto'
     if deepspeed_config is not None and len(deepspeed_config):
@@ -145,7 +146,7 @@ if __name__ == '__main__':
         #  只恢复权重 ， 不恢复步数和优化器 ，
         #  如果想恢复步数， 修改 trainer.fit(pl_model, train_dataloaders=train_datasets，ckpt=ckpt_path)  注lora 当前不支持恢复步数。
         # if os.path.exists(ckpt_path):
-        #     if not lora_args.with_lora:
+        #     if  lora_args is None:
         #         # 加载权重继续训练
         #         pl_model = MyTransformer.load_from_checkpoint(ckpt_path, config=config,model_args=model_args,training_args=training_args,lora_args=lora_args,strict=False)
         #     else:
@@ -164,7 +165,7 @@ if __name__ == '__main__':
             trainer.fit(pl_model, train_dataloaders=train_datasets)
 
     else:
-        if not lora_args.with_lora:
+        if lora_args is None:
             # 加载权重
             pl_model = MyTransformer.load_from_checkpoint(ckpt_path, config=config,
                                                           model_args=model_args,
