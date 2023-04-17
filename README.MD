@@ -30,7 +30,7 @@
 ## 4. bloom 预训练模型下载，大小尺寸可自行选择
     
 - [bloom预训练模型](https://huggingface.co/bigscience)
-- [bloom第三方中文训练模型](https://huggingface.co/Langboat/bloom-6b4-zh)
+- [bloom第三方中文训练模型](https://huggingface.co/Langboat/bloom-6b4-zh)  # 注意 需要修改tokenizer_config.json BloomTokenizer -> BloomTokenizerFast
 - [opt预训练模型](https://huggingface.co/facebook)
 - [llama预训练模型](https://huggingface.co/decapoda-research)
 
