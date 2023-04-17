@@ -236,10 +236,11 @@ class NN_DataHelper(DataHelper):
                 if i < 10:
                     print(paragraph)
                 sub = []
+                # 自行做模板
                 for session in paragraph:
                     q = session['q']
                     answers_list = session['a']
-                    q = preprocess('Human：' + q + '\nAssistant：')
+                    # q = preprocess('Human：' + q + '\nAssistant：')
                     answers = preprocess('\n'.join(answers_list))
                     assert len(answers),ValueError('answer cannot empty')
                     sub.append((q, answers))
