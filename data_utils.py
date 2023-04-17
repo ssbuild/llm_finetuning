@@ -13,8 +13,8 @@ from deep_training.data_helper import DataHelper, ModelArguments, TrainingArgume
 from deep_training.nlp.models.lora.v2 import LoraArguments,LoraConfig
 from fastdatasets.record import load_dataset as Loader, RECORD, WriterObject, gfile
 from transformers import PreTrainedTokenizer, HfArgumentParser
-from data_processer import DataStrategy, TokenSupervision, TokenUnSupervision, DEFAULT_EOS_TOKEN, DEFAULT_BOS_TOKEN, \
-    DEFAULT_UNK_TOKEN
+from data_processer import DataStrategy, TokenSupervision, TokenUnSupervision,TokenSupervisionRounds,\
+    DEFAULT_EOS_TOKEN, DEFAULT_BOS_TOKEN, DEFAULT_UNK_TOKEN
 
 # 默认禁用lora 相关模块 , lora 和 adalora 只能同时启用一个
 lora_info_args = {
@@ -140,8 +140,12 @@ data_conf = {
     DataStrategy.unsup: {
         'stride':  int(train_info_args['max_seq_length'] / 3 * 2),
     },
+    DataStrategy.sub_rounds: {
+        'stride': int(train_info_args['max_seq_length'] / 3 * 2),
+    }
 
 }
+
 
 enable_deepspeed = False
 
@@ -190,6 +194,9 @@ class NN_DataHelper(DataHelper):
             ds = TokenSupervision.process(tokenizer, config=config,  max_seq_length=max_seq_length, examples=examples,**data_conf[strategy])
         elif strategy == DataStrategy.unsup:
             ds = TokenUnSupervision.process(tokenizer, config=config,  max_seq_length=max_seq_length, examples=examples, **data_conf[strategy])
+        elif strategy == DataStrategy.sub_rounds:
+            ds = TokenSupervisionRounds.process(tokenizer, config=config, max_seq_length=max_seq_length, examples=examples,
+                                            **data_conf[strategy])
         else:
             raise ValueError('Invalid strategy', strategy)
         if not ds:
