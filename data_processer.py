@@ -90,10 +90,16 @@ class TokenSupervisionRounds:
         ds = []
         prompt_text = ''
         for idx, (question, answer) in enumerate(examples):
-            a_ids = tokenizer.encode(text=question + prompt_text,add_special_tokens=False)[:max_seq_length-2]
+            if idx == 0:
+                a_text = question
+            else:
+                a_text = prompt_text + "[Round {}]\n问：{}\n答：".format(idx, question)
+
+            prompt_text += "[Round {}]\n问：{}\n答：{}".format(idx, question, answer)
+            a_ids = tokenizer.encode(text=a_text,add_special_tokens=False)[:max_seq_length-2]
             b_ids = tokenizer.encode(text=answer, add_special_tokens=False)
 
-            prompt_text += "[Round {}]\n问：{}\n答：".format(idx,question,answer)
+
             assert len(b_ids)
             input_ids_all = a_ids + b_ids + [config.eos_token_id]
             labels_all = [-100] * len(a_ids) + b_ids + [config.eos_token_id]
