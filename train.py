@@ -151,7 +151,7 @@ if __name__ == '__main__':
         #         pl_model = MyTransformer.load_from_checkpoint(ckpt_path, config=config,model_args=model_args,training_args=training_args,lora_args=lora_args,strict=False)
         #     else:
         #         # 加载lora权重 继续训练  0.0.20版本支持lora 继续训练
-        #         pl_model.backbone.from_pretrained(pl_model.backbone.model, pretrained_model_name_or_path=ckpt_path,lora_config=lora_args,strict=False)
+        #         pl_model.backbone.from_pretrained(pl_model.backbone.model, pretrained_model_name_or_path=ckpt_path,lora_config=lora_args,is_trainable=True,strict=False)
 
         train_datasets = dataHelper.load_distributed_random_sampler(
             dataHelper.train_files,
