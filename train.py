@@ -187,4 +187,4 @@ if __name__ == '__main__':
             pl_module.backbone.from_pretrained(pl_module.backbone.model, pretrained_model_name_or_path='./best_ckpt',
                                                lora_config=lora_args)
 
-            model = pl_model.get_glm_model()
+            model = pl_model.get_llm_model()
