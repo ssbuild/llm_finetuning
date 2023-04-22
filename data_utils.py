@@ -239,9 +239,8 @@ class NN_DataHelper(DataHelper):
                 # 自行做模板
                 for session in paragraph:
                     q = session['q']
-                    answers_list = session['a']
+                    answers = preprocess('\n'.join(session['a']))  if isinstance(session['a'],list) else preprocess(session['a'])
                     # q = preprocess('Human：' + q + '\nAssistant：')
-                    answers = preprocess('\n'.join(answers_list))
                     assert len(answers),ValueError('answer cannot empty')
                     sub.append((q, answers))
                 D.append(copy.deepcopy(sub))
