@@ -89,5 +89,5 @@ class MyTransformer(MyTransformerLM, with_pl=True):
         assert self.lora_args is not None and self.lora_args.with_lora
         lora_model: LoraModel = self.backbone
         model = lora_model.merge_and_unload()
-        torch.save(model, weight_path_file)
+        torch.save(model.state_dict(), weight_path_file)
         return model
