@@ -1,6 +1,8 @@
 # @Time    : 2023/4/2 22:49
 # @Author  : tk
 # @FileName: infer_lora_finetuning
+import os
+
 import torch
 from deep_training.data_helper import ModelArguments, TrainingArguments, DataArguments
 from deep_training.nlp.models.lora.v2 import LoraArguments,LoraConfig
@@ -20,23 +22,28 @@ if __name__ == '__main__':
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
     tokenizer, _, _, _ = dataHelper.load_tokenizer_and_config()
 
-    config = AutoConfig.from_pretrained('./best_ckpt')
-    lora_args = LoraArguments.from_pretrained('./best_ckpt')
+    ckpt_dir = './best_ckpt'
+    config = AutoConfig.from_pretrained(ckpt_dir)
+    lora_args = LoraArguments.from_pretrained(ckpt_dir)
 
     assert lora_args.inference_mode == True
 
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args,lora_args=lora_args)
     # 加载lora权重
     pl_model.backbone.from_pretrained(pl_model.backbone.model, pretrained_model_name_or_path = './best_ckpt', lora_config = lora_args)
+    pl_model.eval().cuda()
 
-    model = pl_model.get_llm_model()
+    enable_merge_weight = False
 
-    model.eval()
-    model.cuda()
+    if enable_merge_weight:
+        # 合并lora 权重 保存
+        pl_model.save_pretrained_merge_lora(os.path.join(ckpt_dir, 'pytorch_model_merge.bin'))
+    else:
+        model = pl_model.get_llm_model()
 
-    text = "帮我写一个请假条，我因为新冠不舒服，需要请假3天，请领导批准"
-    response, history = Generate.chat(model, query=text, tokenizer=tokenizer, max_length=512,
-                                      eos_token_id=config.eos_token_id,
-                                      do_sample=True, top_p=0.7, temperature=0.95, )
-    print('input', text)
-    print('output', response)
+        text = "帮我写一个请假条，我因为新冠不舒服，需要请假3天，请领导批准"
+        response, history = Generate.chat(model, query=text, tokenizer=tokenizer, max_length=512,
+                                          eos_token_id=config.eos_token_id,
+                                          do_sample=True, top_p=0.7, temperature=0.95, )
+        print('input', text)
+        print('output', response)

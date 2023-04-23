@@ -5,7 +5,8 @@
     dev 分支加一些新功能和想法 如果求稳定
 
 ## 更新详情
-    2023年4月11日 升级 lora v2 , 增加adalora
+    4月23日 增加lora merge权重（修改infer_lora_finetuning.py enable_merge_weight 选项）
+    4月11日 升级 lora v2 , 增加adalora
 
 ## 介绍
     Large language Model fintuning
