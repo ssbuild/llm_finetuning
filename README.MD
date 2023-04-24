@@ -1,20 +1,10 @@
-## 注意事项
-    llama 要求transformers >= 4.28
-    llama 词典等下载地址 https://huggingface.co/hf-internal-testing/llama-tokenizer
-
-    dev 分支加一些新功能和想法 如果求稳定
-
 ## 更新详情
     4月23日 增加lora merge权重（修改infer_lora_finetuning.py enable_merge_weight 选项）
     4月11日 升级 lora v2 , 增加adalora
 
-## 介绍
-    Large language Model fintuning
-    
-    bloom , opt , gpt, gpt2 ,gpt3 ,llama
 
 ## 1.安装
-  - pip install -i https://pypi.org/simple -U deep_training>=0.1.2 transformers>=4.26.2 deepspeed
+  - pip install -i https://pypi.org/simple -U deep_training>=0.1.2 transformers>=4.28 deepspeed
 
 
 
@@ -33,7 +23,7 @@
 - [bloom预训练模型](https://huggingface.co/bigscience)
 - [bloom第三方中文训练模型](https://huggingface.co/Langboat/bloom-6b4-zh)  # 注意 需要修改tokenizer_config.json BloomTokenizer -> BloomTokenizerFast
 - [opt预训练模型](https://huggingface.co/facebook)
-- [llama预训练模型](https://huggingface.co/decapoda-research)
+- [llama预训练模型](https://huggingface.co/decapoda-research) #  llama 词典等下载地址 https://huggingface.co/hf-internal-testing/llama-tokenizer
 
 
 ## 5.数据示例
@@ -41,7 +31,7 @@
 [中文第三方数据集](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M)
 
 
-单条数据示例1
+数据示例1
 ```json
  {
      "id": 0, "paragraph": [
