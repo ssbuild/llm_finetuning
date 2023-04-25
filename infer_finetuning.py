@@ -54,8 +54,7 @@ if __name__ == '__main__':
 
 
 
-    model.eval()
-    model.cuda()
+    model.eval().half().cuda()
 
     text= "帮我写一个请假条，我因为新冠不舒服，需要请假3天，请领导批准"
     response, history = Generate.chat(model, query=text, tokenizer=tokenizer, max_length=512,

@@ -31,7 +31,7 @@ if __name__ == '__main__':
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args,lora_args=lora_args)
     # 加载lora权重
     pl_model.backbone.from_pretrained(pl_model.backbone.model, pretrained_model_name_or_path = './best_ckpt', lora_config = lora_args)
-    pl_model.eval().cuda()
+    pl_model.eval().half().cuda()
 
     enable_merge_weight = False
 

@@ -113,6 +113,7 @@ if __name__ == '__main__':
 
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
     tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config()
+    config.torch_dtype = "float16"
     config.decoder_start_token_id = config.bos_token_id
 
     if "llama" in model_args.model_name_or_path.lower() and tokenizer.bos_token_id != DEFAULT_BOS_TOKEN:
@@ -141,6 +142,7 @@ if __name__ == '__main__':
         dataHelper.make_dataset_with_args(data_args.test_file, mode='test')
 
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args, lora_args=lora_args)
+    pl_model.half()
 
     ckpt_path = './best_ckpt/best.pt'
     if not data_args.convert_onnx:

@@ -20,12 +20,12 @@ if __name__ == '__main__':
 
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
     tokenizer, config, _,_= dataHelper.load_tokenizer_and_config()
+    config.torch_dtype = "float16"
 
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args)
     model = pl_model.get_llm_model()
 
-    model.eval()
-    model.cuda()
+    model.eval().half().cuda()
 
     text= "帮我写一个请假条，我因为新冠不舒服，需要请假3天，请领导批准"
     response, history = Generate.chat(model,query=text,tokenizer=tokenizer,max_length=512,
