@@ -108,6 +108,16 @@ MASTER_ADDR=10.0.0.1 MASTER_PORT=6667 WORLD_SIZE=12 NODE_RANK=1 python train.py
 MASTER_ADDR=10.0.0.1 MASTER_PORT=6667 WORLD_SIZE=12 NODE_RANK=2 python train.py 
 ```
 
+###  int8高效训练
+     lora int8     配置文件quantization_bit=0，使用官方标准float 16权重文件，修改modes.py load_in_8bit = True 
+修改data_utils.py 对应with_lora=True 
+   注意 lora int8 多卡训练  CUDA_VISIBLE_DEVICES=显卡数量 和 data_utils.py devices 保持一致，否则容易出故障 ， 建议使用 CUDA_VISIBLE_DEVICES=显卡数量 python train.py
+
+### 超大数据集
+    修改train.py enable_IterableDataset 
+    - 不建议使用IterableDataset , 当数据非常多 例如千万以上 而且 内存不足， 可以采用 IterableDataset , 
+    - 缺点不显示进度条 ,  打乱范围有限。 不能全局打乱（性能不足）
+    - 需要设置 max_epochs = None ， max_steps = 训练步数
 
 ## 9.是否开启lora finetuning
 
