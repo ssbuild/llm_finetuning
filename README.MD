@@ -4,7 +4,7 @@
 
 
 ## 1.安装
-  - pip install -i https://pypi.org/simple -U deep_training>=0.1.2 transformers>=4.28 deepspeed
+  - pip install --pre -i https://pypi.org/simple -U deep_training>=0.1.3 transformers>=4.28 deepspeed
 
 
 

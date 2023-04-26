@@ -4,10 +4,10 @@ import logging
 import torch
 from deep_training.data_helper import ModelArguments, DataArguments, TrainingArguments
 from deep_training.nlp.models.lora.v2 import LoraArguments, LoraConfig
-from deep_training.utils.trainer import SimpleModelCheckpoint
-from pytorch_lightning import Trainer
-from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
-from pytorch_lightning.strategies import DeepSpeedStrategy
+from deep_training.utils.trainer import ModelCheckpoint, SimpleModelCheckpoint
+from lightning import Trainer
+from lightning.pytorch.callbacks import LearningRateMonitor
+from lightning.pytorch.strategies import DeepSpeedStrategy
 from transformers import HfArgumentParser
 
 from data_processer import DEFAULT_EOS_TOKEN, DEFAULT_UNK_TOKEN, DEFAULT_BOS_TOKEN
