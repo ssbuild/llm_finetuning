@@ -162,7 +162,7 @@ if __name__ == '__main__':
 
         train_datasets = dataHelper.load_distributed_random_sampler(
             dataHelper.train_files,
-            with_load_memory= training_args.data_backend == 'record',
+            with_load_memory= data_args.data_backend == 'record',
             collate_fn=dataHelper.collate_fn,
             batch_size=training_args.train_batch_size,
             drop_last=True,  # 多卡建议扔掉
