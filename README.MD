@@ -1,10 +1,11 @@
 ## 更新详情
+    4月28日 deep_training 0.1.3 pytorch-lightning 改名 ligntning ，旧版本 deep_training <= 0.1.2
     4月23日 增加lora merge权重（修改infer_lora_finetuning.py enable_merge_weight 选项）
     4月11日 升级 lora v2 , 增加adalora
 
 
 ## 1.安装
-  - pip install --pre -i https://pypi.org/simple -U deep_training>=0.1.3 transformers>=4.28 deepspeed
+  - pip install -i https://pypi.org/simple -U deep_training>=0.1.3 transformers>=4.28 deepspeed
 
 
 
