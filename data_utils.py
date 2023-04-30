@@ -28,6 +28,7 @@ lora_info_args = {
     'lora_dropout': 0.1,
     'fan_in_fan_out': False,
     'bias': 'none',  # Bias type for Lora. Can be 'none', 'all' or 'lora_only'"
+    'modules_to_save' : None, # "help": "List of modules apart from LoRA layers to be set as trainable and saved in the final checkpoint. "
 }
 
 adalora_info_args = {
@@ -41,6 +42,7 @@ adalora_info_args = {
     'lora_dropout': 0.1,
     'fan_in_fan_out': False,
     'bias': 'none',  # Bias type for Lora. Can be 'none', 'all' or 'lora_only'"
+    'modules_to_save' : None, # "help": "List of modules apart from LoRA layers to be set as trainable and saved in the final checkpoint. "
 
     'target_r':8, # Target Lora matrix dimension.
     'init_r': 12, #Intial Lora matrix dimension.
