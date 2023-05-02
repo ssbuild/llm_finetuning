@@ -24,13 +24,11 @@ if __name__ == '__main__':
     config = AutoConfig.from_pretrained(ckpt_dir)
     prompt_args = PromptArguments.from_pretrained(ckpt_dir)
 
-    print('*' *30,type(prompt_args),prompt_args)
-
     assert prompt_args.inference_mode == True
 
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args,prompt_args=prompt_args)
     # 加载lora权重
-    pl_model.backbone.from_pretrained(pl_model.backbone.model, pretrained_model_name_or_path = './best_ckpt', prompt_config=prompt_args)
+    pl_model.backbone.from_pretrained(pl_model.backbone.model, pretrained_model_name_or_path=ckpt_dir, prompt_config=prompt_args)
     pl_model.eval().half().cuda()
 
     model = pl_model.get_llm_model()
