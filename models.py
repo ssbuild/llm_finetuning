@@ -6,9 +6,9 @@ from typing import List, Tuple
 
 import torch
 from deep_training.nlp.models.lora.v2 import LoraModel, LoraArguments,LoraConfig
+from deep_training.nlp.models.prompt import PromptModel,PromptArguments,get_prompt_model,PromptLearningConfig
 from deep_training.nlp.models.transformer import TransformerForCausalLM
 from transformers import PreTrainedModel
-from data_utils import postprocess
 
 #如果显卡支持int8 可以开启 ， 需安装依赖 pip install bitsandbytes
 load_in_8bit = False
@@ -29,7 +29,7 @@ class Generate:
         outputs = model.generate(**inputs, **gen_kwargs)
         outputs = outputs.tolist()[0][len(inputs["input_ids"][0]):]
         response = tokenizer.decode(outputs)
-        return postprocess(response)
+        return response
 
     @classmethod
     @torch.no_grad()
@@ -62,6 +62,7 @@ class MyTransformerLM(TransformerForCausalLM):
         if load_in_8bit:
             kwargs.update({"load_in_8bit": True, "device_map": "auto"})
         super(MyTransformerLM, self).__init__(*args, **kwargs)
+        self.model.enable_input_require_grads()
 
 
 
@@ -70,16 +71,31 @@ class MyTransformerLM(TransformerForCausalLM):
 class MyTransformer(MyTransformerLM, with_pl=True):
     def __init__(self, *args, **kwargs):
         lora_args: LoraConfig = kwargs.pop('lora_args', None)
+        prompt_args: PromptLearningConfig = kwargs.pop('prompt_args', None)
         super(MyTransformer, self).__init__(*args, **kwargs)
         self.lora_args = lora_args
+        self.prompt_args = prompt_args
         if lora_args is not None and lora_args.with_lora:
-            model = LoraModel(self.backbone, lora_args)
+            model: LoraModel = LoraModel(self.backbone, lora_args)
             print('*' * 30, 'lora info')
             model.print_trainable_parameters()
             self.set_model(model, copy_attr=False)
+        elif prompt_args is not None and prompt_args.with_prompt:
+            model: PromptModel = get_prompt_model(self.backbone, prompt_args)
+            print('*' * 30, 'prompt info')
+            model.print_trainable_parameters()
+            self.set_model(model, copy_attr=False)
+
+    def get_model_lr(self, model=None, lr=None):
+        lr = lr if lr is not None else self.config.task_specific_params['learning_rate']
+        if self.prompt_args and self.prompt_args.with_prompt:
+            return [(self.backbone, lr)]
+        return super(MyTransformer, self).get_model_lr(model, lr)
 
     def get_llm_model(self) -> PreTrainedModel:
         if self.lora_args is not None and self.lora_args.with_lora:
+            return self.backbone.model.model
+        elif self.prompt_args is not None and self.prompt_args.with_prompt:
             return self.backbone.model.model
         return self.backbone.model
 

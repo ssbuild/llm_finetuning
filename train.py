@@ -3,7 +3,6 @@ import logging
 
 import torch
 from deep_training.data_helper import ModelArguments, DataArguments, TrainingArguments
-from deep_training.nlp.models.lora.v2 import LoraArguments, LoraConfig
 from deep_training.utils.trainer import ModelCheckpoint, SimpleModelCheckpoint
 from lightning import Trainer
 from lightning.pytorch.callbacks import LearningRateMonitor
@@ -12,14 +11,15 @@ from transformers import HfArgumentParser
 
 from data_processer import DEFAULT_EOS_TOKEN, DEFAULT_UNK_TOKEN, DEFAULT_BOS_TOKEN
 from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config
-from models import MyTransformer
+from models import MyTransformer,LoraArguments, LoraConfig,PromptArguments
 
 
 class MySimpleModelCheckpoint(SimpleModelCheckpoint):
     def __init__(self, *args, **kwargs):
         super(MySimpleModelCheckpoint, self).__init__(*args, **kwargs)
         lora_args:LoraConfig= self.external_kwargs['lora_args']
-        if lora_args is not None:
+        prompt_args = self.external_kwargs['prompt_args']
+        if lora_args or prompt_args:
             self.weight_file = './best_ckpt'
             self.last_weight_file = './last_ckpt'
 
@@ -42,35 +42,40 @@ class MySimpleModelCheckpoint(SimpleModelCheckpoint):
     ) -> None:
 
         lora_args : LoraArguments =  self.external_kwargs['lora_args']
+        prompt_args = self.external_kwargs['prompt_args']
         # 保存权重
-        if lora_args is None:
+        if lora_args is None and prompt_args is None:
             super(MySimpleModelCheckpoint, self).on_save_model(trainer, pl_module)
         else:
-            monitor_candidates = self._monitor_candidates(trainer)
-            monitor_candidates.update(self.on_get_metric(trainer, pl_module))
-            val = monitor_candidates.get(self.monitor, None)
-
-            #保存loss最小权重
-            if self.update_best(val):
-                logging.info('epoch {} ,step {} , save best {}, {}\n'.format(monitor_candidates['epoch'],
-                                                                             monitor_candidates['step'],
-                                                                             self.best[self.monitor],
-                                                                             self.weight_file))
-                pl_module.backbone.save_pretrained(self.weight_file)
-            #保存最新权重
-            pl_module.backbone.save_pretrained(self.last_weight_file)
-            # # 从最新权重加载模型
-            # pl_module = self.load_model_from_ckpt()
+            # 保存最新权重
+            logging.info('step {} saving model'.format(trainer.global_step))
+            pl_module.backbone.save_pretrained(self.weight_file)
+            # monitor_candidates = self._monitor_candidates(trainer)
+            # monitor_candidates.update(self.on_get_metric(trainer, pl_module))
+            # val = monitor_candidates.get(self.monitor, None)
+            #
+            # #保存loss最小权重
+            # if self.update_best(val):
+            #     logging.info('epoch {} ,step {} , save best {}, {}\n'.format(monitor_candidates['epoch'],
+            #                                                                  monitor_candidates['step'],
+            #                                                                  self.best[self.monitor],
+            #                                                                  self.weight_file))
+            #     pl_module.backbone.save_pretrained(self.weight_file)
+            # #保存最新权重
+            # pl_module.backbone.save_pretrained(self.last_weight_file)
+            # # # 从最新权重加载模型
+            # # pl_module = self.load_model_from_ckpt()
 
 
 if __name__ == '__main__':
-    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, LoraArguments))
-    model_args, training_args, data_args, lora_args = parser.parse_dict(train_info_args)
+    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, LoraArguments,PromptArguments))
+    model_args, training_args, data_args, lora_args,prompt_args = parser.parse_dict(train_info_args)
     lora_args = lora_args.config
+    prompt_args = prompt_args.config
 
     deepspeed_config = get_deepspeed_config()
     # 保存最小loss模型
-    if lora_args is not None:
+    if lora_args or prompt_args:
         assert deepspeed_config is None, ValueError('lora mode does not support deepspeed')
         checkpoint_callback = MySimpleModelCheckpoint(
             # monitor="loss",
@@ -80,7 +85,9 @@ if __name__ == '__main__':
             # 模型参数
             model_args=model_args,
             training_args=training_args,
-            lora_args=lora_args, )
+            lora_args=lora_args,
+            prompt_args=prompt_args,
+        )
     else:
         checkpoint_callback = ModelCheckpoint(
             # monitor='loss',
@@ -141,7 +148,7 @@ if __name__ == '__main__':
     if data_args.do_test:
         dataHelper.make_dataset_with_args(data_args.test_file, mode='test')
 
-    pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args, lora_args=lora_args)
+    pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args, lora_args=lora_args,prompt_args=prompt_args)
     pl_model.half()
 
     ckpt_path = './best_ckpt/best.pt'
