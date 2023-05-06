@@ -70,11 +70,11 @@ class TokenSupervision:
     def process(cls, tokenizer: PreTrainedTokenizer,config,stride, max_seq_length, examples):
         ds = []
         for idx, (question, answer) in enumerate(examples):
-            a_ids = tokenizer.encode(text=question,add_special_tokens=False)[:max_seq_length-2]
-            b_ids = tokenizer.encode(text=answer, add_special_tokens=False)
+            a_ids = tokenizer.encode(text=question,add_special_tokens=False)[:max_seq_length-3]
+            b_ids = tokenizer.encode(text=answer)
             assert len(b_ids)
-            input_ids_all = a_ids + b_ids + [config.eos_token_id]
-            labels_all = [-100] * len(a_ids) + b_ids + [config.eos_token_id]
+            input_ids_all = a_ids + b_ids
+            labels_all = [-100] * len(a_ids) + b_ids
             pos = 0
             while pos < len(input_ids_all):
                 input_ids = [config.bos_token_id] + input_ids_all[pos: pos + max_seq_length - 1]
@@ -96,13 +96,13 @@ class TokenSupervisionRounds:
                 a_text = prompt_text + "[Round {}]\n问：{}\n答：".format(idx, question)
 
             prompt_text += "[Round {}]\n问：{}\n答：{}".format(idx, question, answer)
-            a_ids = tokenizer.encode(text=a_text,add_special_tokens=False)[:max_seq_length-2]
-            b_ids = tokenizer.encode(text=answer, add_special_tokens=False)
+            a_ids = tokenizer.encode(text=a_text,add_special_tokens=False)[:max_seq_length-3]
+            b_ids = tokenizer.encode(text=answer)
 
 
             assert len(b_ids)
-            input_ids_all = a_ids + b_ids + [config.eos_token_id]
-            labels_all = [-100] * len(a_ids) + b_ids + [config.eos_token_id]
+            input_ids_all = a_ids + b_ids
+            labels_all = [-100] * len(a_ids) + b_ids
             pos = 0
             while pos < len(input_ids_all):
                 input_ids = [config.bos_token_id] + input_ids_all[pos: pos + max_seq_length - 1]

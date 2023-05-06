@@ -87,7 +87,6 @@ train_info_args = {
     # 'config_name': '/data/nlp/pre_models/torch/opt/opt-350m/config.json',
     # 'tokenizer_name': '/data/nlp/pre_models/torch/opt/opt-350m',
 
-    #llama transformer >= 4.28
     # 'model_name_or_path': '/data/nlp/pre_models/torch/llama/llama-7b-hf',
     # 'config_name': '/data/nlp/pre_models/torch/llama/llama-7b-hf/config.json',
     # 'tokenizer_name': '/data/nlp/pre_models/torch/llama/llama-7b-hf',
@@ -153,7 +152,7 @@ train_info_args = {
 
 
 data_conf = {
-    'strategy': DataStrategy.sub_rounds,  # 数据策略选项
+    'strategy': DataStrategy.unsup,  # 数据策略选项
     DataStrategy.sup: {
         'stride':  int(train_info_args['max_seq_length'] / 3 * 2),
     },
@@ -285,6 +284,8 @@ class NN_DataHelper(DataHelper):
         o['attention_mask'] = o['attention_mask'][:, :maxlen]
         o['labels'] = o['labels'][:, :maxlen].long()
         return o
+
+
 
 
 
