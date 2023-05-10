@@ -91,11 +91,9 @@
 ## 7.推理
     # infer_finetuning.py 推理微调模型
     # infer_lora_finetuning.py 推理微调模型
+    # infer_ptuning.py 推理p-tuning-v2微调模型
      python infer_finetuning.py
 
-
-
-   
 
 
 ## 8.训练
@@ -111,9 +109,10 @@ MASTER_ADDR=10.0.0.1 MASTER_PORT=6667 WORLD_SIZE=12 NODE_RANK=2 python train.py
 ```
 
 ###  int8高效训练
-     lora int8     配置文件quantization_bit=0，使用官方标准float 16权重文件，修改modes.py load_in_8bit = True 
+     lora int8     使用官方标准float 16权重文件，修改modes.py load_in_8bit = True 
 修改data_utils.py 对应with_lora=True 
-   注意 lora int8 多卡训练  CUDA_VISIBLE_DEVICES=显卡数量 和 data_utils.py devices 保持一致，否则容易出故障 ， 建议使用 CUDA_VISIBLE_DEVICES=显卡数量 python train.py
+   注意 lora int8 多卡训练  CUDA_VISIBLE_DEVICES=显卡数量 和 data_utils.py devices 保持一致，否则容易出故障 ， 
+   建议使用 CUDA_VISIBLE_DEVICES=显卡数量 python train.py 或者使用docker隔离环境
 
 ### 超大数据集
     修改data_utils.py "data_backend": "lmdb" 
@@ -123,8 +122,11 @@ MASTER_ADDR=10.0.0.1 MASTER_PORT=6667 WORLD_SIZE=12 NODE_RANK=2 python train.py
 
     with_lora
 
+## 10.是否开启ptv2 finetuning
 
-## 10.是否开启deepspeed
+    with_prompt
+
+## 11.是否开启deepspeed
     启动则将data_utils.py  修改 enable_deepspeed 
     lora 模式暂时不支持deepspeed
 
