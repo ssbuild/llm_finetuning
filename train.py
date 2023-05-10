@@ -11,7 +11,7 @@ from transformers import HfArgumentParser
 
 from data_processer import DEFAULT_EOS_TOKEN, DEFAULT_UNK_TOKEN, DEFAULT_BOS_TOKEN
 from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config
-from models import MyTransformer,LoraArguments, LoraConfig,PromptArguments
+from models import MyTransformer, LoraArguments, LoraConfig, PromptArguments, load_in_8bit
 
 
 class MySimpleModelCheckpoint(SimpleModelCheckpoint):
@@ -149,7 +149,8 @@ if __name__ == '__main__':
         dataHelper.make_dataset_with_args(data_args.test_file, mode='test')
 
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args, lora_args=lora_args,prompt_args=prompt_args)
-    pl_model.half()
+    if not load_in_8bit:
+        pl_model.half()
 
     ckpt_path = './best_ckpt/best.pt'
     if not data_args.convert_onnx:
