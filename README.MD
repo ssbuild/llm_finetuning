@@ -1,26 +1,17 @@
-## 更新详情
+## update information
+   - [deep_training](https://github.com/ssbuild/deep_training)
     5月02日 增加p-tuning-v2
     4月28日 deep_training 0.1.3 pytorch-lightning 改名 ligntning ，旧版本 deep_training <= 0.1.2
     4月23日 增加lora merge权重（修改infer_lora_finetuning.py enable_merge_weight 选项）
     4月11日 升级 lora v2 , 增加adalora
 
-
-## 1.安装
+## install
   - pip install -i https://pypi.org/simple -U deep_training>=0.1.4 transformers>=4.28 deepspeed
 
 
 
-## 2.更新详情
-- [deep_training](https://github.com/ssbuild/deep_training)
 
-## 3.深度学习常规任务例子
-
-- [pytorch-task-example](https://github.com/ssbuild/pytorch-task-example)
-- [tf-task-example](https://github.com/ssbuild/tf-task-example)
-
-
-
-## 4. bloom 预训练模型下载，大小尺寸可自行选择
+## weigth，大小尺寸可自行选择
     
 - [bloom预训练模型](https://huggingface.co/bigscience)
 - [bloom第三方中文训练模型](https://huggingface.co/Langboat/bloom-6b4-zh)  # 注意 需要修改tokenizer_config.json BloomTokenizer -> BloomTokenizerFast
@@ -28,7 +19,7 @@
 - [llama预训练模型](https://huggingface.co/decapoda-research) #  llama 词典等下载地址 https://huggingface.co/hf-internal-testing/llama-tokenizer
 
 
-## 5.数据示例
+## data sample
 
 [中文第三方数据集](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M)
 
@@ -79,7 +70,7 @@
 
 
 
-## 6.生成训练record
+## generate record
 
     python data_utils.py
     
@@ -88,7 +79,7 @@
     dataHelper.make_dataset_with_args(data_args.train_file,mixed_data=False, shuffle=True,mode='train',num_process_worker=0)
 
 
-## 7.推理
+## infer
     # infer_finetuning.py 推理微调模型
     # infer_lora_finetuning.py 推理微调模型
     # infer_ptuning.py 推理p-tuning-v2微调模型
@@ -96,7 +87,7 @@
 
 
 
-## 8.训练
+## training
 
     python train.py
 
@@ -118,17 +109,33 @@ MASTER_ADDR=10.0.0.1 MASTER_PORT=6667 WORLD_SIZE=12 NODE_RANK=2 python train.py
     修改data_utils.py "data_backend": "lmdb" 
 
 
-## 9.是否开启lora finetuning
+## 9.lora finetuning
 
     with_lora
 
-## 10.是否开启ptv2 finetuning
+## ptv2 finetuning
 
     with_prompt
 
-## 11.是否开启deepspeed
+## deepspeed
     启动则将data_utils.py  修改 enable_deepspeed 
     lora 模式暂时不支持deepspeed
+
+
+## 友情链接
+
+- [pytorch-task-example](https://github.com/ssbuild/pytorch-task-example)
+- [tf-task-example](https://github.com/ssbuild/tf-task-example)
+- [chatmoss_finetuning](https://github.com/ssbuild/chatmoss_finetuning)
+- [chatglm_finetuning](https://github.com/ssbuild/chatglm_finetuning)
+- [chatyuan_finetuning](https://github.com/ssbuild/chatyuan_finetuning)
+- [llm_finetuning](https://github.com/ssbuild/llm_finetuning)
+- [rlhf_llm](https://github.com/ssbuild/rlhf_llm)
+- [rlhf_chatglm](https://github.com/ssbuild/rlhf_chatglm)
+- [rlhf_chatyuan](https://github.com/ssbuild/rlhf_chatyuan)
+
+## 
+    纯粹而干净的代码
 
 ## Star History
 
