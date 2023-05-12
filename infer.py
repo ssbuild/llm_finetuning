@@ -18,7 +18,7 @@ if __name__ == '__main__':
     model_args, training_args, data_args, _,_ = parser.parse_dict(train_info_args)
 
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
-    tokenizer, config, _,_= dataHelper.load_tokenizer_and_config()
+    tokenizer, config, _,_= dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": "float16"})
     config.torch_dtype = "float16"
 
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args)

@@ -17,7 +17,7 @@ if __name__ == '__main__':
     model_args, training_args, data_args, _,_ = parser.parse_dict(train_info_args)
 
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
-    tokenizer, _, _,_= dataHelper.load_tokenizer_and_config()
+    tokenizer, _, _,_= dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": "float16"})
 
     ###################### 注意 选最新权重
     # 选择最新的权重 ， 根据时间排序 选最新的
