@@ -26,7 +26,8 @@ if __name__ == '__main__':
 
     assert lora_args.inference_mode == True
 
-    pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args,lora_args=lora_args)
+    pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args,lora_args=lora_args,
+                             load_in_8bit=load_in_8bit, device_map="auto")
     # 加载lora权重
     pl_model.backbone.from_pretrained(pl_model.backbone.model, pretrained_model_name_or_path = './best_ckpt', lora_config = lora_args)
     if load_in_8bit:
