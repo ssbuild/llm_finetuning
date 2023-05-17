@@ -113,8 +113,8 @@ if __name__ == '__main__':
         gradient_clip_val=training_args.max_grad_norm,
         accumulate_grad_batches=training_args.gradient_accumulation_steps,
         num_sanity_val_steps=0,
-        strategy=strategy
-        # precision='16-mixed',#混合精度
+        strategy=strategy,
+        # precision='16-mixed',#半精度
     )
 
 
@@ -155,7 +155,6 @@ if __name__ == '__main__':
 
     if not load_in_8bit:
         pl_model.half()
-
 
     ckpt_path = './best_ckpt/best.pt'
     if not data_args.convert_onnx:
