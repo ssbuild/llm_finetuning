@@ -110,6 +110,10 @@ MASTER_ADDR=10.0.0.1 MASTER_PORT=6667 WORLD_SIZE=12 NODE_RANK=2 python train.py
     load_in_8bit = True 
     修改data_utils.py 对应with_lora=True 
 
+### 混合精度
+
+    Trainer.precision = '16-mixed'
+
 ### 超大数据集
 
     修改data_utils.py "data_backend": "lmdb" 
