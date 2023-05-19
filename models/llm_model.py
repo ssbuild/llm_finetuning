@@ -11,9 +11,9 @@ from deep_training.nlp.models.lora.v2 import LoraModel, LoraArguments,LoraConfig
 from deep_training.nlp.models.prompt import PromptModel,PromptArguments,get_prompt_model,PromptLearningConfig
 from deep_training.nlp.models.transformer import TransformerForCausalLM
 from transformers import PreTrainedModel
+from config.llm_sft_config import global_load_in_8bit
 
-#如果显卡支持int8 可以开启 ， 需安装依赖 pip install bitsandbytes
-load_in_8bit = False
+
 
 class Generate:
     @classmethod

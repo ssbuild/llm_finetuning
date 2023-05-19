@@ -4,6 +4,9 @@
 import json
 import os
 
+#如果显卡支持int8 可以开启 ， 需安装依赖 pip install bitsandbytes
+global_load_in_8bit = False
+
 # 默认禁用lora 相关模块 , lora 和 adalora 只能同时启用一个
 lora_info_args = {
     'with_lora': False,  # 是否启用lora模块
