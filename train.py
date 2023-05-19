@@ -10,8 +10,8 @@ from lightning.pytorch.strategies import DeepSpeedStrategy
 from transformers import HfArgumentParser
 
 from data_processer import DEFAULT_EOS_TOKEN, DEFAULT_UNK_TOKEN, DEFAULT_BOS_TOKEN
-from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config
-from models import MyTransformer, LoraArguments, LoraConfig, PromptArguments, global_load_in_8bit
+from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config,global_args
+from models import MyTransformer, LoraArguments, LoraConfig, PromptArguments
 
 
 class MySimpleModelCheckpoint(SimpleModelCheckpoint):
@@ -102,6 +102,7 @@ if __name__ == '__main__':
     if deepspeed_config is not None and len(deepspeed_config):
         strategy = DeepSpeedStrategy(config=deepspeed_config, )
 
+    precision = '16'  # 半精度训练 "32": "32-true", "16": "16-mixed", "bf16": "bf16-mixed"
     trainer = Trainer(
         callbacks=[checkpoint_callback, LearningRateMonitor(logging_interval='step')],
         max_epochs=training_args.max_epochs,
@@ -114,13 +115,13 @@ if __name__ == '__main__':
         accumulate_grad_batches=training_args.gradient_accumulation_steps,
         num_sanity_val_steps=0,
         strategy=strategy,
-        precision='16',  # 半精度
+        precision=precision,  # 半精度
         # precision='16-mixed',# 混合精度
     )
 
 
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
-    tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": "float16"})
+    tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})
     config.decoder_start_token_id = config.bos_token_id
 
     if "llama" in model_args.model_name_or_path.lower() and tokenizer.bos_token_id != DEFAULT_BOS_TOKEN:
@@ -132,7 +133,6 @@ if __name__ == '__main__':
         if tokenizer.pad_token_id is None or tokenizer.pad_token_id == -1:
             tokenizer.pad_token_id = tokenizer.eos_token_id
 
-    # config.num_hidden_layers = 1
 
     # 额外参数
     checkpoint_callback.tokenizer = tokenizer
@@ -149,7 +149,7 @@ if __name__ == '__main__':
         dataHelper.make_dataset_with_args(data_args.test_file, mode='test')
 
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args, lora_args=lora_args, prompt_args=prompt_args,
-                             load_in_8bit=global_load_in_8bit, device_map={"": trainer.local_rank} if trainer.world_size > 1 else "auto")
+                             load_in_8bit=global_args["load_in_8bit"], device_map={"": trainer.local_rank} if trainer.world_size > 1 else "auto")
 
     # 如果使用  Trainer.precision = '16-mixed' 注掉  Trainer.gradient_clip_val=training_args.max_grad_norm,
     # pl_model.float()
@@ -157,23 +157,7 @@ if __name__ == '__main__':
     # 如果使用  Trainer.precision = '16',
     pl_model.float()
 
-    # if not global_load_in_8bit:
-    #     pl_model.half()
-
-    ckpt_path = './best_ckpt/best.pt'
-
-
-    #  只恢复权重 ， 不恢复步数和优化器 ，
-    #  如果想恢复步数， 修改 trainer.fit(pl_model, train_dataloaders=train_datasets，ckpt=ckpt_path)  注lora 当前不支持恢复步数。
-    # if os.path.exists(ckpt_path):
-    #     if  lora_args is None:
-    #         # 加载权重继续训练
-    #         pl_model = MyTransformer.load_from_checkpoint(ckpt_path, config=config,model_args=model_args,training_args=training_args,lora_args=lora_args,
-    #                                                       load_in_8bit=load_in_8bit, device_map={"": trainer.local_rank} if trainer.world_size > 1 else "auto",
-    #                                                       strict=False)
-    #     else:
-    #         # 加载lora权重 继续训练  0.0.20版本支持lora 继续训练
-    #         pl_model.backbone.from_pretrained(pl_model.backbone.model, pretrained_model_name_or_path=ckpt_path,lora_config=lora_args,is_trainable=True,strict=False)
+    # pl_model.load_sft_weight('./best_ckpt/best.pt',is_trainable=True)
 
     def dataset_loader_filter_fn(dataset):
         print('*' * 30, 'total', len(dataset))

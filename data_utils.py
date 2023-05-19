@@ -153,7 +153,7 @@ if __name__ == '__main__':
 
 
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
-    tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": "float16"})
+    tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})
     config.torch_dtype = "float16"
     config.decoder_start_token_id = config.bos_token_id
 

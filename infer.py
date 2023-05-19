@@ -14,14 +14,12 @@ from models import MyTransformer, Generate,LoraArguments,PromptArguments
 deep_config = get_deepspeed_config()
 
 if __name__ == '__main__':
-    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, LoraArguments,PromptArguments))
-    model_args, training_args, data_args, _,_ = parser.parse_dict(train_info_args)
+    parser = HfArgumentParser((ModelArguments, DataArguments))
+    model_args, data_args = parser.parse_dict(train_info_args, allow_extra_keys=True)
 
-    dataHelper = NN_DataHelper(model_args, training_args, data_args)
-    tokenizer, config, _,_= dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": "float16"})
-    config.torch_dtype = "float16"
-
-    pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args)
+    dataHelper = NN_DataHelper(model_args, None, data_args)
+    tokenizer, config, _,_= dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})
+    pl_model = MyTransformer(config=config, model_args=model_args)
     model = pl_model.get_llm_model()
 
     model.eval().half().cuda()
