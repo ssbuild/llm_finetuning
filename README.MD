@@ -131,14 +131,8 @@ MASTER_ADDR=10.0.0.1 MASTER_PORT=6667 WORLD_SIZE=12 NODE_RANK=2 python train.py
     启动则将data_utils.py  修改 enable_deepspeed 
     lora 模式暂时不支持deepspeed
 
-## bf16精度训练
-    修改Trainer.precision='bf16'
-
-## 混合精度训练
-    修改Trainer.precision='16-mixed'
-
-## 半精度训练
-    修改Trainer.precision='16'
+## 精度训练
+    precision = '16' # 半精度训练 "32": "32-true", "16": "16-mixed", "bf16": "bf16-mixed"
 
 ## 友情链接
 
