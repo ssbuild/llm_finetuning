@@ -29,7 +29,7 @@
 [中文第三方数据集](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M)
 
 
-数据示例1
+数据示例
 ```json
  {
      "id": 0, "paragraph": [

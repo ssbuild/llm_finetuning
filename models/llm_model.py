@@ -65,6 +65,9 @@ class MyTransformerLM(TransformerForCausalLM):
             kwargs.pop("device_map", None)
         super(MyTransformerLM, self).__init__(*args, **kwargs)
         if load_in_8bit:
-            setattr(self.model, 'model_parallel', True)
-            setattr(self.model, 'is_parallelizable', True)
-            self.model.enable_input_require_grads()
+            self.enable_input_require_grads()
+
+    def enable_input_require_grads(self):
+        setattr(self.model, 'model_parallel', True)
+        setattr(self.model, 'is_parallelizable', True)
+        self.model.enable_input_require_grads()

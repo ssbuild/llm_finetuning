@@ -87,6 +87,7 @@ class MyTransformer(MyTransformerLM,SftWeightMinMax, with_pl=True):
             model.print_trainable_parameters()
             self.set_model(model, copy_attr=False)
         elif prompt_args is not None and prompt_args.with_prompt:
+            self.backbone.enable_input_require_grads()
             model: PromptModel = get_prompt_model(self.backbone, prompt_args)
             print('*' * 30, 'prompt info')
             model.print_trainable_parameters()
@@ -102,7 +103,7 @@ class MyTransformer(MyTransformerLM,SftWeightMinMax, with_pl=True):
         if self.lora_args is not None and self.lora_args.with_lora:
             return self.backbone.model.model
         elif self.prompt_args is not None and self.prompt_args.with_prompt:
-            return self.backbone.model.model
+            return self.backbone.model
         return self.backbone.model
 
 
