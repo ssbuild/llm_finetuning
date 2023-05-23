@@ -7,12 +7,14 @@ import os
 #如果显卡支持int8 可以开启 ， 需安装依赖 pip install bitsandbytes
 global_args = {
     "load_in_8bit": False, # lora 如果显卡支持int8 可以开启 ， 需安装依赖 pip install bitsandbytes
+    "config_merge": {
+    }
 }
 
 
 # 默认禁用lora 相关模块 , lora 和 adalora 只能同时启用一个
 lora_info_args = {
-    'with_lora': False,  # 是否启用lora模块
+    'with_lora': True,  # 是否启用lora模块
     'lora_type': 'lora',
     'r': 8,
     'target_modules': ['query_key_value'],  # bloom,gpt_neox

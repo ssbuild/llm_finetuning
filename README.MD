@@ -11,7 +11,7 @@
    
 
 ## install
-  - pip install -i https://pypi.org/simple -U deep_training>=0.1.4 transformers>=4.28 deepspeed
+  - pip install -i https://pypi.org/simple -U deep_training>=0.1.7 transformers>=4.28 deepspeed
 
 
 
@@ -29,7 +29,7 @@
 [中文第三方数据集](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M)
 
 
-数据示例1
+数据示例
 ```json
  {
      "id": 0, "paragraph": [
@@ -131,14 +131,8 @@ MASTER_ADDR=10.0.0.1 MASTER_PORT=6667 WORLD_SIZE=12 NODE_RANK=2 python train.py
     启动则将data_utils.py  修改 enable_deepspeed 
     lora 模式暂时不支持deepspeed
 
-## bf16精度训练
-    修改Trainer.precision='bf16'
-
-## 混合精度训练
-    修改Trainer.precision='16-mixed'
-
-## 半精度训练
-    修改Trainer.precision='16'
+## 精度训练
+    precision = '16' # 半精度训练 "32": "32-true", "16": "16-mixed", "bf16": "bf16-mixed"
 
 ## 友情链接
 

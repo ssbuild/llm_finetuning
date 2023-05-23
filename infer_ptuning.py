@@ -27,13 +27,14 @@ if __name__ == '__main__':
     assert prompt_args.inference_mode == True
 
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args,prompt_args=prompt_args)
-    # 加载lora权重
+    # 加载sft权重
     pl_model.load_sft_weight(ckpt_dir)
+
     pl_model.eval().half().cuda()
 
     model = pl_model.get_llm_model()
 
-    text = "帮我写一个请假条，我因为新冠不舒服，需要请假3天，请领导批准"
+    text = "写一个诗歌，关于冬天"
     response, history = Generate.chat(model, query=text, tokenizer=tokenizer, max_length=512,
                                       eos_token_id=config.eos_token_id,
                                       do_sample=True, top_p=0.7, temperature=0.95, )

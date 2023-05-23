@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     model.eval().half().cuda()
 
-    text= "帮我写一个请假条，我因为新冠不舒服，需要请假3天，请领导批准"
+    text= "写一个诗歌，关于冬天"
     response, history = Generate.chat(model, query=text, tokenizer=tokenizer, max_length=512,
                                       eos_token_id=config.eos_token_id,
                                       do_sample=True, top_p=0.7, temperature=0.95, )

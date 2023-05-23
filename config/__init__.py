@@ -3,4 +3,4 @@
 # @Author  : tk
 # @FileName: __init__.py
 
-from config.llm_sft_config import *
+from config.sft_config import *

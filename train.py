@@ -102,7 +102,7 @@ if __name__ == '__main__':
     if deepspeed_config is not None and len(deepspeed_config):
         strategy = DeepSpeedStrategy(config=deepspeed_config, )
 
-    precision = '16'  # 半精度训练 "32": "32-true", "16": "16-mixed", "bf16": "bf16-mixed"
+
     trainer = Trainer(
         callbacks=[checkpoint_callback, LearningRateMonitor(logging_interval='step')],
         max_epochs=training_args.max_epochs,
@@ -115,13 +115,17 @@ if __name__ == '__main__':
         accumulate_grad_batches=training_args.gradient_accumulation_steps,
         num_sanity_val_steps=0,
         strategy=strategy,
-        precision=precision,  # 半精度
-        # precision='16-mixed',# 混合精度
+        # lora int8 precision='32'
+        precision='32' if global_args['load_in_8bit'] else '16',# 可以自行尝试  "32": "32-true", "16": "16-mixed", "bf16": "bf16-mixed"
     )
 
 
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
-    tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})
+    config_kwargs = {"torch_dtype": torch.float16}
+    if global_args['config_merge']:
+        config_kwargs.update(global_args['config_merge'])
+
+    tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs=config_kwargs)
     config.decoder_start_token_id = config.bos_token_id
 
     if "llama" in model_args.model_name_or_path.lower() and tokenizer.bos_token_id != DEFAULT_BOS_TOKEN:
@@ -151,13 +155,11 @@ if __name__ == '__main__':
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args, lora_args=lora_args, prompt_args=prompt_args,
                              load_in_8bit=global_args["load_in_8bit"], device_map={"": trainer.local_rank} if trainer.world_size > 1 else "auto")
 
-    # 如果使用  Trainer.precision = '16-mixed' 注掉  Trainer.gradient_clip_val=training_args.max_grad_norm,
-    # pl_model.float()
+    # 加载sft权重
+    # pl_model.load_sft_weight('./best_ckpt/best.pt',is_trainable=True)
 
-    # 如果使用  Trainer.precision = '16',
     pl_model.float()
 
-    # pl_model.load_sft_weight('./best_ckpt/best.pt',is_trainable=True)
 
     def dataset_loader_filter_fn(dataset):
         print('*' * 30, 'total', len(dataset))
