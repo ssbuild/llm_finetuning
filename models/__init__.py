@@ -82,12 +82,12 @@ class MyTransformer(MyTransformerLM,SftWeightMinMax, with_pl=True):
         self.lora_args = lora_args
         self.prompt_args = prompt_args
         if lora_args is not None and lora_args.with_lora:
-            model: LoraModel = LoraModel(self.backbone, lora_args)
+            model: LoraModel = LoraModel(self.backbone.model, lora_args)
             print('*' * 30, 'lora info')
             model.print_trainable_parameters()
             self.set_model(model, copy_attr=False)
         elif prompt_args is not None and prompt_args.with_prompt:
-            model: PromptModel = get_prompt_model(self.backbone, prompt_args)
+            model: PromptModel = get_prompt_model(self.backbone.model, prompt_args)
             print('*' * 30, 'prompt info')
             model.print_trainable_parameters()
             self.set_model(model, copy_attr=False)
@@ -100,9 +100,9 @@ class MyTransformer(MyTransformerLM,SftWeightMinMax, with_pl=True):
 
     def get_llm_model(self) -> PreTrainedModel:
         if self.lora_args is not None and self.lora_args.with_lora:
-            return self.backbone.model.model
+            return self.backbone.model
         elif self.prompt_args is not None and self.prompt_args.with_prompt:
-            return self.backbone.model.model
+            return self.backbone.model
         return self.backbone.model
 
 
