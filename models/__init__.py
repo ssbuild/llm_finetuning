@@ -36,11 +36,10 @@ class SftWeightMinMax:
         assert os.path.exists(sft_weight_path)
         if self.lora_args is not None and self.lora_args.with_lora:
             # 加载lora权重
-            self.backbone.from_pretrained(self.backbone.model, pretrained_model_name_or_path=sft_weight_path,
-                                          is_trainable=is_trainable)
+            self.backbone.load_weight(pretrained_model_name_or_path=sft_weight_path,is_trainable=is_trainable)
+
         elif self.prompt_args is not None and self.prompt_args.with_prompt:
-            self.backbone.from_pretrained(self.backbone.model, pretrained_model_name_or_path=sft_weight_path,
-                                          is_trainable=is_trainable)
+            self.backbone.load_weight(pretrained_model_name_or_path=sft_weight_path, is_trainable=is_trainable)
         else:
             weight_dict = torch.load(sft_weight_path)
             weights_dict_new = OrderedDict()
@@ -96,6 +95,8 @@ class MyTransformer(MyTransformerLM,SftWeightMinMax, with_pl=True):
     def get_model_lr(self, model=None, lr=None):
         lr = lr if lr is not None else self.config.task_specific_params['learning_rate']
         if self.prompt_args and self.prompt_args.with_prompt:
+            for n,p in self.backbone.named_parameters():
+                print(n,p.requires_grad)
             return [(self.backbone, lr)]
         return super(MyTransformer, self).get_model_lr(model, lr)
 

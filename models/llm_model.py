@@ -71,3 +71,9 @@ class MyTransformerLM(TransformerForCausalLM):
         setattr(self.model, 'model_parallel', True)
         setattr(self.model, 'is_parallelizable', True)
         self.model.enable_input_require_grads()
+
+
+    def compute_loss(self,*args, **kwargs):
+        kwargs.update(dict(args))
+        print('*' * 30)
+        return self.model.compute_loss(**kwargs)
