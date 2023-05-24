@@ -33,7 +33,7 @@ class MySimpleModelCheckpoint(SimpleModelCheckpoint):
                               training_args=training_args)
 
 
-        pl_module.backbone.from_pretrained(pl_module.backbone.model,self.last_weight_file)
+        pl_module.load_sft_weight(self.last_weight_file)
         return pl_module
 
 
@@ -63,8 +63,7 @@ class MySimpleModelCheckpoint(SimpleModelCheckpoint):
             #     pl_module.backbone.save_pretrained(self.weight_file)
             # #保存最新权重
             # pl_module.backbone.save_pretrained(self.last_weight_file)
-            # # # 从最新权重加载模型
-            # # pl_module = self.load_model_from_ckpt()
+
 
 
 if __name__ == '__main__':
