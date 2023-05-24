@@ -34,9 +34,14 @@ if __name__ == '__main__':
 
     model = pl_model.get_llm_model()
 
-    text = "写一个诗歌，关于冬天"
-    response, history = Generate.chat(model, query=text, tokenizer=tokenizer, max_length=512,
-                                      eos_token_id=config.eos_token_id,
-                                      do_sample=True, top_p=0.7, temperature=0.95, )
-    print('input', text)
-    print('output', response)
+    #基础模型精度
+    model.base_model_torch_dtype = torch.half
+
+    text_list = ["写一个诗歌，关于冬天",
+                 "晚上睡不着应该怎么办"]
+    for input in text_list:
+        response, history = Generate.chat(model, query=input, tokenizer=tokenizer, max_length=512,
+                                          eos_token_id=config.eos_token_id,
+                                          do_sample=False, top_p=0.7, temperature=0.95, )
+        print('input', input)
+        print('output', response)
