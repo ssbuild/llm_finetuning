@@ -12,7 +12,7 @@
    
 
 ## install
-  - pip install -i https://pypi.org/simple -U deep_training>=0.1.8 transformers>=4.28 deepspeed
+  - pip install -i https://pypi.org/simple -U -r requirements.txt
 
 
 

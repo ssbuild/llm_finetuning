@@ -10,6 +10,7 @@ import torch
 from deep_training.nlp.models.lora.v2 import LoraModel, LoraArguments,LoraConfig
 from deep_training.nlp.models.prompt import PromptModel,PromptArguments,get_prompt_model,PromptLearningConfig
 from deep_training.nlp.models.transformer import TransformerForCausalLM
+from torch import nn
 from transformers import PreTrainedModel
 
 
@@ -61,12 +62,32 @@ class MyTransformerLM(TransformerForCausalLM):
     def __init__(self, *args, **kwargs):
         # 如果显卡支持int8 可以开启 ， 需安装依赖 pip install bitsandbytes
         load_in_8bit = kwargs.get('load_in_8bit', False)
-        if not load_in_8bit:
+        load_in_4bit = kwargs.get('load_in_4bit', False)
+        if not load_in_8bit and not load_in_4bit:
             kwargs.pop("device_map", None)
+            kwargs.pop("quantization_config", None)
+
         super(MyTransformerLM, self).__init__(*args, **kwargs)
+
+        for param in self.model.parameters():
+            param.requires_grad = False  # freeze the model - train adapters later
+            if param.ndim == 1:
+                # cast the small parameters (e.g. layernorm) to fp32 for stability
+                param.data = param.data.to(torch.float32)
+
+        class CastOutputToFloat(nn.Sequential):
+            def forward(self, x):
+                return super().forward(x).to(torch.float32)
+
+        self.model.lm_head = CastOutputToFloat(self.model.lm_head)
+
 
 
     def enable_input_require_grads(self):
         setattr(self.model, 'model_parallel', True)
         setattr(self.model, 'is_parallelizable', True)
         self.model.enable_input_require_grads()
+        self.model.config.use_cache = False
+        self.config.use_cache = False
+
+
