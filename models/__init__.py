@@ -5,6 +5,7 @@
 import re
 from collections import OrderedDict
 
+from deep_training.nlp.layers.lora_v2.layers import LoraLayer
 from transformers import PretrainedConfig
 from torch import nn
 from models.llm_model import *
@@ -50,11 +51,12 @@ class SftWeightMinMax:
                     weight_dict = weight_dict[k]
                     break
             for k, v in weight_dict.items():
+                k = re.sub(r'_forward_module\.', '', k)
                 rm_key = '_TransformerLightningModule__backbone'
                 if k.startswith(rm_key):
                     base_model_prefix = self.backbone.base_model_prefix
-                    k = re.sub(r'{}.{}.'.format(rm_key,base_model_prefix), '', k)
-                weights_dict_new[re.sub(r'_forward_module\.', '', k)] = v
+                    k = re.sub(r'{}.{}.'.format(rm_key, base_model_prefix), '', k)
+                weights_dict_new[k] = v
             # 加载sft 或者 p-tuning-v2权重
             self.get_llm_model().load_state_dict(weights_dict_new, strict=strict)
 
@@ -82,11 +84,20 @@ class MyTransformer(MyTransformerLM,SftWeightMinMax, with_pl=True):
         self.lora_args = lora_args
         self.prompt_args = prompt_args
         if lora_args is not None and lora_args.with_lora:
-            self.backbone.enable_input_require_grads()
-            model: LoraModel = LoraModel(self.backbone, lora_args)
+            model: LoraModel = LoraModel(self.backbone, lora_args,auto_prepare_kbit_training=True)
             print('==' * 30, 'lora info')
             model.print_trainable_parameters()
             self.set_model(model, copy_attr=False)
+            # for name, module in model.named_modules():
+            #     if isinstance(module, LoraLayer):
+            #         module = module.to(torch.bfloat16)
+            #     if 'norm' in name:
+            #         module = module.to(torch.float32)
+            #     if 'lm_head' in name or 'embed_tokens' in name:
+            #         if hasattr(module, 'weight'):
+            #             if module.weight.dtype == torch.float32:
+            #                 module = module.to(torch.bfloat16)
+
         elif prompt_args is not None and prompt_args.with_prompt:
             self.backbone.enable_input_require_grads()
             model: PromptModel = get_prompt_model(self.backbone, prompt_args)
@@ -98,6 +109,8 @@ class MyTransformer(MyTransformerLM,SftWeightMinMax, with_pl=True):
         lr = lr if lr is not None else self.config.task_specific_params['learning_rate']
         if self.prompt_args and self.prompt_args.with_prompt:
             return [(self.backbone, lr)]
+        for n, p in self.named_parameters():
+            print(n, p.requires_grad)
         return super(MyTransformer, self).get_model_lr(model, lr)
 
     def get_llm_model(self) -> PreTrainedModel:
