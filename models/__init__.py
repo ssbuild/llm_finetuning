@@ -5,6 +5,7 @@
 import re
 from collections import OrderedDict
 
+import torch
 from deep_training.nlp.layers.lora_v2.layers import LoraLayer
 from transformers import PretrainedConfig
 from torch import nn
@@ -84,7 +85,8 @@ class MyTransformer(MyTransformerLM,SftWeightMinMax, with_pl=True):
         self.lora_args = lora_args
         self.prompt_args = prompt_args
         if lora_args is not None and lora_args.with_lora:
-            model: LoraModel = LoraModel(self.backbone, lora_args,auto_prepare_kbit_training=True)
+            self.backbone.enable_input_require_grads()
+            model: LoraModel = LoraModel(self.backbone, lora_args,auto_prepare_kbit_training=False)
             print('==' * 30, 'lora info')
             model.print_trainable_parameters()
             self.set_model(model, copy_attr=False)
@@ -109,9 +111,13 @@ class MyTransformer(MyTransformerLM,SftWeightMinMax, with_pl=True):
         lr = lr if lr is not None else self.config.task_specific_params['learning_rate']
         if self.prompt_args and self.prompt_args.with_prompt:
             return [(self.backbone, lr)]
-        for n, p in self.named_parameters():
+        # for n, p in self.named_parameters():
+        #     print(n, p.requires_grad)
+        # return super(MyTransformer, self).get_model_lr(model, lr)
+
+        for n, p in self.backbone.model.model.named_parameters():
             print(n, p.requires_grad)
-        return super(MyTransformer, self).get_model_lr(model, lr)
+        return [(self.backbone.model.model, lr)]
 
     def get_llm_model(self) -> PreTrainedModel:
         if self.lora_args is not None and self.lora_args.with_lora:
@@ -120,5 +126,17 @@ class MyTransformer(MyTransformerLM,SftWeightMinMax, with_pl=True):
             #PromptModel 方法覆盖原来方法
             return self.backbone
         return self.backbone.model
+
+    def compute_loss(self, *args, **batch) -> tuple:
+        if len(args):
+            batch.update(dict(args))
+        o = self.model.compute_loss(**batch)
+
+        for _ in o:
+
+            if isinstance(_,torch.Tensor):
+                # _.requires_grad_(True)
+                print(_.requires_grad)
+        return o
 
 

@@ -69,26 +69,34 @@ class MyTransformerLM(TransformerForCausalLM):
 
         super(MyTransformerLM, self).__init__(*args, **kwargs)
 
-        for param in self.model.parameters():
-            param.requires_grad = False  # freeze the model - train adapters later
-            if param.ndim == 1:
-                # cast the small parameters (e.g. layernorm) to fp32 for stability
-                param.data = param.data.to(torch.float32)
+        # for param in self.model.parameters():
+        #     param.requires_grad = False  # freeze the model - train adapters later
+        #     if param.ndim == 1:
+        #         # cast the small parameters (e.g. layernorm) to fp32 for stability
+        #         param.data = param.data.to(torch.float32)
 
-        class CastOutputToFloat(nn.Sequential):
-            def forward(self, x):
-                return super().forward(x).to(torch.float32)
-
-        self.model.lm_head = CastOutputToFloat(self.model.lm_head)
+        # class CastOutputToFloat(nn.Sequential):
+        #     def forward(self, x):
+        #         return super().forward(x).to(torch.float32)
+        #
+        # self.model.lm_head = CastOutputToFloat(self.model.lm_head)
 
 
 
     def enable_input_require_grads(self):
         setattr(self.model, 'model_parallel', True)
         setattr(self.model, 'is_parallelizable', True)
-        self.model.enable_input_require_grads()
+
         self.model.gradient_checkpointing_enable()
+        #self.model.gradient_checkpointing_disable()
+        # self.model.enable_input_require_grads()
         self.model.config.use_cache = False
         self.config.use_cache = False
+
+        print('***********************************')
+        def make_inputs_require_grads(module, input, output):
+            output.requires_grad_(True)
+
+        self.model._require_grads_hook = self.model.get_input_embeddings().register_forward_hook(make_inputs_require_grads)
 
 
