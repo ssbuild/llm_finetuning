@@ -2,6 +2,7 @@
    - [deep_training](https://github.com/ssbuild/deep_training)
 
 ```text
+    05-27 add qlora transformers>=4.30
     05-24 fix p-tuning-v2 load weight bugs
     05-12 fix lora int8 多卡训练 , ppo training move to https://github.com/ssbuild/rlhf_llm
     05-02 增加p-tuning-v2
