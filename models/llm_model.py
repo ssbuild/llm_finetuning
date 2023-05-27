@@ -63,6 +63,9 @@ class MyTransformerLM(TransformerForCausalLM):
         # 如果显卡支持int8 可以开启 ， 需安装依赖 pip install bitsandbytes
         load_in_8bit = kwargs.get('load_in_8bit', False)
         load_in_4bit = kwargs.get('load_in_4bit', False)
+        if not load_in_4bit:
+            load_in_4bit = kwargs.get("quantization_config", {}).get('load_in_4bit', False)
+
         if not load_in_8bit and not load_in_4bit:
             kwargs.pop("device_map", None)
             kwargs.pop("quantization_config", None)

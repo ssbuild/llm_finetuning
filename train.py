@@ -155,7 +155,6 @@ if __name__ == '__main__':
 
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args, lora_args=lora_args, prompt_args=prompt_args,
                              quantization_config=global_args["quantization_config"],
-                             load_in_4bit=global_args["load_in_4bit"],
                              load_in_8bit=global_args["load_in_8bit"],
                              device_map={"": trainer.local_rank} if trainer.world_size > 1 else "auto",
                              torch_dtype=torch.float16,)
