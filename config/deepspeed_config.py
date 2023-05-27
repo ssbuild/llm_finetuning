@@ -5,6 +5,7 @@
 import json
 import os
 
+#lora 模式暂时不支持deepspeed
 enable_deepspeed = False
 
 def get_deepspeed_config():

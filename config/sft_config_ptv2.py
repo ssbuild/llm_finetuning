@@ -33,7 +33,7 @@ prompt_info_args = {
     "prompt_type": "prefix_tuning", # one of prompt_tuning,p_tuning,prefix_tuning,adaption_prompt
     "task_type": "causal_lm", #  one of seq_cls,seq_2_seq_lm,causal_lm,token_cls
     "prefix_projection": False, # Whether to project the prefix tokens"
-    "num_virtual_tokens": 16, # Number of virtual tokens
+    "num_virtual_tokens": 32, # Number of virtual tokens
     # "token_dim": 2048, # The hidden embedding dimension of the base transformer model.
     # "num_transformer_submodules": 1, # The number of transformer submodules in the base transformer model.
     # "num_attention_heads" : 24, # The number of attention heads in the base transformer model.

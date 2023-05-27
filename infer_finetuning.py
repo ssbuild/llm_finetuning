@@ -20,7 +20,7 @@ if __name__ == '__main__':
     tokenizer, _, _,_= dataHelper.load_tokenizer_and_config()
 
     config = AutoConfig.from_pretrained('./best_ckpt')
-    pl_model = MyTransformer(config=config, model_args=model_args, strict=False)
+    pl_model = MyTransformer(config=config, model_args=model_args)
 
     ###################### 注意 选最新权重
     # 选择最新的权重 ， 根据时间排序 选最新的
