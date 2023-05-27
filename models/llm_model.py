@@ -86,17 +86,9 @@ class MyTransformerLM(TransformerForCausalLM):
     def enable_input_require_grads(self):
         setattr(self.model, 'model_parallel', True)
         setattr(self.model, 'is_parallelizable', True)
+        # self.model.gradient_checkpointing_enable()
+        self.model.enable_input_require_grads()
 
-        self.model.gradient_checkpointing_enable()
-        #self.model.gradient_checkpointing_disable()
-        # self.model.enable_input_require_grads()
-        self.model.config.use_cache = False
-        self.config.use_cache = False
 
-        print('***********************************')
-        def make_inputs_require_grads(module, input, output):
-            output.requires_grad_(True)
-
-        self.model._require_grads_hook = self.model.get_input_embeddings().register_forward_hook(make_inputs_require_grads)
 
 

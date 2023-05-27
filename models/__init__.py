@@ -108,16 +108,15 @@ class MyTransformer(MyTransformerLM,SftWeightMinMax, with_pl=True):
             self.set_model(model, copy_attr=False)
 
     def get_model_lr(self, model=None, lr=None):
-        lr = lr if lr is not None else self.config.task_specific_params['learning_rate']
-        if self.prompt_args and self.prompt_args.with_prompt:
-            return [(self.backbone, lr)]
         # for n, p in self.named_parameters():
         #     print(n, p.requires_grad)
-        # return super(MyTransformer, self).get_model_lr(model, lr)
+        lr = lr if lr is not None else self.config.task_specific_params['learning_rate']
+        if self.lora_args is not None and self.lora_args.with_lora:
+            return [(self.backbone, lr)]
+        elif self.prompt_args and self.prompt_args.with_prompt:
+            return [(self.backbone, lr)]
+        return super(MyTransformer, self).get_model_lr(model, lr)
 
-        for n, p in self.backbone.model.model.named_parameters():
-            print(n, p.requires_grad)
-        return [(self.backbone.model.model, lr)]
 
     def get_llm_model(self) -> PreTrainedModel:
         if self.lora_args is not None and self.lora_args.with_lora:
@@ -126,17 +125,5 @@ class MyTransformer(MyTransformerLM,SftWeightMinMax, with_pl=True):
             #PromptModel 方法覆盖原来方法
             return self.backbone
         return self.backbone.model
-
-    def compute_loss(self, *args, **batch) -> tuple:
-        if len(args):
-            batch.update(dict(args))
-        o = self.model.compute_loss(**batch)
-
-        for _ in o:
-
-            if isinstance(_,torch.Tensor):
-                # _.requires_grad_(True)
-                print(_.requires_grad)
-        return o
 
 
