@@ -20,14 +20,7 @@ global_args = {
     "load_in_4bit": False,
 
     #load_in_4bit 量化配置
-    "quantization_config": BitsAndBytesConfig(
-        load_in_4bit = True,
-        llm_int8_threshold=6.0,
-        llm_int8_has_fp16_weight=False,
-        bnb_4bit_compute_dtype=torch.float16,
-        bnb_4bit_use_double_quant=True,
-        bnb_4bit_quant_type="nf4",
-    ),
+    "quantization_config": None,
     "config_merge": {
     }
 }
@@ -41,8 +34,8 @@ lora_info_args = {
     'with_lora': True,  # 是否启用lora模块
     'lora_type': 'lora',
     'r': 8,
-    # 'target_modules': ['query_key_value'],  # bloom,gpt_neox
-    'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
+    'target_modules': ['query_key_value'],  # bloom,gpt_neox
+    # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
     # 'target_modules': ['c_attn'], #gpt2
     'lora_alpha': 32,
     'lora_dropout': 0.1,
@@ -55,8 +48,8 @@ adalora_info_args = {
     'with_lora': False,  # 是否启用adalora模块
     'lora_type': 'adalora',
     'r': 8,
-    # 'target_modules': ['query_key_value'],  # bloom,gpt_neox
-    'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
+    'target_modules': ['query_key_value'],  # bloom,gpt_neox
+    # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
     # 'target_modules': ['c_attn'], #gpt2
     'lora_alpha': 32,
     'lora_dropout': 0.1,
@@ -77,35 +70,22 @@ adalora_info_args = {
 }
 
 
-prompt_info_args = {
-    "with_prompt": False,
-    "prompt_type": "prefix_tuning", # one of prompt_tuning,p_tuning,prefix_tuning,adaption_prompt
-    "task_type": "causal_lm", #  one of seq_cls,seq_2_seq_lm,causal_lm,token_cls
-    "prefix_projection": False, # Whether to project the prefix tokens"
-    "num_virtual_tokens": 16, # Number of virtual tokens
-    # "token_dim": 2048, # The hidden embedding dimension of the base transformer model.
-    # "num_transformer_submodules": 1, # The number of transformer submodules in the base transformer model.
-    # "num_attention_heads" : 24, # The number of attention heads in the base transformer model.
-    # "num_layers": 1, # The number of layers in the base transformer model.
-    # "encoder_hidden_size": 2048, # The hidden size of the encoder
-}
-
 train_info_args = {
     'devices': 1,
     'data_backend': 'record',  #one of record lmdb, 超大数据集可以使用 lmdb , 注 lmdb 存储空间比record大
-    'model_type': 'opt',
+    'model_type': 'bloom',
     # 预训练模型路径 , 从0训练，则置空
-    # 'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',
-    # 'config_name': '/data/nlp/pre_models/torch/bloom/bloom-560m/config.json',
-    # 'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-560m',
+    'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',
+    'config_name': '/data/nlp/pre_models/torch/bloom/bloom-560m/config.json',
+    'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-560m',
 
     # 'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-1b7',
     # 'config_name': '/data/nlp/pre_models/torch/bloom/bloom-1b7/config.json',
     # 'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-1b7',
 
-    'model_name_or_path': '/data/nlp/pre_models/torch/opt/opt-350m',
-    'config_name': '/data/nlp/pre_models/torch/opt/opt-350m/config.json',
-    'tokenizer_name': '/data/nlp/pre_models/torch/opt/opt-350m',
+    # 'model_name_or_path': '/data/nlp/pre_models/torch/opt/opt-350m',
+    # 'config_name': '/data/nlp/pre_models/torch/opt/opt-350m/config.json',
+    # 'tokenizer_name': '/data/nlp/pre_models/torch/opt/opt-350m',
 
     # 'model_name_or_path': '/data/nlp/pre_models/torch/llama/llama-7b-hf',
     # 'config_name': '/data/nlp/pre_models/torch/llama/llama-7b-hf/config.json',
@@ -165,7 +145,7 @@ train_info_args = {
     ##############  lora模块
     'lora': lora_info_args,
     'adalora': adalora_info_args,
-    'prompt': prompt_info_args,
+
 
 }
 
@@ -178,8 +158,4 @@ if global_args['load_in_8bit'] == global_args['load_in_4bit'] and global_args['l
 
 if lora_info_args['with_lora'] == adalora_info_args['with_lora'] and lora_info_args['with_lora'] == True:
     raise Exception('lora and adalora can set one at same time !')
-
-if lora_info_args['with_lora'] == prompt_info_args['with_prompt'] and lora_info_args['with_lora'] == True:
-    raise Exception('lora and prompt can set one at same time !')
-
 

@@ -20,61 +20,12 @@ global_args = {
     "load_in_4bit": False,
 
     #load_in_4bit 量化配置
-    "quantization_config": BitsAndBytesConfig(
-        load_in_4bit = True,
-        llm_int8_threshold=6.0,
-        llm_int8_has_fp16_weight=False,
-        bnb_4bit_compute_dtype=torch.float16,
-        bnb_4bit_use_double_quant=True,
-        bnb_4bit_quant_type="nf4",
-    ),
+    "quantization_config": None,
     "config_merge": {
     }
 }
 
-if global_args['load_in_4bit'] != True:
-    global_args['quantization_config'] = None
 
-
-# 默认禁用lora 相关模块 , lora 和 adalora 只能同时启用一个
-lora_info_args = {
-    'with_lora': False,  # 是否启用lora模块
-    'lora_type': 'lora',
-    'r': 8,
-    # 'target_modules': ['query_key_value'],  # bloom,gpt_neox
-    'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
-    # 'target_modules': ['c_attn'], #gpt2
-    'lora_alpha': 32,
-    'lora_dropout': 0.1,
-    'fan_in_fan_out': False,
-    'bias': 'none',  # Bias type for Lora. Can be 'none', 'all' or 'lora_only'"
-    'modules_to_save' : None, # "help": "List of modules apart from LoRA layers to be set as trainable and saved in the final checkpoint. "
-}
-
-adalora_info_args = {
-    'with_lora': False,  # 是否启用adalora模块
-    'lora_type': 'adalora',
-    'r': 8,
-    # 'target_modules': ['query_key_value'],  # bloom,gpt_neox
-    'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
-    # 'target_modules': ['c_attn'], #gpt2
-    'lora_alpha': 32,
-    'lora_dropout': 0.1,
-    'fan_in_fan_out': False,
-    'bias': 'none',  # Bias type for Lora. Can be 'none', 'all' or 'lora_only'"
-    'modules_to_save' : None, # "help": "List of modules apart from LoRA layers to be set as trainable and saved in the final checkpoint. "
-
-    'target_r':8, # Target Lora matrix dimension.
-    'init_r': 12, #Intial Lora matrix dimension.
-    'tinit': 0, #The steps of initial warmup.
-    'tfinal': 0, #The steps of final warmup.
-    'deltaT': 1, #Step interval of rank allocation.
-    'beta1': 0.85, #Hyperparameter of EMA.
-    'beta2': 0.85, #Hyperparameter of EMA.
-    'orth_reg_weight': 0.5, #The orthogonal regularization coefficient.
-    'total_step': None, #The total training steps.
-    'rank_pattern': None, #The saved rank pattern.
-}
 
 
 prompt_info_args = {
@@ -93,19 +44,19 @@ prompt_info_args = {
 train_info_args = {
     'devices': 1,
     'data_backend': 'record',  #one of record lmdb, 超大数据集可以使用 lmdb , 注 lmdb 存储空间比record大
-    'model_type': 'opt',
+    'model_type': 'bloom',
     # 预训练模型路径 , 从0训练，则置空
-    # 'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',
-    # 'config_name': '/data/nlp/pre_models/torch/bloom/bloom-560m/config.json',
-    # 'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-560m',
+    'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',
+    'config_name': '/data/nlp/pre_models/torch/bloom/bloom-560m/config.json',
+    'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-560m',
 
     # 'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-1b7',
     # 'config_name': '/data/nlp/pre_models/torch/bloom/bloom-1b7/config.json',
     # 'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-1b7',
 
-    'model_name_or_path': '/data/nlp/pre_models/torch/opt/opt-350m',
-    'config_name': '/data/nlp/pre_models/torch/opt/opt-350m/config.json',
-    'tokenizer_name': '/data/nlp/pre_models/torch/opt/opt-350m',
+    # 'model_name_or_path': '/data/nlp/pre_models/torch/opt/opt-350m',
+    # 'config_name': '/data/nlp/pre_models/torch/opt/opt-350m/config.json',
+    # 'tokenizer_name': '/data/nlp/pre_models/torch/opt/opt-350m',
 
     # 'model_name_or_path': '/data/nlp/pre_models/torch/llama/llama-7b-hf',
     # 'config_name': '/data/nlp/pre_models/torch/llama/llama-7b-hf/config.json',
@@ -163,8 +114,6 @@ train_info_args = {
     'do_lower_case': False,
 
     ##############  lora模块
-    'lora': lora_info_args,
-    'adalora': adalora_info_args,
     'prompt': prompt_info_args,
 
 }
@@ -175,11 +124,5 @@ train_info_args = {
 
 if global_args['load_in_8bit'] == global_args['load_in_4bit'] and global_args['load_in_8bit'] == True:
     raise Exception('load_in_8bit and load_in_4bit only set one at same time!')
-
-if lora_info_args['with_lora'] == adalora_info_args['with_lora'] and lora_info_args['with_lora'] == True:
-    raise Exception('lora and adalora can set one at same time !')
-
-if lora_info_args['with_lora'] == prompt_info_args['with_prompt'] and lora_info_args['with_lora'] == True:
-    raise Exception('lora and prompt can set one at same time !')
 
 

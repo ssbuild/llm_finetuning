@@ -5,7 +5,8 @@ import json
 import os
 import torch
 from transformers import BitsAndBytesConfig
-# **************切换 配置文件 修改 config.__init__.py 
+
+# **************切换 配置文件 修改 config.__init__.py
 
 # Quantization parameters are controlled from the BitsandbytesConfig (see HF documenation) as follows:
 #
@@ -17,7 +18,7 @@ from transformers import BitsAndBytesConfig
 #如果显卡支持int8 可以开启
 global_args = {
     "load_in_8bit": False, # lora 如果显卡支持int8 可以开启
-    "load_in_4bit": True,
+    "load_in_4bit": False,
 
     #load_in_4bit 量化配置
     "quantization_config": BitsAndBytesConfig(
@@ -38,7 +39,7 @@ if global_args['load_in_4bit'] != True:
 
 # 默认禁用lora 相关模块 , lora 和 adalora 只能同时启用一个
 lora_info_args = {
-    'with_lora': True,  # 是否启用lora模块
+    'with_lora': False,  # 是否启用lora模块
     'lora_type': 'lora',
     'r': 8,
     'target_modules': ['query_key_value'],  # bloom,gpt_neox
@@ -77,7 +78,18 @@ adalora_info_args = {
 }
 
 
-
+prompt_info_args = {
+    "with_prompt": False,
+    "prompt_type": "prefix_tuning", # one of prompt_tuning,p_tuning,prefix_tuning,adaption_prompt
+    "task_type": "causal_lm", #  one of seq_cls,seq_2_seq_lm,causal_lm,token_cls
+    "prefix_projection": False, # Whether to project the prefix tokens"
+    "num_virtual_tokens": 16, # Number of virtual tokens
+    # "token_dim": 2048, # The hidden embedding dimension of the base transformer model.
+    # "num_transformer_submodules": 1, # The number of transformer submodules in the base transformer model.
+    # "num_attention_heads" : 24, # The number of attention heads in the base transformer model.
+    # "num_layers": 1, # The number of layers in the base transformer model.
+    # "encoder_hidden_size": 2048, # The hidden size of the encoder
+}
 
 train_info_args = {
     'devices': 1,
@@ -154,6 +166,7 @@ train_info_args = {
     ##############  lora模块
     'lora': lora_info_args,
     'adalora': adalora_info_args,
+    'prompt': prompt_info_args,
 
 }
 
@@ -166,4 +179,9 @@ if global_args['load_in_8bit'] == global_args['load_in_4bit'] and global_args['l
 
 if lora_info_args['with_lora'] == adalora_info_args['with_lora'] and lora_info_args['with_lora'] == True:
     raise Exception('lora and adalora can set one at same time !')
+
+if lora_info_args['with_lora'] == prompt_info_args['with_prompt'] and lora_info_args['with_lora'] == True:
+    raise Exception('lora and prompt can set one at same time !')
+
+
 
