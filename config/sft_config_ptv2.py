@@ -5,8 +5,7 @@ import json
 import os
 import torch
 from transformers import BitsAndBytesConfig
-
-# **************切换 配置文件 修改 config.__init__.py
+# **************切换 配置文件 修改 config.__init__.py 
 
 # Quantization parameters are controlled from the BitsandbytesConfig (see HF documenation) as follows:
 #
@@ -79,7 +78,7 @@ adalora_info_args = {
 
 
 prompt_info_args = {
-    "with_prompt": False,
+    "with_prompt": True,
     "prompt_type": "prefix_tuning", # one of prompt_tuning,p_tuning,prefix_tuning,adaption_prompt
     "task_type": "causal_lm", #  one of seq_cls,seq_2_seq_lm,causal_lm,token_cls
     "prefix_projection": False, # Whether to project the prefix tokens"
@@ -182,6 +181,5 @@ if lora_info_args['with_lora'] == adalora_info_args['with_lora'] and lora_info_a
 
 if lora_info_args['with_lora'] == prompt_info_args['with_prompt'] and lora_info_args['with_lora'] == True:
     raise Exception('lora and prompt can set one at same time !')
-
 
 

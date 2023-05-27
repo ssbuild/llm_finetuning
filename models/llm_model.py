@@ -60,7 +60,7 @@ class Generate:
 
 class MyTransformerLM(TransformerForCausalLM):
     def __init__(self, *args, **kwargs):
-        # 如果显卡支持int8 可以开启 ， 需安装依赖 pip install bitsandbytes
+        # 如果显卡支持int8 可以开启
         load_in_8bit = kwargs.get('load_in_8bit', False)
         load_in_4bit = kwargs.get('load_in_4bit', False)
         if not load_in_4bit:

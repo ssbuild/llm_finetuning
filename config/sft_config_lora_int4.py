@@ -5,8 +5,7 @@ import json
 import os
 import torch
 from transformers import BitsAndBytesConfig
-
-# **************切换 配置文件 修改 config.__init__.py
+# **************切换 配置文件 修改 config.__init__.py 
 
 # Quantization parameters are controlled from the BitsandbytesConfig (see HF documenation) as follows:
 #
@@ -18,7 +17,7 @@ from transformers import BitsAndBytesConfig
 #如果显卡支持int8 可以开启
 global_args = {
     "load_in_8bit": False, # lora 如果显卡支持int8 可以开启
-    "load_in_4bit": False,
+    "load_in_4bit": True,
 
     #load_in_4bit 量化配置
     "quantization_config": BitsAndBytesConfig(
@@ -39,7 +38,7 @@ if global_args['load_in_4bit'] != True:
 
 # 默认禁用lora 相关模块 , lora 和 adalora 只能同时启用一个
 lora_info_args = {
-    'with_lora': False,  # 是否启用lora模块
+    'with_lora': True,  # 是否启用lora模块
     'lora_type': 'lora',
     'r': 8,
     # 'target_modules': ['query_key_value'],  # bloom,gpt_neox
@@ -182,6 +181,4 @@ if lora_info_args['with_lora'] == adalora_info_args['with_lora'] and lora_info_a
 
 if lora_info_args['with_lora'] == prompt_info_args['with_prompt'] and lora_info_args['with_lora'] == True:
     raise Exception('lora and prompt can set one at same time !')
-
-
 
