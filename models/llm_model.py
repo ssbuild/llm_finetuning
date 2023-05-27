@@ -64,7 +64,7 @@ class MyTransformerLM(TransformerForCausalLM):
         load_in_8bit = kwargs.get('load_in_8bit', False)
         load_in_4bit = kwargs.get('load_in_4bit', False)
         if not load_in_4bit:
-            load_in_4bit = kwargs.get("quantization_config", {}).get('load_in_4bit', False)
+            load_in_4bit = (kwargs.get("quantization_config", {}) or {}).get('load_in_4bit', False)
 
         if not load_in_8bit and not load_in_4bit:
             kwargs.pop("device_map", None)
