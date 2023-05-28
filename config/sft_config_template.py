@@ -45,6 +45,7 @@ lora_info_args = {
     'target_modules': ['query_key_value'],  # bloom,gpt_neox
     # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
     # 'target_modules': ['c_attn'], #gpt2
+    # 'target_modules': ['project_q','project_v'] # cpmant
     'lora_alpha': 32,
     'lora_dropout': 0.1,
     'fan_in_fan_out': False,
@@ -59,6 +60,7 @@ adalora_info_args = {
     'target_modules': ['query_key_value'],  # bloom,gpt_neox
     # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
     # 'target_modules': ['c_attn'], #gpt2
+    # 'target_modules': ['project_q','project_v'] # cpmant
     'lora_alpha': 32,
     'lora_dropout': 0.1,
     'fan_in_fan_out': False,
