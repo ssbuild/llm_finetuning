@@ -4,7 +4,7 @@
 # @FileName: llm_model
 from deep_training.nlp.models.prompt import get_prompt_model, PromptArguments
 from deep_training.nlp.models.transformer import TransformerForCausalLM
-from model_weight import *
+from models.model_weight import *
 
 class TransformerForLM(TransformerForCausalLM):
     def __init__(self, *args, **kwargs):

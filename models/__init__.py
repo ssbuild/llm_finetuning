@@ -6,7 +6,7 @@ from typing import List, Tuple
 
 import torch
 from models.llm_model import *
-from models.model_weight import *
+
 
 
 class Generate:
