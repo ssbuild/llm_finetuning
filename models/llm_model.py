@@ -2,63 +2,11 @@
 # @Time    : 2023/5/12 20:41
 # @Author  : tk
 # @FileName: llm_model
-
-import os
-from typing import List, Tuple
-
-import torch
-from deep_training.nlp.models.lora.v2 import LoraModel, LoraArguments,LoraConfig
-from deep_training.nlp.models.prompt import PromptModel,PromptArguments,get_prompt_model,PromptLearningConfig
+from deep_training.nlp.models.prompt import get_prompt_model, PromptArguments
 from deep_training.nlp.models.transformer import TransformerForCausalLM
-from torch import nn
-from transformers import PreTrainedModel
+from model_weight import *
 
-
-
-class Generate:
-    @classmethod
-    @torch.no_grad()
-    def generate(cls,model, tokenizer, query: str, max_length: int = 2048, num_beams=1,
-             do_sample=True, top_p=0.7, temperature=0.95, logits_processor=None, **kwargs):
-        gen_kwargs = {"max_length": max_length, "num_beams": num_beams, "do_sample": do_sample, "top_p": top_p,
-                      "temperature": temperature, "logits_processor": logits_processor, **kwargs}
-
-        # prompt = "Human：" + query + "\nAssistant："
-        #自行加模板
-        prompt = query
-        inputs = tokenizer([prompt], return_tensors="pt")
-        inputs = inputs.to(model.device)
-        outputs = model.generate(**inputs, **gen_kwargs)
-        outputs = outputs.tolist()[0][len(inputs["input_ids"][0]):]
-        response = tokenizer.decode(outputs)
-        return response
-
-    @classmethod
-    @torch.no_grad()
-    def chat(cls,model, tokenizer, query: str, history: List[Tuple[str, str]] = None, max_length: int = 2048, num_beams=1,
-             do_sample=True, top_p=0.7, temperature=0.95, logits_processor=None, **kwargs):
-        if history is None:
-            history = []
-
-        gen_kwargs = {"max_length": max_length, "num_beams": num_beams, "do_sample": do_sample, "top_p": top_p,
-                      "temperature": temperature, "logits_processor": logits_processor, **kwargs}
-        if not history:
-            prompt = query
-        else:
-            prompt = ""
-            for i, (old_query, response) in enumerate(history):
-                prompt += "[Round {}]\n问：{}\n答：{}\n".format(i, old_query, response)
-            prompt += "[Round {}]\n问：{}\n答：".format(len(history), query)
-        inputs = tokenizer([prompt], return_tensors="pt")
-        inputs = inputs.to(model.device)
-        outputs = model.generate(**inputs, **gen_kwargs)
-        outputs = outputs.tolist()[0][len(inputs["input_ids"][0]):]
-        response = tokenizer.decode(outputs)
-        history = history + [(query, response)]
-        return response, history
-
-
-class MyTransformerLM(TransformerForCausalLM):
+class TransformerForLM(TransformerForCausalLM):
     def __init__(self, *args, **kwargs):
         # 如果显卡支持int8 可以开启
         load_in_8bit = kwargs.get('load_in_8bit', False)
@@ -72,7 +20,7 @@ class MyTransformerLM(TransformerForCausalLM):
             kwargs.pop("device_map", None)
             kwargs.pop("quantization_config", None)
 
-        super(MyTransformerLM, self).__init__(*args, **kwargs)
+        super(TransformerForLM, self).__init__(*args, **kwargs)
 
         # for param in self.model.parameters():
         #     param.requires_grad = False  # freeze the model - train adapters later
@@ -93,6 +41,58 @@ class MyTransformerLM(TransformerForCausalLM):
         setattr(self.model, 'is_parallelizable', True)
         # self.model.gradient_checkpointing_enable()
         self.model.enable_input_require_grads()
+
+
+
+class MyTransformer(TransformerForLM, ModelWeightMinMax, with_pl=True):
+    def __init__(self, *args, **kwargs):
+        lora_args: LoraConfig = kwargs.pop('lora_args', None)
+        prompt_args: PromptLearningConfig = kwargs.pop('prompt_args', None)
+        super(MyTransformer, self).__init__(*args, **kwargs)
+        self.lora_args = lora_args
+        self.prompt_args = prompt_args
+        if lora_args is not None and lora_args.with_lora:
+            self.backbone.enable_input_require_grads()
+            model: LoraModel = LoraModel(self.backbone, lora_args,auto_prepare_kbit_training=False)
+            print('==' * 30, 'lora info')
+            model.print_trainable_parameters()
+            self.set_model(model, copy_attr=False)
+            # for name, module in model.named_modules():
+            #     if isinstance(module, LoraLayer):
+            #         module = module.to(torch.bfloat16)
+            #     if 'norm' in name:
+            #         module = module.to(torch.float32)
+            #     if 'lm_head' in name or 'embed_tokens' in name:
+            #         if hasattr(module, 'weight'):
+            #             if module.weight.dtype == torch.float32:
+            #                 module = module.to(torch.bfloat16)
+
+        elif prompt_args is not None and prompt_args.with_prompt:
+            self.backbone.enable_input_require_grads()
+            model: PromptModel = get_prompt_model(self.backbone, prompt_args)
+            print('==' * 30, 'prompt info')
+            model.print_trainable_parameters()
+            self.set_model(model, copy_attr=False)
+
+    def get_model_lr(self, model=None, lr=None):
+        # for n, p in self.named_parameters():
+        #     print(n, p.requires_grad)
+        lr = lr if lr is not None else self.config.task_specific_params['learning_rate']
+        if self.lora_args is not None and self.lora_args.with_lora:
+            return [(self.backbone, lr)]
+        elif self.prompt_args and self.prompt_args.with_prompt:
+            return [(self.backbone, lr)]
+        return super(MyTransformer, self).get_model_lr(model, lr)
+
+
+    def get_llm_model(self) -> PreTrainedModel:
+        if self.lora_args is not None and self.lora_args.with_lora:
+            return self.backbone.model.model
+        elif self.prompt_args is not None and self.prompt_args.with_prompt:
+            #PromptModel 方法覆盖原来方法
+            return self.backbone
+        return self.backbone.model
+
 
 
 

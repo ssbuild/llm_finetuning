@@ -35,7 +35,7 @@ if __name__ == '__main__':
         # python zero_to_fp32.py . best.pt
         train_weight = './best_ckpt/last.ckpt/best.pt'
 
-    pl_model.load_sft_weight(train_weight)
+    pl_model.load_sft_weight(train_weight,strict=True)
 
     # 保存hf权重
     # config.save_pretrained('convert/')
