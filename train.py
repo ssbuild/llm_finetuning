@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
 import os.path
-
 import torch
 from deep_training.data_helper import ModelArguments, DataArguments, TrainingArguments
-from deep_training.trainer.pl.modelcheckpoint import ModelCheckpointEx,convert2lora_or_prompt_weight
+from deep_training.trainer.pl.modelcheckpoint import ModelCheckpointEx,convert_weight_deepspeed_to_lora_or_prompt,\
+    convert_weight_deepspeed_to_ft
 from lightning import Trainer
 from lightning.pytorch.callbacks import LearningRateMonitor
 from lightning.pytorch.strategies import DeepSpeedStrategy
@@ -49,17 +49,18 @@ if __name__ == '__main__':
 
 
     deepspeed_config = get_deepspeed_config()
-    # 保存最小loss模型
+
 
     output_weight_dir = './best_ckpt'
 
+    #deepspeed 权重 通过convert_weight_deepspeed.py 转换
     checkpoint_callback = ModelCheckpointEx(
         # monitor='loss',
         dirpath=output_weight_dir,
         save_weights_only=True,
         save_last=True,
         save_top_k=1,
-        # every_n_train_steps=1000 // training_args.gradient_accumulation_steps,
+        #every_n_train_steps=2000 // training_args.gradient_accumulation_steps,
         every_n_epochs=1,
         lora_args=lora_args,
         prompt_args=prompt_args,
@@ -125,13 +126,4 @@ if __name__ == '__main__':
         trainer.fit(pl_model, train_dataloaders=train_datasets)
 
 
-    
-    if not deepspeed_config:
-        # 权重转换lora prompt权重
-        if lora_args or prompt_args:
-            src = checkpoint_callback.last_model_path
-            if not src:
-                src = checkpoint_callback.best_model_path
-            assert len(src)
-            dst = os.path.join(checkpoint_callback.dirpath,'adapter_model.bin')
-            convert2lora_or_prompt_weight(src,dst)
+
