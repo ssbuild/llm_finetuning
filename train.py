@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
+import os.path
 
 import torch
 from deep_training.data_helper import ModelArguments, DataArguments, TrainingArguments
-from deep_training.utils.trainer import ModelCheckpoint, SimpleModelCheckpoint
+from deep_training.trainer.pl.modelcheckpoint import ModelCheckpointEx,convert2lora_or_prompt_weight
 from lightning import Trainer
 from lightning.pytorch.callbacks import LearningRateMonitor
 from lightning.pytorch.strategies import DeepSpeedStrategy
@@ -12,57 +13,6 @@ from transformers import HfArgumentParser
 from data_processer import DEFAULT_EOS_TOKEN, DEFAULT_UNK_TOKEN, DEFAULT_BOS_TOKEN
 from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config,global_args
 from models import MyTransformer, LoraArguments, LoraConfig, PromptArguments
-
-
-class MySimpleModelCheckpoint(SimpleModelCheckpoint):
-    def __init__(self, *args, **kwargs):
-        super(MySimpleModelCheckpoint, self).__init__(*args, **kwargs)
-        lora_args:LoraConfig= self.external_kwargs['lora_args']
-        prompt_args = self.external_kwargs['prompt_args']
-        if lora_args or prompt_args:
-            self.weight_file = './best_ckpt'
-            self.last_weight_file = './last_ckpt'
-
-    def load_model_from_ckpt(self):
-        model_args = self.external_kwargs['model_args']
-        training_args = self.external_kwargs['training_args']
-        lora_args = LoraArguments.from_pretrained(self.last_weight_file)
-        pl_module = MyTransformer(lora_args=lora_args,
-                              config=config,
-                              model_args=model_args,
-                              training_args=training_args)
-
-
-        pl_module.load_sft_weight(self.last_weight_file)
-        return pl_module
-
-
-    def on_save_model(
-            self, trainer: "pl.Trainer", pl_module: "pl.LightningModule"
-    ) -> None:
-
-        lora_args : LoraArguments =  self.external_kwargs['lora_args']
-        prompt_args = self.external_kwargs['prompt_args']
-        # 保存权重
-        if lora_args is None and prompt_args is None:
-            super(MySimpleModelCheckpoint, self).on_save_model(trainer, pl_module)
-        else:
-            # 保存最新权重
-            logging.info('step {} saving model'.format(trainer.global_step))
-            pl_module.backbone.save_pretrained(self.weight_file)
-            # monitor_candidates = self._monitor_candidates(trainer)
-            # monitor_candidates.update(self.on_get_metric(trainer, pl_module))
-            # val = monitor_candidates.get(self.monitor, None)
-            #
-            # #保存loss最小权重
-            # if self.update_best(val):
-            #     logging.info('epoch {} ,step {} , save best {}, {}\n'.format(monitor_candidates['epoch'],
-            #                                                                  monitor_candidates['step'],
-            #                                                                  self.best[self.monitor],
-            #                                                                  self.weight_file))
-            #     pl_module.backbone.save_pretrained(self.weight_file)
-            # #保存最新权重
-            # pl_module.backbone.save_pretrained(self.last_weight_file)
 
 
 
@@ -100,28 +50,20 @@ if __name__ == '__main__':
 
     deepspeed_config = get_deepspeed_config()
     # 保存最小loss模型
-    if lora_args or prompt_args:
-        assert deepspeed_config is None, ValueError('lora mode does not support deepspeed')
-        checkpoint_callback = MySimpleModelCheckpoint(
-            # monitor="loss",
-            save_weights_only=True,
-            every_n_epochs=1,
-            every_n_train_steps=2000 // training_args.gradient_accumulation_steps,
-            # 模型参数
-            model_args=model_args,
-            training_args=training_args,
-            lora_args=lora_args,
-            prompt_args=prompt_args,
-        )
-    else:
-        checkpoint_callback = ModelCheckpoint(
-            # monitor='loss',
-            './best_ckpt',
-            save_weights_only=True,
-            save_last=True,
-            save_top_k=1,
-            # every_n_train_steps=1000,
-            every_n_epochs=1)
+
+    output_weight_dir = './best_ckpt'
+
+    checkpoint_callback = ModelCheckpointEx(
+        # monitor='loss',
+        dirpath=output_weight_dir,
+        save_weights_only=True,
+        save_last=True,
+        save_top_k=1,
+        # every_n_train_steps=1000 // training_args.gradient_accumulation_steps,
+        every_n_epochs=1,
+        lora_args=lora_args,
+        prompt_args=prompt_args,
+    )
 
     strategy = 'ddp' if torch.cuda.device_count() > 1 else 'auto'
     if deepspeed_config is not None and len(deepspeed_config):
@@ -141,7 +83,7 @@ if __name__ == '__main__':
         num_sanity_val_steps=0,
         strategy=strategy,
         # lora int8 precision='32'
-        precision='32',# 可以自行尝试  "32": "32-true", "16": "16-mixed", "bf16": "bf16-mixed"
+        precision='16',# 可以自行尝试  "32": "32-true", "16": "16-mixed", "bf16": "bf16-mixed"
     )
 
 
@@ -149,8 +91,7 @@ if __name__ == '__main__':
     checkpoint_callback.tokenizer = tokenizer
     checkpoint_callback.data_args = data_args
 
-    config.save_pretrained('best_ckpt')
-
+    config.save_pretrained(output_weight_dir)
 
 
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args, lora_args=lora_args, prompt_args=prompt_args,
@@ -163,7 +104,6 @@ if __name__ == '__main__':
     # pl_model.load_sft_weight('./best_ckpt/best.pt',is_trainable=True)
 
     pl_model.float()
-
 
     def dataset_loader_filter_fn(dataset):
         print('*' * 30, 'total', len(dataset))
@@ -184,3 +124,14 @@ if __name__ == '__main__':
     if train_datasets is not None:
         trainer.fit(pl_model, train_dataloaders=train_datasets)
 
+
+    
+    if not deepspeed_config:
+        # 权重转换lora prompt权重
+        if lora_args or prompt_args:
+            src = checkpoint_callback.last_model_path
+            if not src:
+                src = checkpoint_callback.best_model_path
+            assert len(src)
+            dst = os.path.join(checkpoint_callback.dirpath,'adapter_model.bin')
+            convert2lora_or_prompt_weight(src,dst)

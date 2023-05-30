@@ -15,6 +15,12 @@
 ## install
   - pip install -i https://pypi.org/simple -U -r requirements.txt
 
+```text
+dev 
+pip install -U -i https://pypi.org/simple --pre  deep_training==0.1.10
+```
+    
+
 
 
 
