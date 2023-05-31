@@ -5,14 +5,8 @@ import json
 import os
 import torch
 from transformers import BitsAndBytesConfig
-# **************切换 配置文件 修改 config.__init__.py 
-
-# Quantization parameters are controlled from the BitsandbytesConfig (see HF documenation) as follows:
-#
-# Loading in 4 bits is activated through load_in_4bit
-# The datatype used for the linear layer computations with bnb_4bit_compute_dtype
-# Nested quantization is activated through bnb_4bit_use_double_quant
-# The datatype used for qunatization is specified with bnb_4bit_quant_type. Note that there are two supported quantization datatypes fp4 (four bit float) and nf4 (normal four bit float). The latter is theoretically optimal for normally distributed weights and we recommend using nf4.
+from config.constant_map import train_info_models,train_target_modules_maps
+train_model_config = train_info_models['bloom-560m']
 
 #如果显卡支持int8 可以开启
 global_args = {
@@ -34,11 +28,7 @@ lora_info_args = {
     'with_lora': True,  # 是否启用lora模块
     'lora_type': 'lora',
     'r': 8,
-     # 'target_modules': ['query_key_value'],  # bloom,gpt_neox
-    # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
-    # 'target_modules': ['c_attn'], #gpt2
-    # 'target_modules': ['project_q','project_v'] # cpmant
-    'target_modules': ['key','value','receptance'], # rwkv
+    'target_modules': train_target_modules_maps[train_model_config['model_type']],
     'lora_alpha': 32,
     'lora_dropout': 0.1,
     'fan_in_fan_out': False,
@@ -50,11 +40,7 @@ adalora_info_args = {
     'with_lora': False,  # 是否启用adalora模块
     'lora_type': 'adalora',
     'r': 8,
-    #  # 'target_modules': ['query_key_value'],  # bloom,gpt_neox
-    # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
-    # 'target_modules': ['c_attn'], #gpt2
-    # 'target_modules': ['project_q','project_v'] # cpmant
-    'target_modules': ['key','value','receptance'], # rwkv
+    'target_modules': train_target_modules_maps[train_model_config['model_type']],
     'lora_alpha': 32,
     'lora_dropout': 0.1,
     'fan_in_fan_out': False,
@@ -77,33 +63,8 @@ adalora_info_args = {
 train_info_args = {
     'devices': 1,
     'data_backend': 'record',  #one of record lmdb, 超大数据集可以使用 lmdb , 注 lmdb 存储空间比record大
-    'model_type': 'rwkv',
-    # 预训练模型路径 , 从0训练，则置空
-    'model_name_or_path': '/data/nlp/pre_models/torch/rwkv/rwkv-4-169m-pile',
-    'config_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-169m-pile/config.json',
-    'tokenizer_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-169m-pile',
-
-
-    # 'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',
-    # 'config_name': '/data/nlp/pre_models/torch/bloom/bloom-560m/config.json',
-    # 'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-560m',
-
-    # 'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-1b7',
-    # 'config_name': '/data/nlp/pre_models/torch/bloom/bloom-1b7/config.json',
-    # 'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-1b7',
-
-    # 'model_name_or_path': '/data/nlp/pre_models/torch/opt/opt-350m',
-    # 'config_name': '/data/nlp/pre_models/torch/opt/opt-350m/config.json',
-    # 'tokenizer_name': '/data/nlp/pre_models/torch/opt/opt-350m',
-
-    # 'model_name_or_path': '/data/nlp/pre_models/torch/llama/llama-7b-hf',
-    # 'config_name': '/data/nlp/pre_models/torch/llama/llama-7b-hf/config.json',
-    # 'tokenizer_name': '/data/nlp/pre_models/torch/llama/llama-7b-hf',
-
-
-
-
-
+     # 预训练模型配置
+     **train_info_models['bloom-560m'],
     'convert_onnx': False, # 转换onnx模型
     'do_train': True,
     'train_file':  [ './data/finetune_train_examples.json'],

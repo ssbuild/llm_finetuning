@@ -13,7 +13,7 @@ from config.sft_config_lora import *
 # from config.sft_config_lora_int8 import *
 # from config.sft_config_ptv2 import *
 
-
+#预处理
 if 'rwkv' in train_info_args['tokenizer_name'].lower():
     train_info_args['use_fast_tokenizer'] = True
 
