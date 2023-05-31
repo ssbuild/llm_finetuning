@@ -34,10 +34,11 @@ lora_info_args = {
     'with_lora': True,  # 是否启用lora模块
     'lora_type': 'lora',
     'r': 8,
-    'target_modules': ['query_key_value'],  # bloom,gpt_neox
+     # 'target_modules': ['query_key_value'],  # bloom,gpt_neox
     # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
     # 'target_modules': ['c_attn'], #gpt2
     # 'target_modules': ['project_q','project_v'] # cpmant
+    'target_modules': ['key','value','receptance'], # rwkv
     'lora_alpha': 32,
     'lora_dropout': 0.1,
     'fan_in_fan_out': False,
@@ -49,10 +50,11 @@ adalora_info_args = {
     'with_lora': False,  # 是否启用adalora模块
     'lora_type': 'adalora',
     'r': 8,
-    'target_modules': ['query_key_value'],  # bloom,gpt_neox
+    #  # 'target_modules': ['query_key_value'],  # bloom,gpt_neox
     # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
     # 'target_modules': ['c_attn'], #gpt2
     # 'target_modules': ['project_q','project_v'] # cpmant
+    'target_modules': ['key','value','receptance'], # rwkv
     'lora_alpha': 32,
     'lora_dropout': 0.1,
     'fan_in_fan_out': False,
@@ -158,7 +160,7 @@ train_info_args = {
     'max_seq_length':  512, #
     'max_target_length': 100,  # 预测最大长度, 保留字段
     'use_fast_tokenizer': False,
-    'do_lower_case': False,
+    #'do_lower_case': False,
 
     ##############  lora模块
     'lora': lora_info_args,

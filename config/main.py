@@ -14,6 +14,9 @@ from config.sft_config_lora import *
 # from config.sft_config_ptv2 import *
 
 
+if 'rwkv' in train_info_args['tokenizer_name'].lower():
+    train_info_args['use_fast_tokenizer'] = True
+
 #lora adalora prompt 使用 deepspeed_offload.json 配置文件
 enable_deepspeed = False
 

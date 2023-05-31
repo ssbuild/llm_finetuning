@@ -12,7 +12,7 @@ import torch
 from deep_training.data_helper import DataHelper, ModelArguments, TrainingArguments, DataArguments
 from models import LoraArguments,LoraConfig,PromptArguments
 from fastdatasets.record import load_dataset as Loader, RECORD, WriterObject, gfile
-from transformers import PreTrainedTokenizer, HfArgumentParser
+from transformers import PreTrainedTokenizer, HfArgumentParser, PretrainedConfig
 from data_processer import DataStrategy, TokenSupervision, TokenUnSupervision,TokenSupervisionRounds,\
     DEFAULT_EOS_TOKEN, DEFAULT_BOS_TOKEN, DEFAULT_UNK_TOKEN
 
@@ -144,7 +144,25 @@ class NN_DataHelper(DataHelper):
 
 
 
+def preprocess_tokenizer(tokenizer: PreTrainedTokenizer,model_args):
+    if "llama" in model_args.model_name_or_path.lower() and tokenizer.bos_token_id != DEFAULT_BOS_TOKEN:
+        tokenizer.add_special_tokens({
+            "eos_token": DEFAULT_EOS_TOKEN,
+            "bos_token": DEFAULT_BOS_TOKEN,
+            "unk_token": DEFAULT_UNK_TOKEN,
+        })
+        if tokenizer.pad_token_id is None or tokenizer.pad_token_id == -1:
+            tokenizer.pad_token_id = tokenizer.eos_token_id
 
+    if tokenizer.pad_token is None:
+        tokenizer.add_special_tokens({
+            "pad_token": tokenizer.eos_token,
+        })
+
+def preprocess_config(config: PretrainedConfig):
+    if config.decoder_start_token_id is None:
+        config.decoder_start_token_id = config.bos_token_id
+    assert config.decoder_start_token_id == config.bos_token_id
 
 
 if __name__ == '__main__':
@@ -154,18 +172,9 @@ if __name__ == '__main__':
 
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
     tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})
-    config.torch_dtype = "float16"
-    config.decoder_start_token_id = config.bos_token_id
+    preprocess_tokenizer(tokenizer, model_args)
+    preprocess_config(config)
 
-
-    if "llama" in model_args.model_name_or_path.lower() and tokenizer.bos_token_id != DEFAULT_BOS_TOKEN:
-        tokenizer.add_special_tokens({
-            "eos_token": DEFAULT_EOS_TOKEN,
-            "bos_token": DEFAULT_BOS_TOKEN,
-            "unk_token": DEFAULT_UNK_TOKEN,
-        })
-        if tokenizer.pad_token_id is None or tokenizer.pad_token_id == -1:
-            tokenizer.pad_token_id = tokenizer.eos_token_id
 
 
     # 缓存数据集
