@@ -25,7 +25,9 @@ if __name__ == '__main__':
     model.eval().half().cuda()
 
     text_list = ["写一个诗歌，关于冬天",
-                 "晚上睡不着应该怎么办"]
+                 "晚上睡不着应该怎么办",
+                 "从南京到上海的路线",
+                 ]
     for input in text_list:
         response, history = Generate.chat(model, query=input, tokenizer=tokenizer, max_length=512,
                                           eos_token_id=config.eos_token_id,

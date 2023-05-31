@@ -10,6 +10,11 @@ from transformers import HfArgumentParser,AutoConfig,PreTrainedTokenizer
 from data_utils import train_info_args, NN_DataHelper,global_args
 from models import MyTransformer, Generate,LoraArguments,PromptArguments
 
+
+
+
+
+
 if __name__ == '__main__':
     train_info_args['seed'] = None
     parser = HfArgumentParser((ModelArguments, DataArguments))
@@ -30,6 +35,13 @@ if __name__ == '__main__':
                              # # device_map="auto",
                              # device_map = {"":0} # 第一块卡
                              )
+
+    # 确保路径下面有 adapter_config.json  adapter_model.bin
+    # deepspeed 权重使用转换脚本命令
+    # 一般根据时间排序选最新的权重文件夹
+    # cd best_ckpt/last
+    # python zero_to_fp32.py . ../adapter_model.bin
+
     # 加载lora权重
     pl_model.load_sft_weight(ckpt_dir)
 
@@ -44,7 +56,9 @@ if __name__ == '__main__':
         model = pl_model.get_llm_model()
 
         text_list = ["写一个诗歌，关于冬天",
-                     "晚上睡不着应该怎么办"]
+                     "晚上睡不着应该怎么办",
+                     "从南京到上海的路线",
+                     ]
         for input in text_list:
             response, history = Generate.chat(model, query=input, tokenizer=tokenizer, max_length=512,
                                               eos_token_id=config.eos_token_id,

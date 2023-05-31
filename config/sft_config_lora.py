@@ -100,9 +100,18 @@ train_info_args = {
     'train_file':  [ './data/finetune_train_examples.json'],
     'max_epochs': 20,
     'max_steps': -1,
-    'optimizer': 'lion', # one of [lamb,adamw_hf,adamw,adamw_torch,adamw_torch_fused,adamw_torch_xla,adamw_apex_fused,adafactor,adamw_anyprecision,sgd,adagrad,adamw_bnb_8bit,adamw_8bit,lion_8bit,lion_32bit,paged_adamw_32bit,paged_adamw_8bit,paged_lion_32bit,paged_lion_8bit]
 
-    'scheduler_type': 'CAWR', #one of [linear,WarmupCosine,CAWR,CAL,Step,ReduceLROnPlateau, cosine,cosine_with_restarts,polynomial,constant,constant_with_warmup,inverse_sqrt,reduce_lr_on_plateau]
+    # *** optimizer
+    # lamb,adamw_hf,adamw,adamw_torch,adamw_torch_fused,adamw_torch_xla,adamw_apex_fused,
+    # adafactor,adamw_anyprecision,sgd,adagrad,adamw_bnb_8bit,adamw_8bit,lion,lion_8bit,lion_32bit,
+    # paged_adamw_32bit,paged_adamw_8bit,paged_lion_32bit,paged_lion_8bit,
+    # lamb_fused_dp adagrad_cpu_dp adam_cpu_dp adam_fused_dp
+
+    # *** scheduler
+    # linear,WarmupCosine,CAWR,CAL,Step,ReduceLROnPlateau, cosine,cosine_with_restarts,polynomial,
+    # constant,constant_with_warmup,inverse_sqrt,reduce_lr_on_plateau
+    'optimizer': 'lion',
+    'scheduler_type': 'CAWR',
     'scheduler':{'T_mult': 1,
              'rewarm_epoch_num': 0.5,  # 如果 max_epochs is not None !
              # 'T_0': 50000,    # 如果 max_epochs is None , 设定步数
@@ -132,7 +141,7 @@ train_info_args = {
     'train_batch_size': 2,
     'eval_batch_size': 2,
     'test_batch_size': 2,
-    'learning_rate': 2e-5,  #
+    'learning_rate': 2e-4,  #
     'adam_epsilon': 1e-8,
     'gradient_accumulation_steps': 1,
     'max_grad_norm': 1.0,
