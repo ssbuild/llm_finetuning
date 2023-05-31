@@ -35,11 +35,15 @@ if global_args['load_in_4bit'] != True:
 train_info_args = {
     'devices': 1,
     'data_backend': 'record',  #one of record lmdb, 超大数据集可以使用 lmdb , 注 lmdb 存储空间比record大
-    'model_type': 'bloom',
+    'model_type': 'rwkv',
     # 预训练模型路径 , 从0训练，则置空
-    'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',
-    'config_name': '/data/nlp/pre_models/torch/bloom/bloom-560m/config.json',
-    'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-560m',
+    'model_name_or_path': '/data/nlp/pre_models/torch/rwkv/rwkv-4-169m-pile',
+    'config_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-169m-pile/config.json',
+    'tokenizer_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-169m-pile',
+
+    # 'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',
+    # 'config_name': '/data/nlp/pre_models/torch/bloom/bloom-560m/config.json',
+    # 'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-560m',
 
     # 'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-1b7',
     # 'config_name': '/data/nlp/pre_models/torch/bloom/bloom-1b7/config.json',

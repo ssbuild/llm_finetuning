@@ -2,6 +2,7 @@
    - [deep_training](https://github.com/ssbuild/deep_training)
 
 ```text
+    05-31 support deepspeed training for lora adalora prompt
     05-27 add qlora transformers>=4.30
     05-24 fix p-tuning-v2 load weight bugs
     05-12 fix lora int8 多卡训练 , ppo training move to https://github.com/ssbuild/rlhf_llm
@@ -34,13 +35,14 @@ pip install -U -i https://pypi.org/simple --pre  deep_training==0.1.10
 
 
 
-## weigth，大小尺寸可自行选择
+## weigtht select one is suitable for you !
     
 - [bloom预训练模型](https://huggingface.co/bigscience)
 - [bloom第三方中文训练模型](https://huggingface.co/Langboat/bloom-6b4-zh)  # 注意 需要修改tokenizer_config.json BloomTokenizer -> BloomTokenizerFast
 - [opt预训练模型](https://huggingface.co/facebook)
 - [llama预训练模型](https://huggingface.co/decapoda-research) #  llama 词典等下载地址 https://huggingface.co/hf-internal-testing/llama-tokenizer
 - [cpm-ant-10b](https://huggingface.co/openbmb/cpm-ant-10b)
+- [rwkv](https://huggingface.co/BlinkDL)
 
 
 ## data sample
