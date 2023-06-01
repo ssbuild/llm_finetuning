@@ -44,6 +44,8 @@ train_info_models = {
 # 'target_modules': ['project_q','project_v'] # cpmant
 
 train_target_modules_maps = {
+    'moss': ['qkv_proj'],
+    'chatglm': ['query_key_value'],
     'bloom' : ['query_key_value'],
     'gpt_neox' : ['query_key_value'],
     'llama' : ["q_proj", "v_proj"],
