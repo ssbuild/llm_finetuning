@@ -25,7 +25,6 @@ else:
 
 
 if enable_lora:
-
     if enable_int4:
         global_args['load_in_4bit'] = True
         global_args['load_in_8bit'] = False
@@ -72,8 +71,7 @@ def get_deepspeed_config():
 
     # 选择 deepspeed 配置文件
     is_need_update_config = False
-    conf = train_info_args.get('lora',train_info_args.get('adalora',train_info_args.get('prompt',None)))
-    if conf is not None and conf.get('with_lora',False) or conf.get('with_prompt',False) :
+    if enable_lora:
         is_need_update_config = True
         filename = os.path.join(os.path.dirname(__file__), 'deepspeed_offload.json')
     else:
