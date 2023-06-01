@@ -9,7 +9,7 @@ import os
 
 # 模块配置， 默认启用lora
 enable_deepspeed = False
-enable_ptv2 = True
+enable_ptv2 = False
 enable_lora = True
 enable_int8 = False # qlora int8
 enable_int4 = False # qlora int4
@@ -25,6 +25,7 @@ else:
 
 
 if enable_lora:
+    enable_ptv2 = False
     if enable_int4:
         global_args['load_in_4bit'] = True
         global_args['load_in_8bit'] = False
@@ -44,6 +45,7 @@ if enable_lora:
 
     train_info_args.pop('prompt', None)
 elif enable_ptv2:
+    enable_lora = False
     global_args['load_in_4bit'] = False
     global_args['load_in_8bit'] = False
     train_info_args.pop('lora', None)
