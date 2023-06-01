@@ -45,9 +45,13 @@ if enable_lora:
 
     train_info_args.pop('prompt', None)
 elif enable_ptv2:
+    global_args['load_in_4bit'] = False
+    global_args['load_in_8bit'] = False
     train_info_args.pop('lora', None)
     train_info_args.pop('adalora', None)
 else:
+    # global_args['load_in_4bit'] = False
+    # global_args['load_in_8bit'] = False
     train_info_args.pop('lora',None)
     train_info_args.pop('adalora', None)
     train_info_args.pop('prompt', None)
