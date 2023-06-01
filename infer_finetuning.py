@@ -21,8 +21,6 @@ if __name__ == '__main__':
     tokenizer, _, _,_= dataHelper.load_tokenizer_and_config()
 
 
-
-
     config = AutoConfig.from_pretrained('./best_ckpt')
     pl_model = MyTransformer(config=config, model_args=model_args)
 

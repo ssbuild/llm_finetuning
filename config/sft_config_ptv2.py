@@ -5,10 +5,9 @@ import json
 import os
 import torch
 from transformers import BitsAndBytesConfig
-
 from config.constant_map import train_info_models,train_target_modules_maps
 
-
+train_model_config = train_info_models['bloom-560m']
 
 global_args = {
     "load_in_8bit": False, 

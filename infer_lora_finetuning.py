@@ -24,10 +24,11 @@ if __name__ == '__main__':
     dataHelper = NN_DataHelper(model_args, None, data_args)
     tokenizer, _, _, _ = dataHelper.load_tokenizer_and_config()
 
-    train_weight_dir = './best_ckpt'
+    # 一般根据时间排序选最新的权重文件夹
+    ckpt_dir = './best_ckpt/last'
 
-    config = AutoConfig.from_pretrained(train_weight_dir)
-    lora_args = LoraArguments.from_pretrained(train_weight_dir)
+    config = AutoConfig.from_pretrained(ckpt_dir)
+    lora_args = LoraArguments.from_pretrained(ckpt_dir)
 
     assert lora_args.inference_mode == True
 
@@ -38,7 +39,7 @@ if __name__ == '__main__':
                              )
 
     # 加载lora权重
-    pl_model.load_sft_weight(train_weight_dir)
+    pl_model.load_sft_weight(ckpt_dir)
 
     pl_model.eval().half().cuda()
 
@@ -46,7 +47,7 @@ if __name__ == '__main__':
 
     if enable_merge_weight:
         # 合并lora 权重 保存
-        pl_model.save_sft_weight(os.path.join(ckpt_dir, 'pytorch_model_merge.bin'),merge_lora_weight=True)
+        pl_model.save_sft_weight(os.path.join(ckpt_dir, 'pytorch_model_merge.bin'), merge_lora_weight=True)
     else:
         model = pl_model.get_llm_model()
 
