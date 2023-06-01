@@ -3,9 +3,7 @@
 
 import json
 import os
-import torch
-from transformers import BitsAndBytesConfig
-from config.constant_map import train_info_models,train_target_modules_maps
+from config.constant_map import train_info_models
 
 train_model_config = train_info_models['bloom-560m']
 
@@ -106,12 +104,5 @@ train_info_args = {
     'prompt': prompt_info_args,
 
 }
-
-
-#配置检查
-
-
-if global_args['load_in_8bit'] == global_args['load_in_4bit'] and global_args['load_in_8bit'] == True:
-    raise Exception('load_in_8bit and load_in_4bit only set one at same time!')
 
 

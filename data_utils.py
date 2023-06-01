@@ -49,6 +49,26 @@ class NN_DataHelper(DataHelper):
         assert data_conf[DataStrategy.sup]['stride'] > 0
         assert data_conf[DataStrategy.unsup]['stride'] > 0
 
+    def preprocess_tokenizer_config(self):
+        model_args = self.model_args
+        tokenizer = self.tokenizer
+        config = self.config
+        if "llama" in model_args.model_name_or_path.lower() and tokenizer.bos_token_id != DEFAULT_BOS_TOKEN:
+            tokenizer.add_special_tokens({
+                "eos_token": DEFAULT_EOS_TOKEN,
+                "bos_token": DEFAULT_BOS_TOKEN,
+                "unk_token": DEFAULT_UNK_TOKEN,
+            })
+            if tokenizer.pad_token_id is None or tokenizer.pad_token_id == -1:
+                tokenizer.pad_token_id = tokenizer.eos_token_id
+
+        if tokenizer.pad_token is None:
+            tokenizer.add_special_tokens({
+                "pad_token": tokenizer.eos_token,
+            })
+        if config.decoder_start_token_id is None:
+            config.decoder_start_token_id = config.bos_token_id
+        assert config.decoder_start_token_id == config.bos_token_id
 
     def on_data_ready(self):
         self.index = -1
@@ -172,8 +192,7 @@ if __name__ == '__main__':
 
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
     tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})
-    preprocess_tokenizer(tokenizer, model_args)
-    preprocess_config(config)
+    dataHelper.preprocess_tokenizer_config()
 
 
 

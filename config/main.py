@@ -5,20 +5,57 @@
 import json
 import os
 
-# 切换配置
 
-# from config.sft_config import *
-from config.sft_config_lora import *
-# from config.sft_config_lora_int4 import *
-# from config.sft_config_lora_int8 import *
-# from config.sft_config_ptv2 import *
+
+# 模块配置， 默认启用lora
+enable_deepspeed = False
+enable_ptv2 = True
+enable_lora = True
+enable_int8 = False # qlora int8
+enable_int4 = False # qlora int4
+
+
+if enable_lora:
+    from config.sft_config_lora import *
+elif enable_ptv2:
+    from config.sft_config_ptv2 import *
+else:
+    from config.sft_config import *
+
+
+
+if enable_lora:
+
+    if enable_int4:
+        global_args['load_in_4bit'] = True
+        global_args['load_in_8bit'] = False
+
+    if enable_int8:
+        global_args['load_in_4bit'] = False
+        global_args['load_in_8bit'] = True
+
+    if not enable_int4:
+        global_args['quantization_config'] = None
+
+    #检查lora adalora是否开启
+    if 'lora' not in train_info_args and 'adalora' not in train_info_args:
+        raise ValueError('please config lora or adalora')
+    if train_info_args.get('lora',{}).get('with_lora',False) and train_info_args.get('adalora',{}).get('with_lora',False):
+        raise Exception('lora and adalora can set one at same time !')
+
+    train_info_args.pop('prompt', None)
+elif enable_ptv2:
+    train_info_args.pop('lora', None)
+    train_info_args.pop('adalora', None)
+else:
+    train_info_args.pop('lora',None)
+    train_info_args.pop('adalora', None)
+    train_info_args.pop('prompt', None)
 
 #预处理
 if 'rwkv' in train_info_args['tokenizer_name'].lower():
     train_info_args['use_fast_tokenizer'] = True
 
-#lora adalora prompt 使用 deepspeed_offload.json 配置文件
-enable_deepspeed = False
 
 def get_deepspeed_config():
     '''
@@ -50,3 +87,4 @@ def get_deepspeed_config():
             optimizer['params']['lr'] = train_info_args.get('learning_rate', 2e-5)
             optimizer['params']['eps'] = train_info_args.get('adam_epsilon', 1e-8)
     return deepspeed_config
+

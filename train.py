@@ -20,17 +20,19 @@ if __name__ == '__main__':
     lora_args = lora_args.config
     prompt_args = prompt_args.config
 
+    output_weight_dir = './best_ckpt'
+
+
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
     config_kwargs = {"torch_dtype": torch.float16}
     if global_args['config_merge']:
         config_kwargs.update(global_args['config_merge'])
 
     tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs=config_kwargs)
-    preprocess_tokenizer(tokenizer, model_args)
-    preprocess_config(config)
+    dataHelper.preprocess_tokenizer_config()
+    config.save_pretrained(output_weight_dir)
 
-
-        # 缓存数据集
+    # 缓存数据集
     if data_args.do_train:
         dataHelper.make_dataset_with_args(data_args.train_file, mixed_data=False, shuffle=True, mode='train')
     if data_args.do_eval:
@@ -40,27 +42,20 @@ if __name__ == '__main__':
 
 
     deepspeed_config = get_deepspeed_config()
-
-
-    output_weight_dir = './best_ckpt'
-
-    #deepspeed 权重 通过convert_weight_deepspeed.py 转换
+    strategy = 'ddp' if torch.cuda.device_count() > 1 else 'auto'
+    if deepspeed_config is not None and len(deepspeed_config):
+        strategy = DeepSpeedStrategy(config=deepspeed_config, )
     checkpoint_callback = ModelCheckpointEx(
         # monitor='loss',
         dirpath=output_weight_dir,
         save_weights_only=True,
         save_last=True,
         save_top_k=1,
-        #every_n_train_steps=2000 // training_args.gradient_accumulation_steps,
+        # every_n_train_steps=2000 // training_args.gradient_accumulation_steps,
         every_n_epochs=1,
         lora_args=lora_args,
         prompt_args=prompt_args,
     )
-
-    strategy = 'ddp' if torch.cuda.device_count() > 1 else 'auto'
-    if deepspeed_config is not None and len(deepspeed_config):
-        strategy = DeepSpeedStrategy(config=deepspeed_config, )
-
 
     trainer = Trainer(
         callbacks=[checkpoint_callback, LearningRateMonitor(logging_interval='step')],
@@ -78,12 +73,6 @@ if __name__ == '__main__':
         precision='16',# 可以自行尝试  "32": "32-true", "16": "16-mixed", "bf16": "bf16-mixed"
     )
 
-
-    # 额外参数
-    checkpoint_callback.tokenizer = tokenizer
-    checkpoint_callback.data_args = data_args
-
-    config.save_pretrained(output_weight_dir)
 
 
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args, lora_args=lora_args, prompt_args=prompt_args,
