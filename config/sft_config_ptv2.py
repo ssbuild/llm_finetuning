@@ -9,9 +9,9 @@ from transformers import BitsAndBytesConfig
 from config.constant_map import train_info_models,train_target_modules_maps
 
 
-#如果显卡支持int8 可以开启
+
 global_args = {
-    "load_in_8bit": False, # lora 如果显卡支持int8 可以开启
+    "load_in_8bit": False, 
     "load_in_4bit": False,
 
     #load_in_4bit 量化配置
@@ -40,7 +40,7 @@ train_info_args = {
     'devices': 1,
     'data_backend': 'record',  #one of record lmdb, 超大数据集可以使用 lmdb , 注 lmdb 存储空间比record大
      # 预训练模型配置
-    **train_info_models['bloom-560m'],
+    **train_model_config,
 
 
 
@@ -62,10 +62,10 @@ train_info_args = {
 
     'optimizer': 'lion',
     'scheduler_type': 'CAWR',
-    'scheduler':{'T_mult': 1,
-             'rewarm_epoch_num': 0.5,  # 如果 max_epochs is not None !
-             # 'T_0': 50000,    # 如果 max_epochs is None , 设定步数
-             'verbose': False},
+    'scheduler':{'T_mult': 1,'rewarm_epoch_num': 0.5,
+                 # 如果 max_epochs is not None !
+                 # 'T_0': 50000,    # 如果 max_epochs is None , 设定步数
+                'verbose': False},
 
     # 'scheduler_type': 'linear',# one of [linear,WarmupCosine,CAWR,CAL,Step,ReduceLROnPlateau
     # 'scheduler': None,
@@ -91,7 +91,7 @@ train_info_args = {
     'train_batch_size': 2,
     'eval_batch_size': 2,
     'test_batch_size': 2,
-    'learning_rate': 5e-5,  #
+    'learning_rate': 5e-4,  #
     'adam_epsilon': 1e-8,
     'gradient_accumulation_steps': 1,
     'max_grad_norm': 1.0,

@@ -24,9 +24,10 @@ if __name__ == '__main__':
     dataHelper = NN_DataHelper(model_args, None, data_args)
     tokenizer, _, _, _ = dataHelper.load_tokenizer_and_config()
 
-    ckpt_dir = './best_ckpt'
-    config = AutoConfig.from_pretrained(ckpt_dir)
-    lora_args = LoraArguments.from_pretrained(ckpt_dir)
+    train_weight_dir = './best_ckpt'
+
+    config = AutoConfig.from_pretrained(train_weight_dir)
+    lora_args = LoraArguments.from_pretrained(train_weight_dir)
 
     assert lora_args.inference_mode == True
 
@@ -36,14 +37,8 @@ if __name__ == '__main__':
                              # device_map = {"":0} # 第一块卡
                              )
 
-    # 确保路径下面有 adapter_config.json  adapter_model.bin
-    # deepspeed 权重使用转换脚本命令
-    # 一般根据时间排序选最新的权重文件夹
-    # cd best_ckpt/last
-    # python zero_to_fp32.py . ../adapter_model.bin
-
     # 加载lora权重
-    pl_model.load_sft_weight(ckpt_dir)
+    pl_model.load_sft_weight(train_weight_dir)
 
     pl_model.eval().half().cuda()
 

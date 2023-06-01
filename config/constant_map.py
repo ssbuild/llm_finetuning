@@ -17,7 +17,7 @@ train_info_models = {
         'tokenizer_name': '/data/nlp/pre_models/torch/bloom/bloom-1b7',
     },
     'opt-350m': {
-        'model_type': 'bloom',
+        'model_type': 'opt',
         'model_name_or_path': '/data/nlp/pre_models/torch/opt/opt-350m',
         'config_name': '/data/nlp/pre_models/torch/opt/opt-350m/config.json',
         'tokenizer_name': '/data/nlp/pre_models/torch/opt/opt-350m',
@@ -30,7 +30,7 @@ train_info_models = {
         'tokenizer_name': '/data/nlp/pre_models/torch/llama/llama-7b-hf',
     },
     'rwkv-4-430m-pile': {
-        'model_type': 'llama',
+        'model_type': 'rwkv',
         'model_name_or_path': '/data/nlp/pre_models/torch/rwkv/rwkv-4-430m-pile',
         'config_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-430m-pile/config.json',
         'tokenizer_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-430m-pile',

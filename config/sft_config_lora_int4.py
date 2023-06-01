@@ -7,10 +7,10 @@ import torch
 from transformers import BitsAndBytesConfig
 from config.constant_map import train_info_models,train_target_modules_maps
 
+train_model_config = train_info_models['bloom-560m']
 
-#如果显卡支持int8 可以开启
 global_args = {
-    "load_in_8bit": False, # lora 如果显卡支持int8 可以开启
+    "load_in_8bit": False, 
     "load_in_4bit": True,
 
     #load_in_4bit 量化配置
@@ -35,11 +35,7 @@ lora_info_args = {
     'with_lora': True,  # 是否启用lora模块
     'lora_type': 'lora',
     'r': 8,
-     # 'target_modules': ['query_key_value'],  # bloom,gpt_neox
-    # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
-    # 'target_modules': ['c_attn'], #gpt2
-    # 'target_modules': ['project_q','project_v'] # cpmant
-    'target_modules': ['key','value','receptance'], # rwkv
+    'target_modules': train_target_modules_maps[train_model_config['model_type']],
     'lora_alpha': 32,
     'lora_dropout': 0.1,
     'fan_in_fan_out': False,
@@ -51,9 +47,7 @@ adalora_info_args = {
     'with_lora': False,  # 是否启用adalora模块
     'lora_type': 'adalora',
     'r': 8,
-    'target_modules': ['query_key_value'],  # bloom,gpt_neox
-    # 'target_modules': ["q_proj", "v_proj"], #llama,opt,gptj,gpt_neo
-    # 'target_modules': ['c_attn'], #gpt2
+    'target_modules': train_target_modules_maps[train_model_config['model_type']],
     'lora_alpha': 32,
     'lora_dropout': 0.1,
     'fan_in_fan_out': False,
@@ -80,7 +74,7 @@ train_info_args = {
     'data_backend': 'record',  #one of record lmdb, 超大数据集可以使用 lmdb , 注 lmdb 存储空间比record大
     'model_type': 'bloom',
     # 预训练模型配置
-    **train_info_models['bloom-560m'],
+    **train_model_config,
 
     'convert_onnx': False, # 转换onnx模型
     'do_train': True,

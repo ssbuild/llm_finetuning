@@ -20,15 +20,15 @@ if __name__ == '__main__':
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
     tokenizer, _, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})
 
-    ckpt_dir = './best_ckpt'
-    config = AutoConfig.from_pretrained(ckpt_dir)
-    prompt_args = PromptArguments.from_pretrained(ckpt_dir)
+    train_weight_dir = './best_ckpt/last'
+    config = AutoConfig.from_pretrained(train_weight_dir)
+    prompt_args = PromptArguments.from_pretrained(train_weight_dir)
 
     assert prompt_args.inference_mode == True
 
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args,prompt_args=prompt_args)
     # 加载sft权重
-    pl_model.load_sft_weight(ckpt_dir)
+    pl_model.load_sft_weight(train_weight_dir)
 
     pl_model.eval().half().cuda()
 
@@ -38,7 +38,8 @@ if __name__ == '__main__':
     model.base_model_torch_dtype = torch.half
 
     text_list = ["写一个诗歌，关于冬天",
-                 "晚上睡不着应该怎么办"]
+                 "晚上睡不着应该怎么办",
+                 "从南京到上海的路线"]
     for input in text_list:
         response, history = Generate.chat(model, query=input, tokenizer=tokenizer, max_length=512,
                                           eos_token_id=config.eos_token_id,

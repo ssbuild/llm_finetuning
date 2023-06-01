@@ -11,7 +11,7 @@ from config.constant_map import train_info_models
 
 
 global_args = {
-    "load_in_8bit": False, # lora 如果显卡支持int8 可以开启
+    "load_in_8bit": False, 
     "load_in_4bit": False,
 
     #load_in_4bit 量化配置
@@ -30,7 +30,7 @@ train_info_args = {
     'data_backend': 'record',  #one of record lmdb, 超大数据集可以使用 lmdb , 注 lmdb 存储空间比record大
 
     # 预训练模型配置
-    **train_info_models['bloom-560m'],
+    **train_model_config,
 
 
     'convert_onnx': False, # 转换onnx模型
