@@ -20,19 +20,6 @@
 dev 
 pip install -U -i https://pypi.org/simple --pre deep_training==0.1.10
 ```
-    
-
-
-## optimizer
-    # lamb,adamw_hf,adamw,adamw_torch,adamw_torch_fused,adamw_torch_xla,adamw_apex_fused,
-    # adafactor,adamw_anyprecision,sgd,adagrad,adamw_bnb_8bit,adamw_8bit,lion,lion_8bit,lion_32bit,
-    # paged_adamw_32bit,paged_adamw_8bit,paged_lion_32bit,paged_lion_8bit,
-    # lamb_fused_dp adagrad_cpu_dp adam_cpu_dp adam_fused_dp
-
-## scheduler
-    # linear,WarmupCosine,CAWR,CAL,Step,ReduceLROnPlateau, cosine,cosine_with_restarts,polynomial,
-    # constant,constant_with_warmup,inverse_sqrt,reduce_lr_on_plateau
-
 
 
 ## weigtht select one is suitable for you !
@@ -95,16 +82,6 @@ pip install -U -i https://pypi.org/simple --pre deep_training==0.1.10
 ```
 
 
-## 切换训练模式配置
-    修改 config/main.py
-    # 模块配置， 默认启用lora
-    enable_deepspeed = False
-    enable_ptv2 = True
-    enable_lora = True
-    enable_int8 = False # qlora int8
-    enable_int4 = False # qlora int4
-
-
 
 ## infer
     # infer_finetuning.py 推理微调模型
@@ -125,58 +102,8 @@ pip install -U -i https://pypi.org/simple --pre deep_training==0.1.10
     python train.py
 ```
    
-
-### 单机多卡
-```text
-可见的前两块卡
-train_info_args = {
-    'devices': 2,
-}
-
-# 第一块 和 第三块卡
-train_info_args = {
-    'devices': [0,2],
-}
-```
-
-### 多机多卡训练
-```text
-例子 3个机器 每个机器 4个卡
-修改train.py Trainer num_nodes = 3
-MASTER_ADDR=10.0.0.1 MASTER_PORT=6667 WORLD_SIZE=12 NODE_RANK=0 python train.py 
-MASTER_ADDR=10.0.0.1 MASTER_PORT=6667 WORLD_SIZE=12 NODE_RANK=1 python train.py 
-MASTER_ADDR=10.0.0.1 MASTER_PORT=6667 WORLD_SIZE=12 NODE_RANK=2 python train.py 
-```
-
-###  int8高效训练
-
-    lora int8     使用官方标准float 16权重文件，修改modes.py
-    load_in_8bit = True 
-    修改data_utils.py 对应with_lora=True 
-
-### 混合精度
-
-    Trainer.precision = '16-mixed'
-
-### 超大数据集
-
-    修改data_utils.py "data_backend": "lmdb" 
-
-
-## lora finetuning
-
-    with_lora
-
-## ptv2 finetuning
-
-    with_prompt
-
-## deepspeed
-    启动则将data_utils.py  修改 enable_deepspeed 
-    lora 模式暂时不支持deepspeed
-
-## 精度训练
-    precision = '16' # 半精度训练 "32": "32-true", "16": "16-mixed", "bf16": "bf16-mixed"
+## 训练参数
+[训练参数](args.MD)
 
 ## 友情链接
 
