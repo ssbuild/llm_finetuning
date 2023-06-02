@@ -35,6 +35,12 @@ train_info_models = {
         'config_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-430m-pile/config.json',
         'tokenizer_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-430m-pile',
     },
+    'rwkv-4-169m-pile': {
+        'model_type': 'rwkv',
+        'model_name_or_path': '/data/nlp/pre_models/torch/rwkv/rwkv-4-169m-pile',
+        'config_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-169m-pile/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-169m-pile',
+    },
 }
 
 
