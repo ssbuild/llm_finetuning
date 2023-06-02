@@ -29,7 +29,8 @@ pip install -U -i https://pypi.org/simple --pre deep_training==0.1.10
 - [opt预训练模型](https://huggingface.co/facebook)
 - [llama预训练模型](https://huggingface.co/decapoda-research) #  llama 词典等下载地址 https://huggingface.co/hf-internal-testing/llama-tokenizer
 - [cpm-ant-10b](https://huggingface.co/openbmb/cpm-ant-10b)
-- [rwkv](https://huggingface.co/BlinkDL)
+- [rwkv](https://huggingface.co/BlinkDL) 需要转换权重
+- [rwkv](https://huggingface.co/RWKV/rwkv-4-169m-pile) hf 权重
 
 
 ## data sample
