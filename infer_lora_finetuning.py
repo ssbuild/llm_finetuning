@@ -10,6 +10,11 @@ from transformers import HfArgumentParser,AutoConfig,PreTrainedTokenizer
 from data_utils import train_info_args, NN_DataHelper,global_args
 from models import MyTransformer, Generate,LoraArguments,PromptArguments
 
+
+
+
+
+
 if __name__ == '__main__':
     train_info_args['seed'] = None
     parser = HfArgumentParser((ModelArguments, DataArguments))
@@ -19,7 +24,9 @@ if __name__ == '__main__':
     dataHelper = NN_DataHelper(model_args, None, data_args)
     tokenizer, _, _, _ = dataHelper.load_tokenizer_and_config()
 
-    ckpt_dir = './best_ckpt'
+    # 一般根据时间排序选最新的权重文件夹
+    ckpt_dir = './best_ckpt/last'
+
     config = AutoConfig.from_pretrained(ckpt_dir)
     lora_args = LoraArguments.from_pretrained(ckpt_dir)
 
@@ -30,6 +37,7 @@ if __name__ == '__main__':
                              # # device_map="auto",
                              # device_map = {"":0} # 第一块卡
                              )
+
     # 加载lora权重
     pl_model.load_sft_weight(ckpt_dir)
 
@@ -39,12 +47,14 @@ if __name__ == '__main__':
 
     if enable_merge_weight:
         # 合并lora 权重 保存
-        pl_model.save_sft_weight(os.path.join(ckpt_dir, 'pytorch_model_merge.bin'),merge_lora_weight=True)
+        pl_model.save_sft_weight(os.path.join(ckpt_dir, 'pytorch_model_merge.bin'), merge_lora_weight=True)
     else:
         model = pl_model.get_llm_model()
 
         text_list = ["写一个诗歌，关于冬天",
-                     "晚上睡不着应该怎么办"]
+                     "晚上睡不着应该怎么办",
+                     "从南京到上海的路线",
+                     ]
         for input in text_list:
             response, history = Generate.chat(model, query=input, tokenizer=tokenizer, max_length=512,
                                               eos_token_id=config.eos_token_id,

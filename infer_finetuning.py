@@ -12,6 +12,7 @@ from models import MyTransformer, Generate,LoraArguments,PromptArguments
 
 deep_config = get_deepspeed_config()
 
+
 if __name__ == '__main__':
     parser = HfArgumentParser((ModelArguments, DataArguments))
     model_args, data_args  = parser.parse_dict(train_info_args, allow_extra_keys=True)
@@ -19,22 +20,16 @@ if __name__ == '__main__':
     dataHelper = NN_DataHelper(model_args, None, data_args)
     tokenizer, _, _,_= dataHelper.load_tokenizer_and_config()
 
+
     config = AutoConfig.from_pretrained('./best_ckpt')
     pl_model = MyTransformer(config=config, model_args=model_args)
 
-    ###################### 注意 选最新权重
-    # 选择最新的权重 ， 根据时间排序 选最新的
+    # deepspeed 权重使用转换脚本命令
+    # 一般根据时间排序选最新的权重文件夹
+    # cd best_ckpt/last
+    # python zero_to_fp32.py . ../last.ckpt
 
-    if deep_config is None:
-        train_weight = './best_ckpt/last-v3.ckpt'
-        assert os.path.exists(train_weight)
-
-    else:
-        # 建议直接使用转换脚本命令 支持 deepspeed stage 0,1,2,3， 生成 ./best_ckpt/last.ckpt/best.pt 权重文件
-        # cd best_ckpt/last.ckpt
-        # python zero_to_fp32.py . best.pt
-        train_weight = './best_ckpt/last.ckpt/best.pt'
-
+    train_weight = './best_ckpt/last.ckpt'
     pl_model.load_sft_weight(train_weight,strict=True)
 
     # 保存hf权重
@@ -51,7 +46,9 @@ if __name__ == '__main__':
     model.eval().half().cuda()
 
     text_list = ["写一个诗歌，关于冬天",
-                 "晚上睡不着应该怎么办"]
+                 "晚上睡不着应该怎么办",
+                 "从南京到上海的路线",
+                 ]
     for input in text_list:
         response, history = Generate.chat(model, query=input, tokenizer=tokenizer, max_length=512,
                                           eos_token_id=config.eos_token_id,

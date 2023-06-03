@@ -2,9 +2,8 @@
 # @Time    : 2023/5/12 20:41
 # @Author  : tk
 # @FileName: llm_model
-from deep_training.nlp.models.prompt import get_prompt_model, PromptArguments
 from deep_training.nlp.models.transformer import TransformerForCausalLM
-from models.model_weight import *
+from deep_training.trainer.pl.modelweighter import *
 
 class TransformerForLM(TransformerForCausalLM):
     def __init__(self, *args, **kwargs):
