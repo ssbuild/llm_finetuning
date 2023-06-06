@@ -116,7 +116,8 @@ pip install -U -i https://pypi.org/simple --pre deep_training==0.1.10
 - [llm_finetuning](https://github.com/ssbuild/llm_finetuning)
 - [rlhf_llm](https://github.com/ssbuild/rlhf_llm)
 - [rlhf_chatglm](https://github.com/ssbuild/rlhf_chatglm)
-- [rlhf_chatyuan](https://github.com/ssbuild/rlhf_chatyuan)
+- [rlhf_chatyuan](https://github.com/ssbuild/rlhf_chatyuan
+- [rwkv_finetuning](https://github.com/ssbuild/rwkv_finetuning)
 
 ## 
     纯粹而干净的代码

@@ -2,4 +2,4 @@ deep_training==0.1.10
 transformers>=4.30
 deepspeed
 bitsandbytes>=0.39
-accelerate>=0.20
+accelerate>=0.19
