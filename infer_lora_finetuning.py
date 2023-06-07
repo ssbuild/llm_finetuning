@@ -2,10 +2,9 @@
 # @Author  : tk
 # @FileName: infer_lora_finetuning
 import os
-
 import torch
-from deep_training.data_helper import ModelArguments, TrainingArguments, DataArguments
-from transformers import HfArgumentParser,AutoConfig,PreTrainedTokenizer
+from deep_training.data_helper import ModelArguments, DataArguments
+from transformers import HfArgumentParser,AutoConfig
 
 from data_utils import train_info_args, NN_DataHelper,global_args
 from models import MyTransformer, Generate,LoraArguments,PromptArguments

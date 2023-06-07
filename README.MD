@@ -26,6 +26,7 @@ pip install -U -i https://pypi.org/simple --pre deep_training==0.1.10
     
 - [bloom预训练模型](https://huggingface.co/bigscience)
 - [bloom第三方中文训练模型](https://huggingface.co/Langboat/bloom-6b4-zh)  # 注意 需要修改tokenizer_config.json BloomTokenizer -> BloomTokenizerFast
+- [tigerbot](https://huggingface.co/TigerResearch)
 - [opt预训练模型](https://huggingface.co/facebook)
 - [llama预训练模型](https://huggingface.co/decapoda-research) #  llama 词典等下载地址 https://huggingface.co/hf-internal-testing/llama-tokenizer
 - [cpm-ant-10b](https://huggingface.co/openbmb/cpm-ant-10b)
@@ -49,23 +50,8 @@ pip install -U -i https://pypi.org/simple --pre deep_training==0.1.10
      ]
  }
 ```
-    或者
-```json
- {
-     "id": 0, "paragraph": [
-         {
-             "q": "从南京到上海的路线",
-             "a": [
-                 "你好，南京到上海的路线如下：",
-                 "1. 南京到上海，可以乘坐南京地铁1号线，在南京站乘坐轨道交通1号线。",
-                 "2. 南京到浦东机场，可以搭乘上海地铁1号，在陆家嘴站乘坐地铁1线，在浦东国际机场站乘坐机场快线，前往上海浦东国际机场。",
-                 "3. 上海到南京，可以换乘上海地铁2号线，从南京站换乘地铁2线，再从南京南站换乘地铁1路，然后到达上海站"
-             ]
-         }
-     ]
- }
-```
-   多轮会话
+
+多轮会话
 ```json
  {
      "id": 0, "paragraph": [
@@ -116,7 +102,7 @@ pip install -U -i https://pypi.org/simple --pre deep_training==0.1.10
 - [llm_finetuning](https://github.com/ssbuild/llm_finetuning)
 - [rlhf_llm](https://github.com/ssbuild/rlhf_llm)
 - [rlhf_chatglm](https://github.com/ssbuild/rlhf_chatglm)
-- [rlhf_chatyuan](https://github.com/ssbuild/rlhf_chatyuan
+- [rlhf_chatyuan](https://github.com/ssbuild/rlhf_chatyuan)
 - [rwkv_finetuning](https://github.com/ssbuild/rwkv_finetuning)
 
 ## 

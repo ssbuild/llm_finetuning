@@ -8,8 +8,7 @@ from lightning import Trainer
 from lightning.pytorch.callbacks import LearningRateMonitor
 from lightning.pytorch.strategies import DeepSpeedStrategy
 from transformers import HfArgumentParser
-from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config, global_args, preprocess_tokenizer, \
-    preprocess_config
+from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config, global_args
 from models import MyTransformer, LoraArguments, LoraConfig, PromptArguments
 
 

@@ -2,22 +2,21 @@
 # @Author  : tk
 # @FileName: infer_ptuning
 import os
-
 import torch
-from deep_training.data_helper import ModelArguments, TrainingArguments, DataArguments
-from transformers import HfArgumentParser,AutoConfig,PreTrainedTokenizer
+from deep_training.data_helper import ModelArguments, DataArguments
+from transformers import HfArgumentParser,AutoConfig
 
 from data_utils import train_info_args, NN_DataHelper
-from models import MyTransformer, Generate,LoraArguments,PromptArguments
+from models import MyTransformer, Generate,PromptArguments
 
 if __name__ == '__main__':
     train_info_args['seed'] = None
-    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, LoraArguments,PromptArguments))
-    model_args, training_args, data_args, _,_ = parser.parse_dict(train_info_args)
+    parser = HfArgumentParser((ModelArguments, DataArguments))
+    model_args, data_args = parser.parse_dict(train_info_args,allow_extra_keys=True)
 
 
 
-    dataHelper = NN_DataHelper(model_args, training_args, data_args)
+    dataHelper = NN_DataHelper(model_args, None, data_args)
     tokenizer, _, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})
 
     train_weight_dir = './best_ckpt/last'
@@ -26,7 +25,7 @@ if __name__ == '__main__':
 
     assert prompt_args.inference_mode == True
 
-    pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args,prompt_args=prompt_args)
+    pl_model = MyTransformer(config=config, model_args=model_args, prompt_args=prompt_args)
     # 加载sft权重
     pl_model.load_sft_weight(train_weight_dir)
 

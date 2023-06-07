@@ -1,15 +1,13 @@
 # @Time    : 2023/4/2 22:49
 # @Author  : tk
 # @FileName: infer
-import os
-import re
-from collections import OrderedDict
+
 import torch
-from deep_training.data_helper import ModelArguments, DataArguments, TrainingArguments
+from deep_training.data_helper import ModelArguments, DataArguments
 from transformers import HfArgumentParser
 
 from data_utils import train_info_args, NN_DataHelper, get_deepspeed_config
-from models import MyTransformer, Generate,LoraArguments,PromptArguments
+from models import MyTransformer, Generate
 
 deep_config = get_deepspeed_config()
 
