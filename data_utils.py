@@ -164,25 +164,6 @@ class NN_DataHelper(DataHelper):
 
 
 
-def preprocess_tokenizer(tokenizer: PreTrainedTokenizer,model_args):
-    if "llama" in model_args.model_name_or_path.lower() and tokenizer.bos_token_id != DEFAULT_BOS_TOKEN:
-        tokenizer.add_special_tokens({
-            "eos_token": DEFAULT_EOS_TOKEN,
-            "bos_token": DEFAULT_BOS_TOKEN,
-            "unk_token": DEFAULT_UNK_TOKEN,
-        })
-        if tokenizer.pad_token_id is None or tokenizer.pad_token_id == -1:
-            tokenizer.pad_token_id = tokenizer.eos_token_id
-
-    if tokenizer.pad_token is None:
-        tokenizer.add_special_tokens({
-            "pad_token": tokenizer.eos_token,
-        })
-
-def preprocess_config(config: PretrainedConfig):
-    if config.decoder_start_token_id is None:
-        config.decoder_start_token_id = config.bos_token_id
-    assert config.decoder_start_token_id == config.bos_token_id
 
 
 if __name__ == '__main__':
