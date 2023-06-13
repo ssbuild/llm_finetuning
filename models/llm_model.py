@@ -52,10 +52,10 @@ class MyTransformer(TransformerForLM, ModelWeightMinMax, with_pl=True):
         self.lora_args = lora_args
         self.prompt_args = prompt_args
 
-        # print('before',self.config)
+
         #可能扩充词表
         self.resize_token_embs(new_num_tokens)
-        # print('after',self.config)
+
 
         if lora_args is not None and lora_args.with_lora:
             self.backbone.enable_input_require_grads()
@@ -87,7 +87,9 @@ class MyTransformer(TransformerForLM, ModelWeightMinMax, with_pl=True):
             embedding_size = model.get_input_embeddings().weight.shape[0]
             if new_num_tokens != embedding_size:
                 logger.info("resize the embedding size by the size of the tokenizer")
+                # print('before',self.config)
                 model.resize_token_embeddings(new_num_tokens)
+                # print('after',self.config)
 
     def get_model_lr(self, model=None, lr=None):
         # for n, p in self.named_parameters():
