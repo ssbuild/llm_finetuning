@@ -20,7 +20,7 @@ if __name__ == '__main__':
 
 
     config = AutoConfig.from_pretrained('./best_ckpt')
-    pl_model = MyTransformer(config=config, model_args=model_args)
+    pl_model = MyTransformer(config=config, model_args=model_args,torch_dtype=config.torch_dtype,)
 
     # deepspeed 权重使用转换脚本命令
     # 一般根据时间排序选最新的权重文件夹

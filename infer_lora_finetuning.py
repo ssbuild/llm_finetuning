@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     assert lora_args.inference_mode == True
 
-    pl_model = MyTransformer(config=config, model_args=model_args, lora_args=lora_args,
+    pl_model = MyTransformer(config=config, model_args=model_args, lora_args=lora_args,torch_dtype=config.torch_dtype,
                              # load_in_8bit=global_args["load_in_8bit"],
                              # # device_map="auto",
                              # device_map = {"":0} # 第一块卡
