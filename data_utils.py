@@ -13,8 +13,8 @@ from deep_training.data_helper import DataHelper, ModelArguments, TrainingArgume
 from models import LoraArguments,LoraConfig,PromptArguments
 from fastdatasets.record import load_dataset as Loader, RECORD, WriterObject, gfile
 from transformers import PreTrainedTokenizer, HfArgumentParser, PretrainedConfig
-from data_processer import DataStrategy, TokenSupervision, TokenUnSupervision,TokenSupervisionRounds,\
-    DEFAULT_EOS_TOKEN, DEFAULT_BOS_TOKEN, DEFAULT_UNK_TOKEN
+from data_processer import DataStrategy, TokenSupervision, TokenUnSupervision, TokenSupervisionRounds, \
+    DEFAULT_EOS_TOKEN, DEFAULT_BOS_TOKEN, DEFAULT_UNK_TOKEN, DEFAULT_PAD_TOKEN
 
 from config import *
 
@@ -53,14 +53,29 @@ class NN_DataHelper(DataHelper):
         model_args = self.model_args
         tokenizer = self.tokenizer
         config = self.config
-        if "llama" in model_args.model_name_or_path.lower() and tokenizer.bos_token_id != DEFAULT_BOS_TOKEN:
-            tokenizer.add_special_tokens({
-                "eos_token": DEFAULT_EOS_TOKEN,
-                "bos_token": DEFAULT_BOS_TOKEN,
-                "unk_token": DEFAULT_UNK_TOKEN,
-            })
-            if tokenizer.pad_token_id is None or tokenizer.pad_token_id == -1:
-                tokenizer.pad_token_id = tokenizer.eos_token_id
+
+
+
+        if "llama" in model_args.model_type.lower():
+            special_tokens_dict = dict()
+            if tokenizer.pad_token is None:
+                special_tokens_dict["pad_token"] = DEFAULT_PAD_TOKEN
+            if tokenizer.eos_token is None:
+                special_tokens_dict["eos_token"] = DEFAULT_EOS_TOKEN
+            if tokenizer.bos_token is None:
+                special_tokens_dict["bos_token"] = DEFAULT_BOS_TOKEN
+            if tokenizer.unk_token is None:
+                special_tokens_dict["unk_token"] = DEFAULT_UNK_TOKEN
+
+            _ = tokenizer.add_special_tokens(special_tokens_dict)
+
+            # tokenizer.add_special_tokens({
+            #     "eos_token": DEFAULT_EOS_TOKEN,
+            #     "bos_token": DEFAULT_BOS_TOKEN,
+            #     "unk_token": DEFAULT_UNK_TOKEN,
+            # })
+            # if tokenizer.pad_token_id is None or tokenizer.pad_token_id == -1:
+            #     tokenizer.pad_token_id = tokenizer.eos_token_id
 
         if tokenizer.pad_token is None:
             tokenizer.add_special_tokens({
