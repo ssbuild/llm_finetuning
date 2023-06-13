@@ -2,6 +2,7 @@
    - [deep_training](https://github.com/ssbuild/deep_training)
 
 ```text
+    06-13 fix llama resize_token_embeddings
     06-01 support deepspeed training for lora adalora prompt,0.1.9 和 0.1.10合并
     05-27 add qlora transformers>=4.30
     05-24 fix p-tuning-v2 load weight bugs
@@ -9,26 +10,24 @@
     05-02 增加p-tuning-v2
     04-28 deep_training 0.1.3 pytorch-lightning 改名 ligntning ，旧版本 deep_training <= 0.1.2
     04-23 增加lora merge权重（修改infer_lora_finetuning.py enable_merge_weight 选项）
-    04-11 升级 lora v2 , 增加adalora
+    04-11 升级 lora , 增加adalora
 ```
    
 
 ## install
   - pip install -i https://pypi.org/simple -U -r requirements.txt
 
-```text
-dev 
-pip install -U -i https://pypi.org/simple --pre deep_training==0.1.10
-```
 
 
-## weigtht select one is suitable for you !
+## weigtht select one is suitable for you
     
 - [bloom预训练模型](https://huggingface.co/bigscience)
 - [bloom第三方中文训练模型](https://huggingface.co/Langboat/bloom-6b4-zh)  # 注意 需要修改tokenizer_config.json BloomTokenizer -> BloomTokenizerFast
 - [tigerbot](https://huggingface.co/TigerResearch)
 - [opt预训练模型](https://huggingface.co/facebook)
-- [llama预训练模型](https://huggingface.co/decapoda-research) #  llama 词典等下载地址 https://huggingface.co/hf-internal-testing/llama-tokenizer
+- [llama 官方权重转换](https://huggingface.co/decapoda-research) #  llama 词典等下载地址 https://huggingface.co/hf-internal-testing/llama-tokenizer
+- [llama vicuna-7B第三方权重1](https://huggingface.co/TheBloke/vicuna-7B-1.1-HF)
+- [llama vicuna-7B第三方权重2](https://huggingface.co/Tribbiani/vicuna-7b)
 - [cpm-ant-10b](https://huggingface.co/openbmb/cpm-ant-10b)
 - [rwkv](https://huggingface.co/BlinkDL) 需要转换权重
 - [rwkv](https://huggingface.co/RWKV/rwkv-4-169m-pile) hf 权重
