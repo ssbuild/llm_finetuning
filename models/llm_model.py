@@ -86,14 +86,13 @@ class MyTransformer(TransformerForLM, ModelWeightMinMax, with_pl=True):
             model: PreTrainedModel = self.backbone.model
             embedding_size = model.get_input_embeddings().weight.shape[0]
             if new_num_tokens != embedding_size:
-                # lora ptv2 备份原此表
+                # lora ptv2 二次加载权重需备份原此词表
                 if (self.lora_args is not None and self.lora_args.with_lora) or (
                         self.prompt_args is not None and self.prompt_args.with_prompt):
                     config = model.config
                     if config.task_specific_params is None:
                         config.task_specific_params = {}
-                    task_specific_params = config.task_specific_params
-                    task_specific_params['vocab_size'] = self.config.vocab_size
+                    config.task_specific_paramstask_specific_params['vocab_size'] = config.vocab_size
 
 
                 logger.info("resize the embedding size by the size of the tokenizer")
