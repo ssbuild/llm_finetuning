@@ -18,6 +18,7 @@ if __name__ == '__main__':
 
     dataHelper = NN_DataHelper(model_args, None, data_args)
     tokenizer, _, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})
+    dataHelper.preprocess_tokenizer_config()
 
     train_weight_dir = './best_ckpt/last'
     config = AutoConfig.from_pretrained(train_weight_dir)
@@ -25,7 +26,14 @@ if __name__ == '__main__':
 
     assert prompt_args.inference_mode == True
 
-    pl_model = MyTransformer(config=config, model_args=model_args, prompt_args=prompt_args)
+    new_num_tokens = config.vocab_size
+    if config.task_specific_params is not None and config.task_specific_params.get('vocab_size', None) is not None:
+        config.vocab_size = config.task_specific_params['vocab_size']
+
+    pl_model = MyTransformer(config=config, model_args=model_args,
+                             prompt_args=prompt_args,
+                             new_num_tokens=new_num_tokens,
+                             )
     # 加载sft权重
     pl_model.load_sft_weight(train_weight_dir)
 
@@ -40,8 +48,9 @@ if __name__ == '__main__':
                  "晚上睡不着应该怎么办",
                  "从南京到上海的路线"]
     for input in text_list:
-        response, history = Generate.chat(model, query=input, tokenizer=tokenizer, max_length=512,
-                                          eos_token_id=config.eos_token_id,
-                                          do_sample=False, top_p=0.7, temperature=0.95, )
-        print('input', input)
-        print('output', response)
+        for input in text_list:
+            response = Generate.generate(model, query=input, tokenizer=tokenizer, max_length=512,
+                                         eos_token_id=config.eos_token_id,
+                                         do_sample=False, top_p=0.7, temperature=0.95, )
+            print('input', input)
+            print('output', response)

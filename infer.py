@@ -16,8 +16,10 @@ if __name__ == '__main__':
     model_args, data_args = parser.parse_dict(train_info_args, allow_extra_keys=True)
 
     dataHelper = NN_DataHelper(model_args, None, data_args)
-    tokenizer, config, _,_= dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})
-    pl_model = MyTransformer(config=config, model_args=model_args)
+    tokenizer, config, _,_= dataHelper.load_tokenizer_and_config()
+    dataHelper.preprocess_tokenizer_config()
+
+    pl_model = MyTransformer(config=config, model_args=model_args,torch_dtype=config.torch_dtype,)
     model = pl_model.get_llm_model()
 
     model.eval().half().cuda()
@@ -27,7 +29,7 @@ if __name__ == '__main__':
                  "从南京到上海的路线",
                  ]
     for input in text_list:
-        response, history = Generate.chat(model, query=input, tokenizer=tokenizer, max_length=512,
+        response = Generate.generate(model, query=input, tokenizer=tokenizer, max_length=512,
                                           eos_token_id=config.eos_token_id,
                                           do_sample=False, top_p=0.7, temperature=0.95, )
         print('input', input)

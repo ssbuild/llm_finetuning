@@ -17,10 +17,10 @@ if __name__ == '__main__':
 
     dataHelper = NN_DataHelper(model_args, None, data_args)
     tokenizer, _, _,_= dataHelper.load_tokenizer_and_config()
-
+    dataHelper.preprocess_tokenizer_config()
 
     config = AutoConfig.from_pretrained('./best_ckpt')
-    pl_model = MyTransformer(config=config, model_args=model_args)
+    pl_model = MyTransformer(config=config, model_args=model_args,torch_dtype=config.torch_dtype,)
 
     # deepspeed 权重使用转换脚本命令
     # 一般根据时间排序选最新的权重文件夹
@@ -48,8 +48,8 @@ if __name__ == '__main__':
                  "从南京到上海的路线",
                  ]
     for input in text_list:
-        response, history = Generate.chat(model, query=input, tokenizer=tokenizer, max_length=512,
-                                          eos_token_id=config.eos_token_id,
-                                          do_sample=False, top_p=0.7, temperature=0.95, )
-        print('input',input)
-        print('output',response)
+        response = Generate.generate(model, query=input, tokenizer=tokenizer, max_length=512,
+                                     eos_token_id=config.eos_token_id,
+                                     do_sample=False, top_p=0.7, temperature=0.95, )
+        print('input', input)
+        print('output', response)
