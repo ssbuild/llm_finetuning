@@ -41,8 +41,9 @@ if __name__ == '__main__':
                  "晚上睡不着应该怎么办",
                  "从南京到上海的路线"]
     for input in text_list:
-        response, history = Generate.chat(model, query=input, tokenizer=tokenizer, max_length=512,
-                                          eos_token_id=config.eos_token_id,
-                                          do_sample=False, top_p=0.7, temperature=0.95, )
-        print('input', input)
-        print('output', response)
+        for input in text_list:
+            response = Generate.generate(model, query=input, tokenizer=tokenizer, max_length=512,
+                                         eos_token_id=config.eos_token_id,
+                                         do_sample=False, top_p=0.7, temperature=0.95, )
+            print('input', input)
+            print('output', response)
