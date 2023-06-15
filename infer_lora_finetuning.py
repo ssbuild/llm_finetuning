@@ -10,10 +10,6 @@ from data_utils import train_info_args, NN_DataHelper,global_args
 from models import MyTransformer, Generate,LoraArguments,PromptArguments
 
 
-
-
-
-
 if __name__ == '__main__':
     train_info_args['seed'] = None
     parser = HfArgumentParser((ModelArguments, DataArguments))
@@ -32,7 +28,14 @@ if __name__ == '__main__':
 
     assert lora_args.inference_mode == True
 
-    pl_model = MyTransformer(config=config, model_args=model_args, lora_args=lora_args,torch_dtype=config.torch_dtype,
+    new_num_tokens = config.vocab_size
+    if config.task_specific_params is not None and config.task_specific_params.get('vocab_size',None) is not None:
+        config.vocab_size = config.task_specific_params['vocab_size']
+
+    pl_model = MyTransformer(config=config, model_args=model_args,
+                             lora_args=lora_args,
+                             torch_dtype=config.torch_dtype,
+                             new_num_tokens=new_num_tokens,
                              # load_in_8bit=global_args["load_in_8bit"],
                              # # device_map="auto",
                              # device_map = {"":0} # 第一块卡
