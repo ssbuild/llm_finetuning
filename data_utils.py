@@ -84,11 +84,14 @@ class NN_DataHelper(DataHelper):
         if config.pad_token_id is None or config.pad_token_id == -1:
             config.pad_token_id = tokenizer.eos_token_id
 
-        if config.pad_token_id != tokenizer.eos_token_id:
-            print('*' * 30, 'config.pad_token_id != tokenizer.eos_token_id !!!')
+
 
         if config.decoder_start_token_id is None:
             config.decoder_start_token_id = config.bos_token_id
+
+        if config.decoder_start_token_id != tokenizer.bos_token_id:
+            print('*' * 30, 'config.decoder_start_token_id != tokenizer.bos_token_id !!!')
+
         assert config.decoder_start_token_id == config.bos_token_id
 
     def on_data_ready(self):
