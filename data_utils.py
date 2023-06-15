@@ -81,7 +81,7 @@ class NN_DataHelper(DataHelper):
             tokenizer.add_special_tokens({
                 "pad_token": tokenizer.eos_token,
             })
-        if config.pad_token_id is None:
+        if config.pad_token_id is None or config.pad_token_id == -1:
             config.pad_token_id = tokenizer.eos_token_id
 
         if config.pad_token_id != tokenizer.eos_token_id:
