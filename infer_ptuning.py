@@ -18,6 +18,7 @@ if __name__ == '__main__':
 
     dataHelper = NN_DataHelper(model_args, None, data_args)
     tokenizer, _, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})
+    dataHelper.preprocess_tokenizer_config()
 
     train_weight_dir = './best_ckpt/last'
     config = AutoConfig.from_pretrained(train_weight_dir)

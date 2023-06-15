@@ -81,6 +81,12 @@ class NN_DataHelper(DataHelper):
             tokenizer.add_special_tokens({
                 "pad_token": tokenizer.eos_token,
             })
+        if config.pad_token_id is None:
+            config.pad_token_id = tokenizer.eos_token_id
+
+        if config.pad_token_id != tokenizer.eos_token_id:
+            print('*' * 30, 'config.pad_token_id != tokenizer.eos_token_id !!!')
+
         if config.decoder_start_token_id is None:
             config.decoder_start_token_id = config.bos_token_id
         assert config.decoder_start_token_id == config.bos_token_id
