@@ -32,6 +32,7 @@
 - [cpm-ant-10b](https://huggingface.co/openbmb/cpm-ant-10b)
 - [rwkv](https://huggingface.co/BlinkDL) 需要转换权重
 - [rwkv](https://huggingface.co/RWKV/rwkv-4-169m-pile) hf 权重
+- [ChatYuan-7B](https://huggingface.co/ClueAI/ChatYuan-7B)
 
 
 ## data sample
@@ -98,12 +99,13 @@
 - [tf-task-example](https://github.com/ssbuild/tf-task-example)
 - [chatmoss_finetuning](https://github.com/ssbuild/chatmoss_finetuning)
 - [chatglm_finetuning](https://github.com/ssbuild/chatglm_finetuning)
-- [chatyuan_finetuning](https://github.com/ssbuild/chatyuan_finetuning)
+- [t5_finetuning](https://github.com/ssbuild/t5_finetuning)
 - [llm_finetuning](https://github.com/ssbuild/llm_finetuning)
-- [rlhf_llm](https://github.com/ssbuild/rlhf_llm)
-- [rlhf_chatglm](https://github.com/ssbuild/rlhf_chatglm)
-- [rlhf_chatyuan](https://github.com/ssbuild/rlhf_chatyuan)
+- [llm_rlhf](https://github.com/ssbuild/llm_rlhf)
+- [chatglm_rlhf](https://github.com/ssbuild/chatglm_rlhf)
+- [t5_rlhf](https://github.com/ssbuild/t5_rlhf)
 - [rwkv_finetuning](https://github.com/ssbuild/rwkv_finetuning)
+- [baichuan_finetuning](https://github.com/ssbuild/baichuan_finetuning)
 
 ## 
     纯粹而干净的代码

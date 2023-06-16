@@ -29,18 +29,20 @@ train_info_models = {
         'config_name': '/data/nlp/pre_models/torch/llama/llama-7b-hf/config.json',
         'tokenizer_name': '/data/nlp/pre_models/torch/llama/llama-7b-hf',
     },
+    'chatyuan-7b': {
+        'model_type': 'llama',
+        'model_name_or_path': '/data/nlp/pre_models/torch/llama/ChatYuan-7B',
+        'config_name': '/data/nlp/pre_models/torch/llama/ChatYuan-7B/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/llama/ChatYuan-7B',
+    },
+
     'rwkv-4-430m-pile': {
         'model_type': 'rwkv',
         'model_name_or_path': '/data/nlp/pre_models/torch/rwkv/rwkv-4-430m-pile',
         'config_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-430m-pile/config.json',
         'tokenizer_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-430m-pile',
     },
-    'rwkv-4-169m-pile': {
-        'model_type': 'rwkv',
-        'model_name_or_path': '/data/nlp/pre_models/torch/rwkv/rwkv-4-169m-pile',
-        'config_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-169m-pile/config.json',
-        'tokenizer_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-169m-pile',
-    },
+
 }
 
 
@@ -50,6 +52,7 @@ train_info_models = {
 # 'target_modules': ['project_q','project_v'] # cpmant
 
 train_target_modules_maps = {
+    't5': ['qkv_proj'],
     'moss': ['qkv_proj'],
     'chatglm': ['query_key_value'],
     'bloom' : ['query_key_value'],
