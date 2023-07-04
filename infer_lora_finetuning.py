@@ -7,7 +7,8 @@ from deep_training.data_helper import ModelArguments, DataArguments
 from transformers import HfArgumentParser,AutoConfig
 
 from data_utils import train_info_args, NN_DataHelper,global_args
-from models import MyTransformer, Generate,LoraArguments,PromptArguments
+from aigc_zoo.model_zoo.llm.llm_model import MyTransformer,LoraArguments,PromptArguments
+from aigc_zoo.utils.llm_generate import Generate
 
 
 if __name__ == '__main__':

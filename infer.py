@@ -7,7 +7,8 @@ from deep_training.data_helper import ModelArguments, DataArguments
 from transformers import HfArgumentParser
 
 from data_utils import train_info_args, NN_DataHelper, get_deepspeed_config
-from models import MyTransformer, Generate
+from aigc_zoo.model_zoo.llm.llm_model import MyTransformer
+from aigc_zoo.utils.llm_generate import Generate
 
 deep_config = get_deepspeed_config()
 

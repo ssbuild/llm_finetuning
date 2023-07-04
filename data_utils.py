@@ -10,7 +10,7 @@ import typing
 import numpy as np
 import torch
 from deep_training.data_helper import DataHelper, ModelArguments, TrainingArguments, DataArguments
-from models import LoraArguments,LoraConfig,PromptArguments
+from aigc_zoo.model_zoo.llm.llm_model import LoraArguments,LoraConfig,PromptArguments
 from fastdatasets.record import load_dataset as Loader, RECORD, WriterObject, gfile
 from transformers import PreTrainedTokenizer, HfArgumentParser, PretrainedConfig
 from data_processer import DataStrategy, TokenSupervision, TokenUnSupervision, TokenSupervisionRounds, \
@@ -186,7 +186,25 @@ class NN_DataHelper(DataHelper):
         o['labels'] = o['labels'][:, :maxlen].long()
         return o
 
+    def make_dataset_all(self):
+        data_args = self.data_args
 
+
+        # schema for arrow parquet
+        schema = {
+            "input_ids": "int32",
+            "attention_mask": "int32",
+            "labels": "int32",
+            "seqlen": "int32",
+        }
+        # 缓存数据集
+        if data_args.do_train:
+            self.make_dataset_with_args(data_args.train_file, mixed_data=False, shuffle=True, mode='train',
+                                        schema=schema)
+        if data_args.do_eval:
+            self.make_dataset_with_args(data_args.eval_file, mode='eval', schema=schema)
+        if data_args.do_test:
+            self.make_dataset_with_args(data_args.test_file, mode='test', schema=schema)
 
 
 
@@ -203,12 +221,7 @@ if __name__ == '__main__':
 
     # 缓存数据集
     # 检测是否存在 output/dataset_0-train.record ，不存在则制作数据集
-    if data_args.do_train:
-        dataHelper.make_dataset_with_args(data_args.train_file,mixed_data=False,shuffle=True,mode='train')
-    if data_args.do_eval:
-        dataHelper.make_dataset_with_args(data_args.eval_file, shuffle=False,mode='eval')
-    if data_args.do_test:
-        dataHelper.make_dataset_with_args(data_args.test_file, shuffle=False,mode='test')
+    dataHelper.make_dataset_all()
 
 
     # def shuffle_records(record_filenames, outfile, compression_type='GZIP'):
