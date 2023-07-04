@@ -1,12 +1,10 @@
 
 ## 切换训练模式配置
     修改 config/main.py
-    # 模块配置， 默认启用lora
     enable_deepspeed = False
     enable_ptv2 = False
     enable_lora = True
-    enable_int8 = False # qlora int8
-    enable_int4 = False # qlora int4
+    load_in_bit = 0  # 4 load_in_4bit, 8 load_in_8bit  other  0
 
 ## optimizer
     # lamb,adamw_hf,adamw,adamw_torch,adamw_torch_fused,adamw_torch_xla,adamw_apex_fused,
