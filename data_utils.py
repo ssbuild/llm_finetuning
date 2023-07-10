@@ -49,7 +49,12 @@ class NN_DataHelper(DataHelper):
         assert data_conf[DataStrategy.sup]['stride'] > 0
         assert data_conf[DataStrategy.unsup]['stride'] > 0
 
-    def preprocess_tokenizer_config(self):
+    def load_tokenizer_and_config(self, *args, **kwargs):
+        ret = super().load_tokenizer_and_config(*args, **kwargs)
+        self._preprocess_tokenizer_config()
+        return ret
+
+    def _preprocess_tokenizer_config(self):
         model_args = self.model_args
         tokenizer = self.tokenizer
         config = self.config
@@ -188,8 +193,6 @@ class NN_DataHelper(DataHelper):
 
     def make_dataset_all(self):
         data_args = self.data_args
-
-
         # schema for arrow parquet
         schema = {
             "input_ids": "int32_list",
@@ -215,7 +218,7 @@ if __name__ == '__main__':
 
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
     tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})
-    dataHelper.preprocess_tokenizer_config()
+    
 
 
 

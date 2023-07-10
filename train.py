@@ -28,7 +28,6 @@ if __name__ == '__main__':
         config_kwargs.update(global_args['config_merge'])
 
     tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs=config_kwargs)
-    dataHelper.preprocess_tokenizer_config()
 
     dataHelper.make_dataset_all()
 
