@@ -34,6 +34,7 @@
 - [rwkv](https://huggingface.co/RWKV/rwkv-4-169m-pile) hf 权重
 - [Llama2-Chinese-7b-Chat](https://huggingface.co/FlagAlpha/Llama2-Chinese-7b-Chat)
 - [Llama2-Chinese-13b-Chat](https://huggingface.co/FlagAlpha/Llama2-Chinese-13b-Chat)
+- [TransGPT](https://huggingface.co/DUOMO-Lab/TransGPT-v0) Llama2中文权重
 
 
 ## data sample
