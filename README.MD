@@ -2,6 +2,7 @@
    - [deep_training](https://github.com/ssbuild/deep_training)
 
 ```text
+    08-02 增加 muti lora infer 例子, 手动升级 aigc_zoo , pip install -U git+https://github.com/ssbuild/aigc_zoo.git --force-reinstall --no-deps
     06-13 fix llama resize_token_embeddings
     06-01 support deepspeed training for lora adalora prompt,0.1.9 和 0.1.10合并
     05-27 add qlora transformers>=4.30
