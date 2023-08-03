@@ -41,7 +41,11 @@ class TokenIdsFinal:
 class TokenUnSupervision:
     @classmethod
     def process(cls, tokenizer: PreTrainedTokenizer,config,stride, max_seq_length, examples):
+        prefix,examples = examples
         input_ids_all = []
+        if len(prefix) > 0:
+            input_ids_all += tokenizer.encode(text=prefix)
+
         for idx, (question, answer) in enumerate(examples):
             text = question + answer
             ids = tokenizer.encode(text=text)
@@ -68,9 +72,10 @@ class TokenUnSupervision:
 class TokenSupervision:
     @classmethod
     def process(cls, tokenizer: PreTrainedTokenizer,config,stride, max_seq_length, examples):
+        prefix, examples = examples
         ds = []
         for idx, (question, answer) in enumerate(examples):
-            a_ids = tokenizer.encode(text=question,add_special_tokens=False)[:max_seq_length-3]
+            a_ids = tokenizer.encode(text=prefix+question,add_special_tokens=False)[:max_seq_length-3]
             b_ids = tokenizer.encode(text=answer)
             assert len(b_ids)
             input_ids_all = a_ids + b_ids
@@ -87,6 +92,7 @@ class TokenSupervision:
 class TokenSupervisionRounds:
     @classmethod
     def process(cls, tokenizer: PreTrainedTokenizer,config,stride, max_seq_length, examples):
+        prefix, examples = examples
         ds = []
         prompt_text = ''
         for idx, (question, answer) in enumerate(examples):
@@ -96,7 +102,7 @@ class TokenSupervisionRounds:
                 a_text = prompt_text + "[Round {}]\n问：{}\n答：".format(idx, question)
 
             prompt_text += "[Round {}]\n问：{}\n答：{}".format(idx, question, answer)
-            a_ids = tokenizer.encode(text=a_text,add_special_tokens=False)[:max_seq_length-3]
+            a_ids = tokenizer.encode(text=prefix+a_text,add_special_tokens=False)[:max_seq_length-3]
             b_ids = tokenizer.encode(text=answer)
 
 

@@ -131,21 +131,6 @@ class NN_DataHelper(DataHelper):
             print(ds[0])
         return ds
 
-    # {
-    #     "id": 0, "paragraph": [
-    #     # 一轮会话
-    #     {
-    #         "q": "从南京到上海的路线",
-    #         "a": [
-    #             "你好，南京到上海的路线如下：",
-    #             "1. 南京到上海，可以乘坐南京地铁1号线，在南京站乘坐轨道交通1号线。",
-    #             "2. 南京到浦东机场，可以搭乘上海地铁1号，在陆家嘴站乘坐地铁1线，在浦东国际机场站乘坐机场快线，前往上海浦东国际机场。",
-    #             "3. 上海到南京，可以换乘上海地铁2号线，从南京站换乘地铁2线，再从南京南站换乘地铁1路，然后到达上海站"
-    #         ]
-    #     }
-    #     # 二轮....
-    # ]
-    # }
     # 读取文件
     def on_get_corpus(self, files: typing.List, mode: str):
         D = []
@@ -160,6 +145,7 @@ class NN_DataHelper(DataHelper):
                 paragraph = jd['paragraph']
                 if i < 10:
                     print(paragraph)
+                prefix = jd.get('p',"")
                 sub = []
                 # 自行做模板
                 for session in paragraph:
@@ -168,7 +154,7 @@ class NN_DataHelper(DataHelper):
                     # q = preprocess('Human：' + q + '\nAssistant：')
                     assert len(answers),ValueError('answer cannot empty')
                     sub.append((q, answers))
-                D.append(copy.deepcopy(sub))
+                D.append((prefix,copy.deepcopy(sub)))
                 sub.clear()
 
         return D
