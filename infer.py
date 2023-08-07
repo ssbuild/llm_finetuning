@@ -15,7 +15,7 @@ old_version = False
 try:
     from transformers import AutoModelForCausalLM
     from deep_training.utils.hf import register_transformer_model,register_transformer_config # noqa
-    from deep_training.nlp.models.rellama.modeling_llama import LlamaForCausalLM as ReLlamaForCausalLM
+    from deep_training.nlp.models.rellama.modeling_llama import LlamaForCausalLM
 except:
     old_version = True
 
@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     if not old_version:
         if train_info_args['model_type'].lower() == 'llama':
-            register_transformer_model(ReLlamaForCausalLM,AutoModelForCausalLM)
+            register_transformer_model(LlamaForCausalLM,AutoModelForCausalLM)
     parser = HfArgumentParser((ModelArguments, DataArguments))
     model_args, data_args = parser.parse_dict(train_info_args, allow_extra_keys=True)
 
