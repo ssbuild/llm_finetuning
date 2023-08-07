@@ -5,24 +5,24 @@
 import torch
 from deep_training.data_helper import ModelArguments, DataArguments
 from transformers import HfArgumentParser
-
 from data_utils import train_info_args, NN_DataHelper, get_deepspeed_config
 from aigc_zoo.model_zoo.llm.llm_model import MyTransformer
 from aigc_zoo.utils.llm_generate import Generate
 
-from transformers import AutoModelForCausalLM
 deep_config = get_deepspeed_config()
 
 old_version = False
 try:
-    from deep_training.utils.hf import register_transformer_model
+    from transformers import AutoModelForCausalLM
+    from deep_training.utils.hf import register_transformer_model,register_transformer_config # noqa
     from deep_training.nlp.models.rellama.modeling_llama import LlamaForCausalLM as ReLlamaForCausalLM
 except:
     old_version = True
-    pass
+
 
 if __name__ == '__main__':
     #导入模型
+
     if not old_version:
         if train_info_args['model_type'].lower() == 'llama':
             register_transformer_model(ReLlamaForCausalLM,AutoModelForCausalLM)
@@ -31,7 +31,6 @@ if __name__ == '__main__':
 
     dataHelper = NN_DataHelper(model_args, None, data_args)
     tokenizer, config, _,_= dataHelper.load_tokenizer_and_config()
-
     pl_model = MyTransformer(config=config, model_args=model_args,torch_dtype=config.torch_dtype,)
     model = pl_model.get_llm_model()
     model = model.eval()
