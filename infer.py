@@ -16,7 +16,7 @@ deep_config = get_deepspeed_config()
 old_version = False
 try:
     from deep_training.utils.hf import register_transformer_model
-    from deep_training.nlp.models.rellama.modeling_llama import ReLlamaForCausalLM
+    from deep_training.nlp.models.rellama.modeling_llama import LlamaForCausalLM as ReLlamaForCausalLM
 except:
     old_version = True
     pass
