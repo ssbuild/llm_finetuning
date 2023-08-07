@@ -9,15 +9,23 @@ from transformers import HfArgumentParser
 from data_utils import train_info_args, NN_DataHelper, get_deepspeed_config
 from aigc_zoo.model_zoo.llm.llm_model import MyTransformer
 from aigc_zoo.utils.llm_generate import Generate
-from deep_training.utils.hf import register_transformer_model
-from deep_training.nlp.models.rellama.modeling_llama import ReLlamaForCausalLM
+
 from transformers import AutoModelForCausalLM
 deep_config = get_deepspeed_config()
 
+old_version = False
+try:
+    from deep_training.utils.hf import register_transformer_model
+    from deep_training.nlp.models.rellama.modeling_llama import ReLlamaForCausalLM
+except:
+    old_version = True
+    pass
+
 if __name__ == '__main__':
     #导入模型
-    if train_info_args['model_type'].lower() == 'llama':
-        register_transformer_model(ReLlamaForCausalLM,AutoModelForCausalLM)
+    if not old_version:
+        if train_info_args['model_type'].lower() == 'llama':
+            register_transformer_model(ReLlamaForCausalLM,AutoModelForCausalLM)
     parser = HfArgumentParser((ModelArguments, DataArguments))
     model_args, data_args = parser.parse_dict(train_info_args, allow_extra_keys=True)
 
