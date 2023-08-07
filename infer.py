@@ -16,7 +16,7 @@ deep_config = get_deepspeed_config()
 
 if __name__ == '__main__':
     #导入模型
-    if train_info_args['model_type'] == 'llama':
+    if train_info_args['model_type'].lower() == 'llama':
         register_transformer_model(ReLlamaForCausalLM,AutoModelForCausalLM)
     parser = HfArgumentParser((ModelArguments, DataArguments))
     model_args, data_args = parser.parse_dict(train_info_args, allow_extra_keys=True)
@@ -28,6 +28,7 @@ if __name__ == '__main__':
     model = pl_model.get_llm_model()
     model = model.eval()
     if hasattr(model,'quantize'):
+        # 支持llama llama2量化
         if not model.quantized:
             # 按需修改，目前只支持 4/8 bit 量化 ， 可以保存量化模型
             model.half().quantize(4).cuda()
