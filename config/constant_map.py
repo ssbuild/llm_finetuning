@@ -29,6 +29,14 @@ train_info_models = {
         'config_name': '/data/nlp/pre_models/torch/llama/llama-7b-hf/config.json',
         'tokenizer_name': '/data/nlp/pre_models/torch/llama/llama-7b-hf',
     },
+
+    'Llama-2-7b-chat-hf':{
+        'model_type': 'llama',
+        'model_name_or_path': '/data/nlp/pre_models/torch/llama/Llama-2-7b-chat-hf',
+        'config_name': '/data/nlp/pre_models/torch/llama/Llama-2-7b-chat-hf/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/llama/Llama-2-7b-chat-hf',
+    },
+
     'chatyuan-7b': {
         'model_type': 'llama',
         'model_name_or_path': '/data/nlp/pre_models/torch/llama/ChatYuan-7B',
