@@ -15,8 +15,11 @@ from fastdatasets.record import load_dataset as Loader, RECORD, WriterObject, gf
 from transformers import PreTrainedTokenizer, HfArgumentParser, PretrainedConfig
 from data_processer import DataStrategy, TokenSupervision, TokenUnSupervision, TokenSupervisionRounds, \
     DEFAULT_EOS_TOKEN, DEFAULT_BOS_TOKEN, DEFAULT_UNK_TOKEN, DEFAULT_PAD_TOKEN
-
 from config import *
+from module_setup import module_setup
+
+
+module_setup()
 
 data_conf = {
     'strategy': DataStrategy.sup,  # 数据策略选项

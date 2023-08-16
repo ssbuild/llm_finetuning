@@ -8,30 +8,27 @@ from transformers import HfArgumentParser
 from data_utils import train_info_args, NN_DataHelper, get_deepspeed_config
 from aigc_zoo.model_zoo.llm.llm_model import MyTransformer
 from aigc_zoo.utils.llm_generate import Generate
+from aigc_zoo.model_zoo.chatglm2.llm_model import RotaryNtkScaledArguments,RotaryLinearScaledArguments # aigc-zoo 0.1.20
 
 deep_config = get_deepspeed_config()
 
-old_version = False
-try:
-    from transformers import AutoModelForCausalLM
-    from deep_training.utils.hf import register_transformer_model,register_transformer_config # noqa
-    from deep_training.nlp.models.rellama.modeling_llama import LlamaForCausalLM
-except:
-    old_version = True
-
-
 if __name__ == '__main__':
-    #导入模型
 
-    if not old_version:
-        if train_info_args['model_type'].lower() == 'llama':
-            register_transformer_model(LlamaForCausalLM,AutoModelForCausalLM)
-    parser = HfArgumentParser((ModelArguments, DataArguments))
-    model_args, data_args = parser.parse_dict(train_info_args, allow_extra_keys=True)
 
-    dataHelper = NN_DataHelper(model_args, None, data_args)
+    parser = HfArgumentParser((ModelArguments,))
+    (model_args,)  = parser.parse_dict(train_info_args, allow_extra_keys=True)
+
+    dataHelper = NN_DataHelper(model_args)
     tokenizer, config, _,_= dataHelper.load_tokenizer_and_config()
-    pl_model = MyTransformer(config=config, model_args=model_args,torch_dtype=config.torch_dtype,)
+
+    enable_ntk = False
+    rope_args = None
+    if enable_ntk and config.model_type == 'llama':
+        rope_args = RotaryNtkScaledArguments(name='rotary_emb',max_position_embeddings=2048, alpha=4)  # 扩展 8k
+        # rope_args = RotaryLinearScaledArguments(name='rotary_emb',max_position_embeddings=2048, scale=4) # 扩展 8k
+
+
+    pl_model = MyTransformer(config=config, model_args=model_args,torch_dtype=config.torch_dtype,rope_args=rope_args)
     model = pl_model.get_llm_model()
     model = model.eval()
     if hasattr(model,'quantize'):

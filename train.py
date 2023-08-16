@@ -29,8 +29,8 @@ if __name__ == '__main__':
 
     tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs=config_kwargs)
 
+    is_bf16_supported = torch.cuda.is_bf16_supported()
     dataHelper.make_dataset_all()
-
     deepspeed_config = get_deepspeed_config()
     strategy = 'ddp' if torch.cuda.device_count() > 1 else 'auto'
     if deepspeed_config is not None and len(deepspeed_config):
@@ -47,6 +47,11 @@ if __name__ == '__main__':
         prompt_args=prompt_args,
     )
 
+    # 精度 根据实际情况做调整
+    if is_bf16_supported:
+        precision = 'bf16'
+    else:
+        precision = '16'
     trainer = Trainer(
         callbacks=[checkpoint_callback, LearningRateMonitor(logging_interval='step')],
         max_epochs=training_args.max_epochs,
@@ -60,7 +65,7 @@ if __name__ == '__main__':
         num_sanity_val_steps=0,
         strategy=strategy,
         # lora int8 precision='32'
-        precision='16',# 可以自行尝试  "32": "32-true", "16": "16-mixed", "bf16": "bf16-mixed"
+        precision=precision,# 可以自行尝试  "32": "32-true", "16": "16-mixed", "bf16": "bf16-mixed"
     )
 
 
@@ -79,7 +84,7 @@ if __name__ == '__main__':
     # 加载sft权重
     # pl_model.load_sft_weight('./best_ckpt/best.pt',is_trainable=True)
 
-    pl_model.float()
+    pl_model = pl_model.float() if not is_bf16_supported else pl_model.bfloat16()
 
     def dataset_loader_filter_fn(dataset):
         print('*' * 30, 'total', len(dataset))

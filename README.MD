@@ -2,6 +2,7 @@
    - [deep_training](https://github.com/ssbuild/deep_training)
 
 ```text
+    08-16 推理可选使用 Rope NtkScale , 不训练扩展推理长度
     08-02 增加 muti lora infer 例子, 手动升级 aigc_zoo , pip install -U git+https://github.com/ssbuild/aigc_zoo.git --force-reinstall --no-deps
     06-13 fix llama resize_token_embeddings
     06-01 support deepspeed training for lora adalora prompt,0.1.9 和 0.1.10合并
@@ -36,7 +37,7 @@
 - [Llama2-Chinese-7b-Chat](https://huggingface.co/FlagAlpha/Llama2-Chinese-7b-Chat)
 - [Llama2-Chinese-13b-Chat](https://huggingface.co/FlagAlpha/Llama2-Chinese-13b-Chat)
 - [TransGPT](https://huggingface.co/DUOMO-Lab/TransGPT-v0) Llama2中文权重
-
+- [tigerbot-13b-chat](https://huggingface.co/TigerResearch/tigerbot-13b-chat) Llama2中文权重
 
 ## data sample
    open_data https://github.com/ssbuild/open_data
