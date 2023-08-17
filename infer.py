@@ -12,6 +12,43 @@ from aigc_zoo.model_zoo.chatglm2.llm_model import RotaryNtkScaledArguments,Rotar
 
 deep_config = get_deepspeed_config()
 
+
+def infer_tiger(model,tokenizer,max_input_length=512):
+    tok_ins = "\n\n### Instruction:\n"
+    tok_res = "\n\n### Response:\n"
+    prompt_input = tok_ins + "{instruction}" + tok_res
+
+    generation_config = {
+        "do_sample": True,
+        "eos_token_id": 2,
+        "max_length": max_input_length,
+        "pad_token_id": 60514,
+        "repetition_penalty": 1.1,
+        "temperature": 0.3,
+        "transformers_version": "4.31.0"
+    }
+    text_list = ["写一个诗歌，关于冬天",
+                 "晚上睡不着应该怎么办",
+                 "从南京到上海的路线",
+                 ]
+
+    for input in text_list:
+        sess_text = ''
+
+        query_text = input.strip()
+        sess_text += tok_ins + query_text
+        input_text = prompt_input.format_map({'instruction': sess_text.split(tok_ins, 1)[1]})
+        inputs = tokenizer(input_text, return_tensors='pt', truncation=True, max_length=max_input_length)
+        inputs = {k: v.to(model.device) for k, v in inputs.items()}
+        output = model.generate(**inputs, **generation_config)
+        output_str = tokenizer.decode(output[0], skip_special_tokens=False, spaces_between_special_tokens=False)
+        answer = output_str.rsplit(tok_res, 1)[1].strip()
+        if answer.endswith(tokenizer.eos_token):
+            answer = answer.rsplit(tokenizer.eos_token, 1)[0].strip()
+
+        print('input', input)
+        print('output', answer)
+
 if __name__ == '__main__':
 
 
@@ -45,13 +82,16 @@ if __name__ == '__main__':
     else:
         model.half().cuda()
 
-    text_list = ["写一个诗歌，关于冬天",
-                 "晚上睡不着应该怎么办",
-                 "从南京到上海的路线",
-                 ]
-    for input in text_list:
-        response = Generate.generate(model, query=input, tokenizer=tokenizer, max_length=512,
-                                          eos_token_id=config.eos_token_id,
-                                          do_sample=False, top_p=0.7, temperature=0.95, )
-        print('input', input)
-        print('output', response)
+    if train_info_args['model_name_or_path'].lower().find('tiger') >=0:
+        infer_tiger(model,tokenizer)
+    else:
+        text_list = ["写一个诗歌，关于冬天",
+                     "晚上睡不着应该怎么办",
+                     "从南京到上海的路线",
+                     ]
+        for input in text_list:
+            response = Generate.generate(model, query=input, tokenizer=tokenizer, max_length=512,
+                                              eos_token_id=config.eos_token_id,
+                                              do_sample=False, top_p=0.7, temperature=0.95, )
+            print('input', input)
+            print('output', response)
