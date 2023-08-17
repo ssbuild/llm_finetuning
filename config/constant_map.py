@@ -57,6 +57,20 @@ train_info_models = {
         'config_name': '/data/nlp/pre_models/torch/llama/ChatYuan-7B/config.json',
         'tokenizer_name': '/data/nlp/pre_models/torch/llama/ChatYuan-7B',
     },
+    'tigerbot-13b-chat': {
+        'model_type': 'llama',
+        'model_name_or_path': '/data/nlp/pre_models/torch/llama/tigerbot-13b-chat',
+        'config_name': '/data/nlp/pre_models/torch/llama/tigerbot-13b-chat/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/llama/tigerbot-13b-chat',
+    },
+    'tigerbot-13b-chat-int4': {
+        'model_type': 'llama',
+        'model_name_or_path': '/data/nlp/pre_models/torch/llama/tigerbot-13b-chat-int4',
+        'config_name': '/data/nlp/pre_models/torch/llama/tigerbot-13b-chat-int4/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/llama/tigerbot-13b-chat-int4',
+    },
+
+
 
     'rwkv-4-430m-pile': {
         'model_type': 'rwkv',

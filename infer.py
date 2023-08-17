@@ -3,7 +3,7 @@
 # @FileName: infer
 
 import torch
-from deep_training.data_helper import ModelArguments, DataArguments
+from deep_training.data_helper import ModelArguments
 from transformers import HfArgumentParser
 from data_utils import train_info_args, NN_DataHelper, get_deepspeed_config
 from aigc_zoo.model_zoo.llm.llm_model import MyTransformer
