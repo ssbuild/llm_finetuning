@@ -9,12 +9,12 @@ from lightning.pytorch.callbacks import LearningRateMonitor
 from lightning.pytorch.strategies import DeepSpeedStrategy
 from transformers import HfArgumentParser
 from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config, global_args
-from aigc_zoo.model_zoo.llm.llm_model import MyTransformer, LoraArguments, LoraConfig, PromptArguments
+from aigc_zoo.model_zoo.llm.llm_model import MyTransformer, EffiArguments, LoraConfig, PromptArguments
 
 
 
 if __name__ == '__main__':
-    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, LoraArguments,PromptArguments))
+    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, EffiArguments,PromptArguments))
     model_args, training_args, data_args, lora_args,prompt_args = parser.parse_dict(train_info_args)
     lora_args = lora_args.config
     prompt_args = prompt_args.config
