@@ -3,7 +3,7 @@
 # @Author: tk
 # @File：model_maps
 
-train_info_models = {
+__model_path__ = {
     'bloom-560m': {
         'model_type': 'bloom',
         'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',
@@ -101,3 +101,7 @@ train_target_modules_maps = {
     'cpmant' : ['project_q','project_v'],
     'rwkv' : ['key','value','receptance'],
 }
+
+
+train_model_config = __model_path__['bloom-560m']
+
