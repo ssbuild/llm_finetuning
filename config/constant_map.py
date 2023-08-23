@@ -3,7 +3,7 @@
 # @Author: tk
 # @File：model_maps
 
-train_info_models = {
+__model_path__ = {
     'bloom-560m': {
         'model_type': 'bloom',
         'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',
@@ -57,6 +57,20 @@ train_info_models = {
         'config_name': '/data/nlp/pre_models/torch/llama/ChatYuan-7B/config.json',
         'tokenizer_name': '/data/nlp/pre_models/torch/llama/ChatYuan-7B',
     },
+    'tigerbot-13b-chat': {
+        'model_type': 'llama',
+        'model_name_or_path': '/data/nlp/pre_models/torch/llama/tigerbot-13b-chat',
+        'config_name': '/data/nlp/pre_models/torch/llama/tigerbot-13b-chat/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/llama/tigerbot-13b-chat',
+    },
+    'tigerbot-13b-chat-int4': {
+        'model_type': 'llama',
+        'model_name_or_path': '/data/nlp/pre_models/torch/llama/tigerbot-13b-chat-int4',
+        'config_name': '/data/nlp/pre_models/torch/llama/tigerbot-13b-chat-int4/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/llama/tigerbot-13b-chat-int4',
+    },
+
+
 
     'rwkv-4-430m-pile': {
         'model_type': 'rwkv',
@@ -87,3 +101,7 @@ train_target_modules_maps = {
     'cpmant' : ['project_q','project_v'],
     'rwkv' : ['key','value','receptance'],
 }
+
+
+train_model_config = __model_path__['bloom-560m']
+

@@ -9,12 +9,12 @@ from lightning.pytorch.callbacks import LearningRateMonitor
 from lightning.pytorch.strategies import DeepSpeedStrategy
 from transformers import HfArgumentParser
 from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config, global_args
-from aigc_zoo.model_zoo.llm.llm_model import MyTransformer, LoraArguments, LoraConfig, PromptArguments
+from aigc_zoo.model_zoo.llm.llm_model import MyTransformer, PetlArguments, LoraConfig, PromptArguments
 
 
 
 if __name__ == '__main__':
-    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, LoraArguments,PromptArguments))
+    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, PetlArguments,PromptArguments))
     model_args, training_args, data_args, lora_args,prompt_args = parser.parse_dict(train_info_args)
     lora_args = lora_args.config
     prompt_args = prompt_args.config
@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs=config_kwargs)
 
-    is_bf16_supported = torch.cuda.is_bf16_supported()
+
     dataHelper.make_dataset_all()
     deepspeed_config = get_deepspeed_config()
     strategy = 'ddp' if torch.cuda.device_count() > 1 else 'auto'
@@ -46,12 +46,16 @@ if __name__ == '__main__':
         lora_args=lora_args,
         prompt_args=prompt_args,
     )
-
+    is_bf16_supported = torch.cuda.is_bf16_supported()
     # 精度 根据实际情况做调整
     if is_bf16_supported:
         precision = 'bf16'
     else:
         precision = '16'
+
+    if global_args["quantization_config"] is not None and global_args["quantization_config"].load_in_8bit:
+        precision = "32"
+
     trainer = Trainer(
         callbacks=[checkpoint_callback, LearningRateMonitor(logging_interval='step')],
         max_epochs=training_args.max_epochs,
@@ -72,7 +76,6 @@ if __name__ == '__main__':
 
     pl_model = MyTransformer(config=config, model_args=model_args, training_args=training_args, lora_args=lora_args, prompt_args=prompt_args,
                              quantization_config=global_args["quantization_config"],
-                             load_in_8bit=global_args["load_in_8bit"],
                              device_map={"": trainer.local_rank} if trainer.world_size > 1 else "auto",
                              torch_dtype=torch.float16,
                              new_num_tokens=len(tokenizer), # 可能扩充词

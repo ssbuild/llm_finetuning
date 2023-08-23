@@ -3,13 +3,11 @@
 
 import json
 import os
-from config.constant_map import train_info_models
 
-train_model_config = train_info_models['bloom-560m']
+from config.constant_map import train_model_config
 
 global_args = {
-    "load_in_8bit": False, 
-    "load_in_4bit": False,
+
 
     #load_in_4bit 量化配置
     "quantization_config": None,
@@ -36,10 +34,8 @@ prompt_info_args = {
 train_info_args = {
     'devices': 1,
     'data_backend': 'parquet',  #one of record lmdb arrow_stream arrow_file,parquet, 超大数据集可以使用 lmdb , 注 lmdb 存储空间比record大
-     # 预训练模型配置
+    # 预训练模型配置
     **train_model_config,
-
-
 
     'convert_onnx': False, # 转换onnx模型
     'do_train': True,
