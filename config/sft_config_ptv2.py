@@ -4,7 +4,7 @@
 import json
 import os
 
-from config import train_model_config
+from config.constant_map import train_model_config
 
 global_args = {
 

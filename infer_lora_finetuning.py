@@ -7,7 +7,7 @@ from deep_training.data_helper import ModelArguments
 from transformers import HfArgumentParser,AutoConfig
 
 from data_utils import train_info_args, NN_DataHelper,global_args
-from aigc_zoo.model_zoo.llm.llm_model import MyTransformer,EffiArguments,PromptArguments
+from aigc_zoo.model_zoo.llm.llm_model import MyTransformer,PetlArguments,PromptArguments
 from aigc_zoo.utils.llm_generate import Generate
 
 
@@ -25,7 +25,7 @@ if __name__ == '__main__':
     ckpt_dir = './best_ckpt/last'
 
     config = AutoConfig.from_pretrained(ckpt_dir)
-    lora_args = EffiArguments.from_pretrained(ckpt_dir)
+    lora_args = PetlArguments.from_pretrained(ckpt_dir)
 
     assert lora_args.inference_mode == True
 
