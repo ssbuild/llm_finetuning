@@ -70,6 +70,13 @@ __model_path__ = {
         'tokenizer_name': '/data/nlp/pre_models/torch/llama/tigerbot-13b-chat-int4',
     },
 
+    'openbuddy-llama2-70b-v10.1': {
+        'model_type': 'llama',
+        'model_name_or_path': '/data/nlp/pre_models/torch/llama/openbuddy-llama2-70b-v10.1-bf16',
+        'config_name': '/data/nlp/pre_models/torch/llama/openbuddy-llama2-70b-v10.1-bf16/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/llama/openbuddy-llama2-70b-v10.1-bf16',
+    },
+
 
 
     'rwkv-4-430m-pile': {
