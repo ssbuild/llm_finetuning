@@ -13,8 +13,8 @@ from deep_training.data_helper import DataHelper, ModelArguments, TrainingArgume
 from aigc_zoo.model_zoo.llm.llm_model import PetlArguments,LoraConfig,PromptArguments
 from fastdatasets.record import load_dataset as Loader, RECORD, WriterObject, gfile
 from transformers import PreTrainedTokenizer, HfArgumentParser, PretrainedConfig
-from data_processer import DataStrategy, TokenSupervision, TokenUnSupervision, TokenSupervisionRounds, \
-    DEFAULT_EOS_TOKEN, DEFAULT_BOS_TOKEN, DEFAULT_UNK_TOKEN, DEFAULT_PAD_TOKEN
+from data_processer import DataStrategy, TokenTunction,TokenSlidding, \
+    DEFAULT_EOS_TOKEN, DEFAULT_BOS_TOKEN, DEFAULT_UNK_TOKEN, DEFAULT_PAD_TOKEN,build_template # noqa
 from config import *
 from module_setup import module_setup
 
@@ -22,15 +22,15 @@ from module_setup import module_setup
 module_setup()
 
 data_conf = {
-    'strategy': DataStrategy.sup,  # 数据策略选项
-    DataStrategy.sup: {
-        'stride':  int(train_info_args['max_seq_length'] / 3 * 2),
+    'strategy': DataStrategy.tunction,  # 数据策略选项
+    DataStrategy.tunction: {
+        'ensure_answer_min_length': 1,
+        'sup': True, # 是否监督模式
     },
-    DataStrategy.unsup: {
-        'stride':  int(train_info_args['max_seq_length'] / 3 * 2),
-    },
-    DataStrategy.sub_rounds: {
+
+    DataStrategy.slidding: {
         'stride': int(train_info_args['max_seq_length'] / 3 * 2),
+        'sup': True, # 是否监督模式
     }
 
 }
@@ -49,8 +49,7 @@ class NN_DataHelper(DataHelper):
 
     def __init__(self, *args, **kwargs):
         super(NN_DataHelper, self).__init__(*args, **kwargs)
-        assert data_conf[DataStrategy.sup]['stride'] > 0
-        assert data_conf[DataStrategy.unsup]['stride'] > 0
+        assert data_conf[DataStrategy.slidding]['stride'] > 0
 
     def load_tokenizer_and_config(self, *args, **kwargs):
         ret = super().load_tokenizer_and_config(*args, **kwargs)
@@ -116,15 +115,14 @@ class NN_DataHelper(DataHelper):
 
         examples = data
 
-
         strategy = data_conf['strategy']
-        if strategy == DataStrategy.sup:
-            ds = TokenSupervision.process(tokenizer, config=config,  max_seq_length=max_seq_length, examples=examples,**data_conf[strategy])
-        elif strategy == DataStrategy.unsup:
-            ds = TokenUnSupervision.process(tokenizer, config=config,  max_seq_length=max_seq_length, examples=examples, **data_conf[strategy])
-        elif strategy == DataStrategy.sub_rounds:
-            ds = TokenSupervisionRounds.process(tokenizer, config=config, max_seq_length=max_seq_length, examples=examples,
-                                            **data_conf[strategy])
+        if strategy == DataStrategy.tunction:
+            ds = TokenTunction.process(tokenizer, config=config, max_seq_length=max_seq_length, examples=examples,
+                                       **data_conf[strategy])
+        elif strategy == DataStrategy.slidding:
+            ds = TokenSlidding.process(tokenizer, config=config, max_seq_length=max_seq_length, examples=examples,
+                                       **data_conf[strategy])
+
         else:
             raise ValueError('Invalid strategy', strategy)
         if not ds:
