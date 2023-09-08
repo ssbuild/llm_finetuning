@@ -76,7 +76,7 @@ class TokenTunction:
             if len(prefix) > 0:
                 a_ids += tokenizer.encode(text=prefix, add_special_tokens=False)
 
-            a_ids += tokenizer.encode(text=build_template(q,a,history=examples[:sid+1]), add_special_tokens=False)
+            a_ids += tokenizer.encode(text=build_template(q, history=examples[:sid]), add_special_tokens=False)
             b_ids = tokenizer.encode(text=a) + [config.eos_token_id]
 
             a_max_len = max(max_seq_length - len(b_ids) - 3 - ensure_answer_min_length,0)
@@ -107,7 +107,7 @@ class TokenSlidding:
             if len(prefix) > 0:
                 a_ids += tokenizer.encode(text=prefix, add_special_tokens=False)
 
-            a_ids += tokenizer.encode(text=build_template(q, a, history=examples[:sid + 1]), add_special_tokens=False)
+            a_ids += tokenizer.encode(text=build_template(q, history=examples[:sid]), add_special_tokens=False)
             b_ids = tokenizer.encode(text=a) + [config.eos_token_id]
 
             input_ids_all = a_ids + b_ids
