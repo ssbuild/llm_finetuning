@@ -44,8 +44,8 @@ def build_template_default(query, answer = None, history=None):
     if history is not None:
         for q,a in history:
             prompt += "User: {}\nAssistant:{}".format(q,a)
-    prompt +=  "User: {}\nAssistant:".format(query)
-    if answer is None:
+    prompt += "User: {}\nAssistant:".format(query)
+    if answer is not None:
         prompt += answer
     return prompt
 
@@ -58,7 +58,7 @@ def build_template_tiger(query,answer = None, history=None):
             prompt += "{}{}{}{}".format(tok_ins,q,tok_res,a)
 
     prompt += "{}{}{}".format(tok_ins, query, tok_res)
-    if answer is None:
+    if answer is not None:
         prompt += answer
     return prompt
 
