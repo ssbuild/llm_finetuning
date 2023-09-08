@@ -5,7 +5,7 @@
 import torch
 from deep_training.data_helper import ModelArguments
 from transformers import HfArgumentParser, AutoConfig
-from data_utils import train_info_args, NN_DataHelper, get_deepspeed_config
+from data_utils import train_info_args, NN_DataHelper, get_deepspeed_config,build_template
 from aigc_zoo.model_zoo.llm.llm_model import MyTransformer
 from aigc_zoo.utils.llm_generate import Generate
 
@@ -49,7 +49,7 @@ if __name__ == '__main__':
                  "从南京到上海的路线",
                  ]
     for input in text_list:
-        response = Generate.generate(model, query=input, tokenizer=tokenizer, max_length=512,
+        response = Generate.generate(model, query=build_template(input), tokenizer=tokenizer, max_length=512,
                                      eos_token_id=config.eos_token_id,
                                      do_sample=False, top_p=0.7, temperature=0.95, )
         print('input', input)
