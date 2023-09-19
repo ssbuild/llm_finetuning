@@ -22,6 +22,8 @@ else:
 if global_args['quantization_config'] is not None:
     global_args['quantization_config'].load_in_4bit = load_in_bit == 4
     global_args['quantization_config'].load_in_8bit = load_in_bit == 8
+    if load_in_bit == 0:
+        global_args["quantization_config"] = None
 
 if enable_lora:
     enable_ptv2 = False
@@ -50,7 +52,7 @@ if 'rwkv' in train_info_args['tokenizer_name'].lower():
 
 
 
-def get_deepspeed_config():
+def get_deepspeed_config(precision):
     '''
         lora prompt finetuning   deepspeed_offload.json
         普通  finetuning          deepspeed.json
@@ -58,7 +60,7 @@ def get_deepspeed_config():
     # 是否开启deepspeed
     if not enable_deepspeed:
         return None
-
+    precision = str(precision).lower()
     # 选择 deepspeed 配置文件
     is_need_update_config = False
     if enable_lora:
@@ -80,5 +82,16 @@ def get_deepspeed_config():
             optimizer['params']['eps'] = train_info_args.get('adam_epsilon', 1e-8)
             # deepspeed_offload 优化器有效
             train_info_args['optimizer'] = optimizer['type']
+
+    if precision == 'bf16':
+        if 'fp16' in deepspeed_config:
+            deepspeed_config["fp16"]["enbale"] = False
+        if 'bf16' in deepspeed_config:
+            deepspeed_config["bf16"]["enbale"] = True
+        else:
+            deepspeed_config['bf16'] = {"enbale": True}
+    elif precision == 'fp16':
+        if 'bf16' in deepspeed_config:
+            deepspeed_config["bf16"]["enbale"] = False
     return deepspeed_config
 
