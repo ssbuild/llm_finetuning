@@ -52,7 +52,7 @@ if 'rwkv' in train_info_args['tokenizer_name'].lower():
 
 
 
-def get_deepspeed_config(precision):
+def get_deepspeed_config(precision='fp16'):
     '''
         lora prompt finetuning   deepspeed_offload.json
         普通  finetuning          deepspeed.json
