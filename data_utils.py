@@ -13,8 +13,8 @@ from deep_training.data_helper import DataHelper, ModelArguments, TrainingArgume
 from aigc_zoo.model_zoo.llm.llm_model import PetlArguments,LoraConfig,PromptArguments
 from fastdatasets.record import load_dataset as Loader, RECORD, WriterObject, gfile
 from transformers import PreTrainedTokenizer, HfArgumentParser, PretrainedConfig
-from data_processer import DataStrategy, TokenTunction,TokenSlidding, \
-    DEFAULT_EOS_TOKEN, DEFAULT_BOS_TOKEN, DEFAULT_UNK_TOKEN, DEFAULT_PAD_TOKEN,build_template # noqa
+from data_processer import DataStrategy, TokenIdsMaker, build_template, DEFAULT_PAD_TOKEN, DEFAULT_EOS_TOKEN, \
+    DEFAULT_BOS_TOKEN, DEFAULT_UNK_TOKEN
 from config import *
 from module_setup import module_setup
 
@@ -24,13 +24,14 @@ module_setup()
 data_conf = {
     'strategy': DataStrategy.tunction,  # 数据策略选项
     DataStrategy.tunction: {
-        'ensure_answer_min_length': 1,
         'sup': True, # 是否监督模式
     },
 
     DataStrategy.slidding: {
         'stride': int(train_info_args['max_seq_length'] / 3 * 2),
         'sup': True, # 是否监督模式
+        "src_max_length": train_info_args['max_seq_length'] - 10,
+        "dst_max_length": None,
     }
 
 }
@@ -117,11 +118,11 @@ class NN_DataHelper(DataHelper):
 
         strategy = data_conf['strategy']
         if strategy == DataStrategy.tunction:
-            ds = TokenTunction.process(tokenizer, config=config, max_seq_length=max_seq_length, examples=examples,
-                                       **data_conf[strategy])
+            ds = TokenIdsMaker.tunction(tokenizer, config=config, max_seq_length=max_seq_length, examples=examples,
+                                        **data_conf[strategy])
         elif strategy == DataStrategy.slidding:
-            ds = TokenSlidding.process(tokenizer, config=config, max_seq_length=max_seq_length, examples=examples,
-                                       **data_conf[strategy])
+            ds = TokenIdsMaker.slidding(tokenizer, config=config, max_seq_length=max_seq_length, examples=examples,
+                                        **data_conf[strategy])
 
         else:
             raise ValueError('Invalid strategy', strategy)
