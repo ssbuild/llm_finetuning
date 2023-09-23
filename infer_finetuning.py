@@ -14,7 +14,7 @@ deep_config = get_deepspeed_config()
 
 if __name__ == '__main__':
     parser = HfArgumentParser((ModelArguments,))
-    model_args, data_args  = parser.parse_dict(train_info_args, allow_extra_keys=True)
+    model_args  = parser.parse_dict(train_info_args, allow_extra_keys=True)
 
     dataHelper = NN_DataHelper(model_args)
     tokenizer, _, _,_= dataHelper.load_tokenizer_and_config()
