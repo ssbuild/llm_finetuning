@@ -139,3 +139,28 @@ train_info_args = {
 
 
 
+
+train_info_args_hf = {
+    "output_dir": "./checkpoints",
+    "num_train_epochs": 150,
+    "fp16": True,
+    "per_device_train_batch_size": 2,
+    "per_device_eval_batch_size": 2,
+    "gradient_accumulation_steps": 1,
+    "evaluation_strategy": "steps",
+    "eval_steps": 100,
+    "save_strategy": "steps",
+    "save_steps": 200,
+    "save_total_limit": 2,
+    "learning_rate": 2e-5,
+    "weight_decay": 0.,
+    "warmup_ratio": 0.03,
+    "lr_scheduler_type": "cosine",
+    "logging_strategy": "steps",
+    "logging_steps": 1,
+    "tf32": True,
+    "model_max_length": 2048,
+    "gradient_checkpointing": True,
+}
+
+
