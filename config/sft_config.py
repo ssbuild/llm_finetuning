@@ -88,3 +88,51 @@ train_info_args = {
 
 
 
+train_info_args_hf = {
+    'data_backend': 'parquet',  #one of record lmdb arrow_stream arrow_file,parquet, 超大数据集可以使用 lmdb , 注 lmdb 存储空间比record大
+    # 预训练模型配置
+    **train_model_config,
+
+    "output_dir": "./outputs_hf",
+    "num_train_epochs": 20,
+    "max_steps": -1,
+    "dataloader_drop_last": True,
+    "save_safetensors": False,
+    "save_strategy": "steps",
+    "save_steps": 2000,
+    "save_total_limit":  None,
+    "seed": 42,
+    "fp16": True,
+    'do_train': True,
+    'train_file': [ './data/finetune_train_examples.json' ],
+    'do_eval': False,
+    'do_predict': False,
+    "per_device_train_batch_size": 2,
+    "per_device_eval_batch_size": 2,
+    "gradient_accumulation_steps": 1,
+    "evaluation_strategy": "steps",
+    "eval_steps": 100,
+    "optim": "adamw_torch",
+    "torch_compile": True,
+    "learning_rate": 2e-5,
+    "adam_beta1": 0.9,
+    "adam_beta2": 0.999,
+    "adam_epsilon": 1e-8,
+    "max_grad_norm": 1.0,
+    "weight_decay": 0.,
+    "warmup_ratio": 0.03,
+    "lr_scheduler_type": "cosine",
+    "logging_strategy": "steps",
+    "logging_steps": 1,
+    "tf32": True,
+    "gradient_checkpointing": True,
+    'max_seq_length': 512,  #
+    'max_target_length': 100,  # 预测最大长度, 保留字段
+    'use_fast_tokenizer': False,
+    # 'do_lower_case': False,
+
+
+}
+
+
+

@@ -14,7 +14,6 @@ import transformers
 from transformers import (
     HfArgumentParser,
     Trainer,
-    TrainingArguments,
     default_data_collator,
     set_seed,
 )
@@ -25,10 +24,10 @@ from transformers.utils.versions import require_version
 
 from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config, global_args
 from aigc_zoo.model_zoo.llm.llm_model import MyTransformer, PetlArguments, LoraConfig, PromptArguments
-from deep_training.data_helper import ModelArguments, DataArguments
+from deep_training.data_helper import ModelArguments, DataArguments,TrainingArgumentsHF
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
-check_min_version("4.34.0.dev0")
+check_min_version("4.33.2")
 
 require_version("datasets>=1.8.0", "To fix: pip install -r examples/pytorch/language-modeling/requirements.txt")
 
@@ -43,8 +42,9 @@ logging.basicConfig(
 )
 
 def main():
-    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, PetlArguments, PromptArguments))
-    model_args, training_args, data_args, lora_args, prompt_args = parser.parse_dict(train_info_args)
+    parser = HfArgumentParser((ModelArguments, TrainingArgumentsHF, DataArguments, PetlArguments, PromptArguments),
+                              conflict_handler='resolve')
+    model_args, training_args, data_args, lora_args, prompt_args = parser.parse_dict(train_info_args,allow_extra_keys=True,)
     lora_args = lora_args.config
     prompt_args = prompt_args.config
 
@@ -78,6 +78,14 @@ def main():
     if global_args["quantization_config"] is not None and global_args["quantization_config"].load_in_8bit:
         precision = "32"
 
+    training_args: TrainingArgumentsHF
+    if str(precision) == '16':
+        training_args.fp16 = True
+    elif str(precision) == 'bf16':
+        training_args.bf16 = True
+    else:
+        training_args.fp16 = False
+        training_args.bf16 = False
 
     # Log on each process the small summary:
     logger.warning(
