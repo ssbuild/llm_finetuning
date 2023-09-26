@@ -244,8 +244,7 @@ class NN_DataHelper(DataHelper):
 
 if __name__ == '__main__':
 
-
-    if trainer_backend == "hf":
+    if global_args["trainer_backend"] == "hf":
         parser = HfArgumentParser((ModelArguments, TrainingArgumentsHF, DataArguments, PetlArguments, PromptArguments),
                                   conflict_handler='resolve')
         model_args, training_args, data_args, lora_args, prompt_args = parser.parse_dict(train_info_args,
