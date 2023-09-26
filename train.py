@@ -12,6 +12,7 @@ from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config, glo
 from aigc_zoo.model_zoo.llm.llm_model import MyTransformer, PetlArguments, LoraConfig, PromptArguments
 
 
+assert global_args["trainer_backend"] == "pl"
 
 if __name__ == '__main__':
     parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, PetlArguments,PromptArguments))
@@ -106,10 +107,11 @@ if __name__ == '__main__':
         with_load_memory=data_args.data_backend == 'record',
         collate_fn=dataHelper.collate_fn,
         batch_size=training_args.train_batch_size,
-        drop_last=True,  # 多卡建议扔掉
+        drop_last=training_args.dataloader_drop_last,  # 多卡建议扔掉
         num_processes=trainer.world_size, process_index=trainer.global_rank,
         dataset_loader_filter_fn=dataset_loader_filter_fn,
-        num_workers=0
+        num_workers=training_args.dataloader_num_workers,
+        pin_memory=training_args.dataloader_pin_memory,
     )
 
     if train_datasets is not None:
