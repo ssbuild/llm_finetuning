@@ -8,11 +8,11 @@ from lightning import Trainer
 from lightning.pytorch.callbacks import LearningRateMonitor
 from lightning.pytorch.strategies import DeepSpeedStrategy
 from transformers import HfArgumentParser
-from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config, global_args,trainer_backend
+from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config, global_args
 from aigc_zoo.model_zoo.llm.llm_model import MyTransformer, PetlArguments, LoraConfig, PromptArguments
 
 
-assert trainer_backend == "pl"
+assert global_args["trainer_backend"] == "pl"
 
 if __name__ == '__main__':
     parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, PetlArguments,PromptArguments))

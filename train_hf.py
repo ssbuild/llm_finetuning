@@ -9,7 +9,6 @@ import os
 import sys
 import datasets
 import torch
-
 import transformers
 from deep_training.trainer.hf.trainer import TrainerHF
 from transformers import (
@@ -17,15 +16,14 @@ from transformers import (
     default_data_collator,
     set_seed,
 )
-from transformers.testing_utils import CaptureLogger
 from transformers.trainer_utils import get_last_checkpoint
 from transformers.utils import check_min_version, send_example_telemetry
 from transformers.utils.versions import require_version
-from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config, global_args,trainer_backend
+from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config, global_args
 from aigc_zoo.model_zoo.llm.llm_model import MyTransformer, PetlArguments, LoraConfig, PromptArguments
 from deep_training.data_helper import ModelArguments, DataArguments,TrainingArgumentsHF
 
-assert trainer_backend == "hf"
+assert global_args["trainer_backend"] == "hf"
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
 check_min_version("4.33.2")
@@ -33,7 +31,6 @@ check_min_version("4.33.2")
 require_version("datasets>=1.8.0", "To fix: pip install -r examples/pytorch/language-modeling/requirements.txt")
 
 logger = logging.getLogger(__name__)
-
 
 # Setup logging
 logging.basicConfig(
@@ -43,6 +40,7 @@ logging.basicConfig(
 )
 
 def main():
+    training_args: TrainingArgumentsHF
     parser = HfArgumentParser((ModelArguments, TrainingArgumentsHF, DataArguments, PetlArguments, PromptArguments),
                               conflict_handler='resolve')
     model_args, training_args, data_args, lora_args, prompt_args = parser.parse_dict(train_info_args,allow_extra_keys=True,)
@@ -80,7 +78,7 @@ def main():
     if global_args["quantization_config"] is not None and global_args["quantization_config"].load_in_8bit:
         precision = "32"
 
-    training_args: TrainingArgumentsHF
+
     if str(precision) == '16':
         training_args.fp16 = True
     elif str(precision) == 'bf16':
@@ -88,6 +86,10 @@ def main():
     else:
         training_args.fp16 = False
         training_args.bf16 = False
+
+    deepspeed_config = get_deepspeed_config(precision)
+    if deepspeed_config:
+        training_args.deepspeed = deepspeed_config
 
     # Log on each process the small summary:
     logger.warning(

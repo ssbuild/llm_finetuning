@@ -6,14 +6,6 @@ import os
 
 from config.constant_map import train_model_config
 
-global_args = {
-    #load_in_4bit 量化配置
-    "quantization_config": None,
-    "config_merge": {
-    }
-}
-
-
 
 
 prompt_info_args = {

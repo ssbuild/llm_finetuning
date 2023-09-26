@@ -4,15 +4,7 @@
 import json
 import os
 import torch
-from transformers import BitsAndBytesConfig
 from config.constant_map import train_model_config
-
-global_args = {
-    #load_in_4bit 量化配置
-    "quantization_config": None,
-    "config_merge": {
-    }
-}
 
 
 train_info_args = {
