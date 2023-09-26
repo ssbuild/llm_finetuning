@@ -9,7 +9,7 @@ import random
 import typing
 import numpy as np
 import torch
-from deep_training.data_helper import DataHelper, ModelArguments, TrainingArguments, DataArguments
+from deep_training.data_helper import DataHelper, ModelArguments, TrainingArguments,TrainingArgumentsHF, DataArguments
 from aigc_zoo.model_zoo.llm.llm_model import PetlArguments,LoraConfig,PromptArguments
 from fastdatasets.record import load_dataset as Loader, RECORD, WriterObject, gfile
 from transformers import PreTrainedTokenizer, HfArgumentParser, PretrainedConfig
@@ -243,9 +243,16 @@ class NN_DataHelper(DataHelper):
 
 
 if __name__ == '__main__':
-    parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, PetlArguments,PromptArguments))
-    model_args, training_args, data_args, _,_ = parser.parse_dict(train_info_args)
 
+
+    if trainer_backend == "hf":
+        parser = HfArgumentParser((ModelArguments, TrainingArgumentsHF, DataArguments, PetlArguments, PromptArguments),
+                                  conflict_handler='resolve')
+        model_args, training_args, data_args, lora_args, prompt_args = parser.parse_dict(train_info_args,
+                                                                                         allow_extra_keys=True, )
+    else:
+        parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, PetlArguments, PromptArguments))
+        model_args, training_args, data_args, _, _ = parser.parse_dict(train_info_args)
 
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
     tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})

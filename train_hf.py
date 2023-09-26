@@ -11,9 +11,9 @@ import datasets
 import torch
 
 import transformers
+from deep_training.trainer.hf.trainer import TrainerHF
 from transformers import (
     HfArgumentParser,
-    Trainer,
     default_data_collator,
     set_seed,
 )
@@ -21,10 +21,11 @@ from transformers.testing_utils import CaptureLogger
 from transformers.trainer_utils import get_last_checkpoint
 from transformers.utils import check_min_version, send_example_telemetry
 from transformers.utils.versions import require_version
-
-from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config, global_args
+from data_utils import NN_DataHelper, train_info_args, get_deepspeed_config, global_args,trainer_backend
 from aigc_zoo.model_zoo.llm.llm_model import MyTransformer, PetlArguments, LoraConfig, PromptArguments
 from deep_training.data_helper import ModelArguments, DataArguments,TrainingArgumentsHF
+
+assert trainer_backend == "hf"
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
 check_min_version("4.33.2")
@@ -134,15 +135,16 @@ def main():
             with_load_memory=data_args.data_backend == 'record',
             collate_fn=dataHelper.collate_fn,
             batch_size=training_args.train_batch_size,
-            drop_last=True,  # 多卡建议扔掉
+            drop_last=training_args.dataloader_drop_last,  # 多卡建议扔掉
             num_processes=world_size, process_index=process_index,
-            num_workers=0
+            num_workers = training_args.dataloader_num_workers,
+            pin_memory = training_args.dataloader_pin_memory,
         )
 
 
 
     # Initialize our Trainer
-    trainer = Trainer(
+    trainer = TrainerHF(
         model=pl_model,
         args=training_args,
         train_dataset=train_datasets,
