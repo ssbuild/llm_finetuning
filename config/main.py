@@ -48,6 +48,8 @@ def patch_args(train_info_args):
         enable_lora = False
         train_info_args.pop('lora', None)
         train_info_args.pop('adalora', None)
+        if hasattr(train_info_args,"gradient_checkpointing"):
+            train_info_args.gradient_checkpointing = False
     else:
         train_info_args.pop('lora',None)
         train_info_args.pop('adalora', None)

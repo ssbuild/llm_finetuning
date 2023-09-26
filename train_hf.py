@@ -67,7 +67,8 @@ def main():
 
     tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs=config_kwargs)
 
-    dataHelper.make_dataset_all()
+    with training_args.main_process_first(desc="make_dataset_all"):
+        dataHelper.make_dataset_all()
 
     is_bf16_supported = torch.cuda.is_bf16_supported()
     # 精度 根据实际情况做调整
@@ -128,6 +129,13 @@ def main():
 
     pl_model = MyTransformer(**transformer_args)
 
+    config.save_pretrained(training_args.output_dir)
+
+    # 加载sft权重
+    # pl_model.load_sft_weight('./best_ckpt/best.pt',is_trainable=True)
+
+    pl_model = pl_model.float() if not is_bf16_supported else pl_model.bfloat16()
+
     train_datasets = None
     if training_args.do_train:
         train_datasets = dataHelper.load_distributed_random_sampler(
@@ -164,12 +172,7 @@ def main():
         trainer.save_model()  # Saves the tokenizer too for easy upload
 
         metrics = train_result.metrics
-
-        max_train_samples = (
-            data_args.max_train_samples if data_args.max_train_samples is not None else len(train_datasets)
-        )
-        metrics["train_samples"] = min(max_train_samples, len(train_datasets))
-
+        metrics["train_samples"] = len(train_datasets)
         trainer.log_metrics("train", metrics)
         trainer.save_metrics("train", metrics)
         trainer.save_state()
