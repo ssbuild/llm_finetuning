@@ -43,7 +43,7 @@ else:
     from config.sft_config import train_info_args,train_info_args_hf,train_model_config
 
 
-if global_args["trainer_backend"]:
+if global_args["trainer_backend"] == "hf":
     train_info_args = train_info_args_hf
 
 
