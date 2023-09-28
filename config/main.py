@@ -100,7 +100,7 @@ def get_deepspeed_config(precision='fp16'):
     precision = str(precision).lower()
     # 选择 deepspeed 配置文件
     is_need_update_config = False
-    if global_args["enable_lora"]:
+    if global_args["enable_lora"] or global_args["enable_ptv2"]:
         is_need_update_config = True
         filename = os.path.join(os.path.dirname(__file__), 'deepspeed_offload.json')
     else:
