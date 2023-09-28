@@ -63,22 +63,25 @@ def patch_args(train_info_args):
         #检查lora adalora是否开启
         if 'lora' not in train_info_args and 'adalora' not in train_info_args:
             raise ValueError('please config lora or adalora')
-        if train_info_args.get('lora',{}).get('with_lora',False) and train_info_args.get('adalora',{}).get('with_lora',False):
-            raise Exception('lora and adalora can set one at same time !')
+        assert train_info_args.get('lora',{}).get('with_lora',False) + \
+            train_info_args.get('adalora',{}).get('with_lora',False) + \
+            train_info_args.get('ia3',{}).get('with_lora',False) == 1 , ValueError('lora adalora ia3 can set one at same time !')
 
         train_info_args.pop('prompt', None)
     elif global_args["enable_ptv2"]:
         train_info_args.pop('lora', None)
         train_info_args.pop('adalora', None)
+        train_info_args.pop('ia3', None)
         if hasattr(train_info_args,"gradient_checkpointing"):
             train_info_args.gradient_checkpointing = False
     else:
         train_info_args.pop('lora',None)
         train_info_args.pop('adalora', None)
         train_info_args.pop('prompt', None)
+        train_info_args.pop('ia3', None)
 
     # 预处理
-    if 'rwkv' in train_info_args[ 'tokenizer_name' ].lower():
+    if 'rwkv' in (train_info_args[ 'tokenizer_name' ] or train_info_args[ 'model_name_or_path' ]).lower():
         train_info_args[ 'use_fast_tokenizer' ] = True
 
 
