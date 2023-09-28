@@ -203,6 +203,7 @@ train_info_args_hf = {
     ##############  lora模块
     'lora': lora_info_args,
     'adalora': adalora_info_args,
+    "ia3": ia3_info_args,
 
 }
 
