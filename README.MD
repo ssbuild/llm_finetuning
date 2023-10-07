@@ -2,6 +2,7 @@
    - [deep_training](https://github.com/ssbuild/deep_training)
 
 ```text
+    10-07 support colossalai trainer
     09-26 support transformers trainer
     08-16 推理可选使用 Rope NtkScale , 不训练扩展推理长度
     08-02 增加 muti lora infer 例子, 手动升级 aigc_zoo , pip install -U git+https://github.com/ssbuild/aigc_zoo.git --force-reinstall --no-deps
@@ -126,7 +127,7 @@ a answer   must
 
    
     # colossalai 训练 
-    colossalai run --nproc_per_node 1 train_cl.py
+    colossalai run --nproc_per_node 1 --num_nodes 1 train_cl.py
 ```
    
 ## 训练参数

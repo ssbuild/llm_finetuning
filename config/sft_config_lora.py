@@ -4,6 +4,8 @@
 import json
 import os
 import torch
+
+from config.colossalai_config import colossalai_strategy
 from config.constant_map import (train_model_config,
                                 TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING,
                                 TRANSFORMERS_MODELS_TO_ADALORA_TARGET_MODULES_MAPPING,
@@ -216,7 +218,9 @@ train_info_args_colossalai = {
     'data_backend': 'parquet',  #one of record lmdb arrow_stream arrow_file,parquet, 超大数据集可以使用 lmdb , 注 lmdb 存储空间比record大
     # 预训练模型配置
     **train_model_config,
-    "strategy": "ddp", # ddp,gemini,zero2,zero2_cpu
+
+    # 目前仅ddp 支持lora
+    "strategy": colossalai_strategy[ "ddp" ],  # ddp,gemini,zero2,zero2_cpu,3d
     "output_dir": "./outputs_cl",
     "overwrite_output_dir": True,
     "num_train_epochs": 20,
@@ -233,9 +237,16 @@ train_info_args_colossalai = {
     'do_predict': False,
     "per_device_train_batch_size": 2,
     "per_device_eval_batch_size": 2,
-    "gradient_accumulation_steps": 1,
+    "gradient_accumulation_steps": 1, # colossalai不支持地图积累
     "evaluation_strategy": "no",
     "eval_steps": 100,
+
+    # 优化器，如果策略使用 gemini , 则 optim one of adam_hybrid_cl,adam_cpu_cl,adam_fused_cl
+    # 如果策略使用非 gemini ,则 optim one of follow
+    # one of adam_hybrid_cl,adam_cpu_cl,adam_fused_cl,lamb,adamw_hf,adamw,adamw_torch,adamw_torch_fused,adamw_torch_xla,adamw_apex_fused,
+    # adafactor,adamw_anyprecision,sgd,adagrad,adamw_bnb_8bit,adamw_8bit,lion,lion_8bit,lion_32bit,
+    # paged_adamw_32bit,paged_adamw_8bit,paged_lion_32bit,paged_lion_8bit,
+    # lamb_fused_dp adagrad_cpu_dp adam_cpu_dp adam_fused_dp
     "optim": "adam_hybrid_cl",
     "lr_scheduler_type": "cosine", # one of linear,cosine,cosine_with_restarts,polynomial,constant_with_warmup,inverse_sqrt,reduce_lr_on_plateau
     "torch_compile": False,
