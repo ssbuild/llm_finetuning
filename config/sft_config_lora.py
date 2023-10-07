@@ -237,7 +237,7 @@ train_info_args_colossalai = {
     'do_predict': False,
     "per_device_train_batch_size": 2,
     "per_device_eval_batch_size": 2,
-    "gradient_accumulation_steps": 1, # colossalai不支持地图积累
+    "gradient_accumulation_steps": 1, # colossalai不支持梯度积累
     "evaluation_strategy": "no",
     "eval_steps": 100,
 
