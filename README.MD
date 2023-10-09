@@ -121,10 +121,10 @@ a answer   must
     python train.py
     
     #hf 训练
-    python -m torch.distributed.launch --nproc_per_node=1 train_hf.py
+    torchrun --nproc_per_node=1 train_hf.py
     
     # 多机多卡
-    python -m torch.distributed.launch --nproc_per_node=1 --node_rank $NODE_RANK --master_addr $MASTER_ADDR --master_port $MASTER_PORT train_hf.py
+    torchrun --nproc_per_node=1 --node_rank $NODE_RANK --master_addr $MASTER_ADDR --master_port $MASTER_PORT train_hf.py
 
    
     # colossalai 训练 
