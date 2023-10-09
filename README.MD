@@ -2,6 +2,7 @@
    - [deep_training](https://github.com/ssbuild/deep_training)
 
 ```text
+    10-09 support accelerator trainer
     10-07 support colossalai trainer
     09-26 support transformers trainer
     08-16 推理可选使用 Rope NtkScale , 不训练扩展推理长度

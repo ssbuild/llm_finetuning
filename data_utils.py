@@ -9,7 +9,8 @@ import random
 import typing
 import numpy as np
 import torch
-from deep_training.data_helper import DataHelper, ModelArguments, TrainingArguments,TrainingArgumentsHF,TrainingArgumentsCL, DataArguments
+from deep_training.data_helper import DataHelper, ModelArguments, TrainingArguments, TrainingArgumentsHF, \
+    TrainingArgumentsCL, DataArguments, TrainingArgumentsAC
 from aigc_zoo.model_zoo.llm.llm_model import PetlArguments,LoraConfig,PromptArguments
 from fastdatasets.record import load_dataset as Loader, RECORD, WriterObject, gfile
 from transformers import PreTrainedTokenizer, HfArgumentParser, PretrainedConfig
@@ -252,8 +253,13 @@ if __name__ == '__main__':
     elif global_args["trainer_backend"] == "pl":
         parser = HfArgumentParser((ModelArguments, TrainingArguments, DataArguments, PetlArguments, PromptArguments))
         model_args, training_args, data_args, _, _ = parser.parse_dict(train_info_args)
-    else:
+    elif global_args["trainer_backend"] == "cl":
         parser = HfArgumentParser((ModelArguments, TrainingArgumentsCL, DataArguments, PetlArguments, PromptArguments),
+                                  conflict_handler='resolve')
+        model_args, training_args, data_args, lora_args, prompt_args = parser.parse_dict(train_info_args,
+                                                                                         allow_extra_keys=True, )
+    else:
+        parser = HfArgumentParser((ModelArguments, TrainingArgumentsAC, DataArguments, PetlArguments, PromptArguments),
                                   conflict_handler='resolve')
         model_args, training_args, data_args, lora_args, prompt_args = parser.parse_dict(train_info_args,
                                                                                          allow_extra_keys=True, )
