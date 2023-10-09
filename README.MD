@@ -126,7 +126,8 @@ a answer   must
     # 多机多卡
     torchrun --nproc_per_node=1 --node_rank $NODE_RANK --master_addr $MASTER_ADDR --master_port $MASTER_PORT train_hf.py
 
-   
+    # ac 训练  参照 hf训练
+    
     # colossalai 训练 
     colossalai run --nproc_per_node 1 --num_nodes 1 train_cl.py
 ```
