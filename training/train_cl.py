@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 # @Author  : ssbuild
 # @Time    : 2023/9/25 12:29
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),'..')))
+
 import logging
 import math
-import os
-import sys
 from contextlib import nullcontext
 import datasets
 import torch

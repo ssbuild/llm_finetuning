@@ -21,10 +21,11 @@ if __name__ == '__main__':
     
 
     # 一般根据时间排序选最新的权重文件夹
-    ckpt_dir = './best_ckpt/last'
+    weight_dir = '../scripts/best_ckpt'
+    lora_weight_dir = os.path.join(weight_dir, "last")
 
-    config = AutoConfig.from_pretrained(ckpt_dir)
-    lora_args = PetlArguments.from_pretrained(ckpt_dir)
+    config = AutoConfig.from_pretrained(weight_dir)
+    lora_args = PetlArguments.from_pretrained(lora_weight_dir)
 
     assert lora_args.inference_mode == True
 
@@ -42,7 +43,7 @@ if __name__ == '__main__':
                              )
 
     # 加载lora权重
-    pl_model.load_sft_weight(ckpt_dir)
+    pl_model.load_sft_weight(lora_weight_dir)
 
     pl_model.eval().half().cuda()
 

@@ -1,10 +1,12 @@
 # @Time    : 2023/1/22 16:22
 # @Author  : tk
 # @FileName: data_utils.py
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),'..')))
 
 import copy
 import json
-import os
 import random
 import typing
 import numpy as np

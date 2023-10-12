@@ -12,10 +12,10 @@ __all__ = [
     "TRANSFORMERS_MODELS_TO_ADALORA_TARGET_MODULES_MAPPING",
     "TRANSFORMERS_MODELS_TO_IA3_TARGET_MODULES_MAPPING",
     "TRANSFORMERS_MODELS_TO_IA3_FEEDFORWARD_MODULES_MAPPING",
-    "train_model_config"
+    "MODELS_MAP"
 ]
 
-__model_path__ = {
+MODELS_MAP = {
     'bloom-560m': {
         'model_type': 'bloom',
         'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',
@@ -108,5 +108,5 @@ __model_path__ = {
 # TRANSFORMERS_MODELS_TO_IA3_FEEDFORWARD_MODULES_MAPPING
 
 
-train_model_config = __model_path__['bloom-560m']
+
 
