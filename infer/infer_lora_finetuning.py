@@ -2,6 +2,10 @@
 # @Author  : tk
 # @FileName: infer_lora_finetuning
 import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__),'..'))
+
+import os
 import torch
 from deep_training.data_helper import ModelArguments
 from transformers import HfArgumentParser,AutoConfig
