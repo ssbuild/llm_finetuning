@@ -36,15 +36,17 @@ def main():
 
     dataHelper.make_dataset_all()
 
-    is_bf16_supported = torch.cuda.is_bf16_supported()
-    # 精度 根据实际情况做调整
-    if is_bf16_supported:
-        precision = 'bf16'
-    else:
-        precision = '16'
+    precision = global_args["precision"]
+    if precision == "auto":
+        is_bf16_supported = torch.cuda.is_bf16_supported()
+        # 精度 根据实际情况做调整
+        if is_bf16_supported:
+            precision = 'bf16'
+        else:
+            precision = '16'
 
-    if global_args["quantization_config"] is not None and global_args["quantization_config"].load_in_8bit:
-        precision = "32"
+        if global_args["quantization_config"] is not None and global_args["quantization_config"].load_in_8bit:
+            precision = "32"
 
     deepspeed_config = get_deepspeed_config(precision)
     strategy = 'ddp' if torch.cuda.device_count() > 1 else 'auto'
