@@ -21,6 +21,12 @@ global_args:
 
 # one of record lmdb arrow_stream arrow_file,parquet, 超大数据集可以使用 lmdb , 注 lmdb 存储空间比record大
 data_backend: parquet
+
+
+# 目前仅ddp 支持lora
+# one of ddp,gemini,zero2,zero2_cpu,3d
+strategy: ddp
+
 output_dir: ./outputs_cl
 overwrite_output_dir: true
 num_train_epochs: 20

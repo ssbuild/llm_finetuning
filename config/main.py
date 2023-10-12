@@ -7,6 +7,8 @@ import torch
 import yaml
 from transformers import BitsAndBytesConfig
 from transformers.utils import strtobool
+
+from config.colossalai_config import colossalai_strategy
 from config.constant_map import *
 
 
@@ -69,6 +71,8 @@ def patch_args(train_info_args):
     #更新模型配置
     train_info_args.update(train_model_config)
 
+    if global_args["trainer_backend"] == "cl":
+        train_info_args["strategy"] = colossalai_strategy[train_info_args["strategy"]]
 
     if global_args['quantization_config'] is not None:
         global_args['quantization_config'].load_in_4bit = global_args["load_in_bit"] == 4
