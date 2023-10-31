@@ -42,6 +42,17 @@ def build_template_tiger(query,answer = None,prefix=None, history=None):
         prompt += answer
     return prompt
 
+def build_template_openai(query,answer = None,history = None,prefix=None):
+    prompt = prefix or 'You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible.\nKnowledge cutoff: 2021-09-01\nCurrent date: 2023-03-01'
+    if prompt:
+        prompt = f"<|im_start|>system\n{prompt}<|im_end|>\n"
+    if history is not None:
+        for q, a in history:
+            prompt += "<|im_start|>user\n{}<|im_end|>\n<|im_start|>assistant\n{}<|im_end|>".format(q, a)
+    prompt += "<|im_start|>user\n{}<|im_end|>\n<|im_start|>assistant\n".format(query)
+    if answer is not None:
+        prompt += answer + '<|im_end|>'
+    return prompt
 
 #切换模板
 build_template = build_template_default
