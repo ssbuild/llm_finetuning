@@ -28,6 +28,7 @@
 ## weigtht select one is suitable for you
 支持且不限于以下权重    
 - [CausalLM-14B](https://huggingface.co/CausalLM/14B)
+- [CausalLM-7B](https://huggingface.co/CausalLM/7B)
 - [bloom预训练模型](https://huggingface.co/bigscience)
 - [bloom第三方中文训练模型](https://huggingface.co/Langboat/bloom-6b4-zh)  # 注意 需要修改tokenizer_config.json BloomTokenizer -> BloomTokenizerFast
 - [tigerbot](https://huggingface.co/TigerResearch)
