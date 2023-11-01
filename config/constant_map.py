@@ -16,6 +16,19 @@ __all__ = [
 ]
 
 MODELS_MAP = {
+
+    'CausalLM-14B': {
+        'model_type': 'llama',
+        'model_name_or_path': '/data/nlp/pre_models/torch/llama/CausalLM-14B',
+        'config_name': '/data/nlp/pre_models/torch/llama/CausalLM-14B/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/llama/CausalLM-14B',
+    },
+    'CausalLM-7B': {
+        'model_type': 'llama',
+        'model_name_or_path': '/data/nlp/pre_models/torch/llama/CausalLM-7B',
+        'config_name': '/data/nlp/pre_models/torch/llama/CausalLM-7B/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/llama/CausalLM-7B',
+    },
     'bloom-560m': {
         'model_type': 'bloom',
         'model_name_or_path': '/data/nlp/pre_models/torch/bloom/bloom-560m',

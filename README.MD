@@ -27,6 +27,7 @@
 
 ## weigtht select one is suitable for you
 支持且不限于以下权重    
+- [CausalLM-14B](https://huggingface.co/CausalLM/14B)
 - [bloom预训练模型](https://huggingface.co/bigscience)
 - [bloom第三方中文训练模型](https://huggingface.co/Langboat/bloom-6b4-zh)  # 注意 需要修改tokenizer_config.json BloomTokenizer -> BloomTokenizerFast
 - [tigerbot](https://huggingface.co/TigerResearch)
@@ -142,6 +143,8 @@ a answer   must
 - [tf-task-example](https://github.com/ssbuild/tf-task-example)
 - [chatmoss_finetuning](https://github.com/ssbuild/chatmoss_finetuning)
 - [chatglm_finetuning](https://github.com/ssbuild/chatglm_finetuning)
+- [chatglm2_finetuning](https://github.com/ssbuild/chatglm2_finetuning)
+- [chatglm3_finetuning](https://github.com/ssbuild/chatglm3_finetuning)
 - [t5_finetuning](https://github.com/ssbuild/t5_finetuning)
 - [llm_finetuning](https://github.com/ssbuild/llm_finetuning)
 - [llm_rlhf](https://github.com/ssbuild/llm_rlhf)
@@ -149,6 +152,7 @@ a answer   must
 - [t5_rlhf](https://github.com/ssbuild/t5_rlhf)
 - [rwkv_finetuning](https://github.com/ssbuild/rwkv_finetuning)
 - [baichuan_finetuning](https://github.com/ssbuild/baichuan_finetuning)
+- [qwen_finetuning](https://github.com/ssbuild/qwen_finetuning)
 
 ## 
     纯粹而干净的代码
