@@ -196,6 +196,7 @@ class NN_DataHelper(DataHelper):
     # 读取文件
     def on_get_corpus(self, files: typing.List, mode: str):
         D = []
+        files = sum([glob.glob(file) for file in files], [])
         for file in files:
             with open(file, mode='r', encoding='utf-8', newline='\n') as f:
                 lines = f.readlines()
