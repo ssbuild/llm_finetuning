@@ -111,6 +111,65 @@ MODELS_MAP = {
         'tokenizer_name': '/data/nlp/pre_models/torch/rwkv/rwkv-4-430m-pile',
     },
 
+    'BlueLM-7B-Chat': {
+        'model_type': 'BlueLM',
+        'model_name_or_path': '/data/nlp/pre_models/torch/bluelm/BlueLM-7B-Chat',
+        'config_name': '/data/nlp/pre_models/torch/bluelm/BlueLM-7B-Chat/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/bluelm/BlueLM-7B-Chat',
+    },
+    'BlueLM-7B-Chat-32K': {
+        'model_type': 'BlueLM',
+        'model_name_or_path': '/data/nlp/pre_models/torch/bluelm/BlueLM-7B-Chat-32K',
+        'config_name': '/data/nlp/pre_models/torch/bluelm/BlueLM-7B-Chat-32K/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/bluelm/BlueLM-7B-Chat-32K',
+    },
+    'BlueLM-7B-Base': {
+        'model_type': 'BlueLM',
+        'model_name_or_path': '/data/nlp/pre_models/torch/opt/BlueLM-7B-Base',
+        'config_name': '/data/nlp/pre_models/torch/opt/BlueLM-7B-Base/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/opt/BlueLM-7B-Base',
+    },
+
+    'BlueLM-7B-Base-32K': {
+        'model_type': 'BlueLM',
+        'model_name_or_path': '/data/nlp/pre_models/torch/opt/BlueLM-7B-Base-32K',
+        'config_name': '/data/nlp/pre_models/torch/opt/BlueLM-7B-Base-32K/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/opt/BlueLM-7B-Base-32K',
+    },
+    'XVERSE-13B-Chat': {
+        'model_type': 'xverse',
+        'model_name_or_path': '/data/nlp/pre_models/torch/xverse/XVERSE-13B-Chat',
+        'config_name': '/data/nlp/pre_models/torch/xverse/XVERSE-13B-Chat/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/xverse/XVERSE-13B-Chat',
+    },
+
+    'xverse-13b-chat-int4': {
+        'model_type': 'xverse',
+        'model_name_or_path': '/data/nlp/pre_models/torch/xverse/xverse-13b-chat-int4',
+        'config_name': '/data/nlp/pre_models/torch/xverse/xverse-13b-chat-int4/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/xverse/xverse-13b-chat-int4',
+    },
+
+    'XVERSE-13B': {
+        'model_type': 'xverse',
+        'model_name_or_path': '/data/nlp/pre_models/torch/xverse/XVERSE-13B',
+        'config_name': '/data/nlp/pre_models/torch/xverse/XVERSE-13B/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/xverse/XVERSE-13B',
+    },
+
+    'xverse-13b-int4': {
+        'model_type': 'xverse',
+        'model_name_or_path': '/data/nlp/pre_models/torch/xverse/xverse-13b-int4',
+        'config_name': '/data/nlp/pre_models/torch/xverse/xverse-13b-int4/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/xverse/xverse-13b-int4',
+    },
+    'Skywork-13B-base': {
+        'model_type': 'skywork',
+        'model_name_or_path': '/data/nlp/pre_models/torch/skywork/Skywork-13B-base',
+        'config_name': '/data/nlp/pre_models/torch/skywork/Skywork-13B-base/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/skywork/Skywork-13B-base',
+    },
+
 }
 
 

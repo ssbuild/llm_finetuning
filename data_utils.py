@@ -22,8 +22,6 @@ from data_processer import DataStrategy, TokenIdsMaker, build_template, DEFAULT_
     DEFAULT_BOS_TOKEN, DEFAULT_UNK_TOKEN
 from config import *
 from module_setup import module_setup
-
-
 module_setup()
 
 data_conf = {
