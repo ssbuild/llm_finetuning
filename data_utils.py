@@ -5,6 +5,7 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
+from functools import cache
 import copy
 import json
 import random
@@ -243,7 +244,22 @@ class NN_DataHelper(DataHelper):
         if data_args.do_test:
             self.make_dataset_with_args(data_args.test_file, mode='test', schema=schema)
 
+        # 记录缓存文件
+        with open(os.path.join(data_args.output_dir, 'intermediate_file_index.json'), mode='w',
+                  encoding='utf-8') as f:
+            f.write(json.dumps({
+                "train_files": self.train_files,
+                "eval_files": self.eval_files,
+                "test_files": self.test_files,
+            }, ensure_ascii=False))
 
+    @cache
+    def load_dataset_files(self):
+        data_args = self.data_args
+        filename = os.path.join(data_args.output_dir, 'intermediate_file_index.json')
+        assert os.path.exists(filename), 'make you dataset firstly'
+        with open(filename, mode='r', encoding='utf-8') as f:
+            return json.loads(f.read())
 
 if __name__ == '__main__':
 
@@ -269,35 +285,20 @@ if __name__ == '__main__':
 
     dataHelper = NN_DataHelper(model_args, training_args, data_args)
     tokenizer, config, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})
-    
-
-
 
     # 缓存数据集
-    # 检测是否存在 output/dataset_0-train.record ，不存在则制作数据集
+    print(f'to make dataset is overwrite_cache {data_args.overwrite_cache}')
     dataHelper.make_dataset_all()
 
+    print('make dataset complete!')
+    print('check data !')
+    dataset = dataHelper.load_sequential_sampler(dataHelper.load_dataset_files()["train_files"],
+                                                 with_load_memory=data_args.data_backend == 'record',
+                                                 batch_size=1,
+                                                 collate_fn=dataHelper.collate_fn)
 
-    # def shuffle_records(record_filenames, outfile, compression_type='GZIP'):
-    #     print('shuffle_records record...')
-    #     options = RECORD.TFRecordOptions(compression_type=compression_type)
-    #     dataset_reader = Loader.RandomDataset(record_filenames, options=options, with_share_memory=True)
-    #     data_size = len(dataset_reader)
-    #     all_example = []
-    #     for i in tqdm(range(data_size), desc='load records'):
-    #         serialized = dataset_reader[i]
-    #         all_example.append(serialized)
-    #     dataset_reader.close()
-    #
-    #     shuffle_idx = list(range(data_size))
-    #     random.shuffle(shuffle_idx)
-    #     writer = WriterObject(outfile, options=options)
-    #     for i in tqdm(shuffle_idx, desc='shuffle record'):
-    #         example = all_example[i]
-    #         writer.write(example)
-    #     writer.close()
-    #
-    #
-    # # 对每个record 再次打乱
-    # for filename in dataHelper.train_files:
-    #     shuffle_records(filename, filename)
+    print('total', len(dataset))
+    for i, d in enumerate(dataset):
+        print(d)
+        if i > 3:
+            break
