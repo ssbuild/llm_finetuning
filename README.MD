@@ -27,6 +27,8 @@
 
 ## weigtht select one is suitable for you
 支持且不限于以下权重    
+- [Yi-6B](https://huggingface.co/01-ai/Yi-6B) 
+- [Yi-34B](https://huggingface.co/01-ai/Yi-34B)
 - [CausalLM-14B](https://huggingface.co/CausalLM/14B)
 - [CausalLM-7B](https://huggingface.co/CausalLM/7B)
 - [BlueLM-7B-Chat](https://huggingface.co/vivo-ai/BlueLM-7B-Chat)
@@ -156,7 +158,6 @@ a answer   must
 ## 友情链接
 
 - [pytorch-task-example](https://github.com/ssbuild/pytorch-task-example)
-- [tf-task-example](https://github.com/ssbuild/tf-task-example)
 - [chatmoss_finetuning](https://github.com/ssbuild/chatmoss_finetuning)
 - [chatglm_finetuning](https://github.com/ssbuild/chatglm_finetuning)
 - [chatglm2_finetuning](https://github.com/ssbuild/chatglm2_finetuning)
@@ -168,7 +169,12 @@ a answer   must
 - [t5_rlhf](https://github.com/ssbuild/t5_rlhf)
 - [rwkv_finetuning](https://github.com/ssbuild/rwkv_finetuning)
 - [baichuan_finetuning](https://github.com/ssbuild/baichuan_finetuning)
+- [xverse_finetuning](https://github.com/ssbuild/xverse_finetuning)
+- [internlm_finetuning](https://github.com/ssbuild/internlm_finetuning)
 - [qwen_finetuning](https://github.com/ssbuild/qwen_finetuning)
+- [skywork_finetuning](https://github.com/ssbuild/skywork_finetuning)
+- [bluelm_finetuning](https://github.com/ssbuild/bluelm_finetuning)
+- [yi_finetuning](https://github.com/ssbuild/yi_finetuning)
 
 ## 
     纯粹而干净的代码

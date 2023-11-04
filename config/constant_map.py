@@ -170,6 +170,19 @@ MODELS_MAP = {
         'tokenizer_name': '/data/nlp/pre_models/torch/skywork/Skywork-13B-base',
     },
 
+    'Yi-6B': {
+        'model_type': 'Yi',
+        'model_name_or_path': '/data/nlp/pre_models/torch/yi/Yi-6B',
+        'config_name': '/data/nlp/pre_models/torch/yi/Yi-6B/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/yi/Yi-6B',
+    },
+
+    'Yi-34B': {
+        'model_type': 'Yi',
+        'model_name_or_path': '/data/nlp/pre_models/torch/yi/Yi-34B',
+        'config_name': '/data/nlp/pre_models/torch/yi/Yi-34B/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/yi/Yi-34B',
+    },
 }
 
 
