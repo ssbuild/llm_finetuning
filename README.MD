@@ -27,6 +27,8 @@
 
 ## weigtht select one is suitable for you
 支持且不限于以下权重    
+- [zephyr-7b-beta](https://huggingface.co/HuggingFaceH4/zephyr-7b-beta)
+- [mistral-7b-sft-beta](https://huggingface.co/HuggingFaceH4/mistral-7b-sft-beta)
 - [Yi-6B](https://huggingface.co/01-ai/Yi-6B) 
 - [Yi-34B](https://huggingface.co/01-ai/Yi-34B)
 - [CausalLM-14B](https://huggingface.co/CausalLM/14B)

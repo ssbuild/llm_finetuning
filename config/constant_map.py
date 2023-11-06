@@ -183,6 +183,14 @@ MODELS_MAP = {
         'config_name': '/data/nlp/pre_models/torch/yi/Yi-34B/config.json',
         'tokenizer_name': '/data/nlp/pre_models/torch/yi/Yi-34B',
     },
+
+
+    'zephyr-7b-beta': {
+        'model_type': 'mistral',
+        'model_name_or_path': '/data/nlp/pre_models/torch/mistral/mistral-7b-sft-beta',
+        'config_name': '/data/nlp/pre_models/torch/mistral/mistral-7b-sft-beta/config.json',
+        'tokenizer_name': '/data/nlp/pre_models/torch/mistral/mistral-7b-sft-beta',
+    },
 }
 
 
@@ -192,6 +200,9 @@ MODELS_MAP = {
 # TRANSFORMERS_MODELS_TO_IA3_TARGET_MODULES_MAPPING
 # TRANSFORMERS_MODELS_TO_IA3_FEEDFORWARD_MODULES_MAPPING
 
+
+
+TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING["mistral"] = ["q_proj", "v_proj"]
 
 
 
