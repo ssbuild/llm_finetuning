@@ -64,11 +64,11 @@
 - [tigerbot-13b-chat](https://huggingface.co/TigerResearch/tigerbot-13b-chat) Llama2中文权重
 
 ## data sample
-   open_data https://github.com/ssbuild/open_data
+- [open_data 不定时更新数据集](https://github.com/ssbuild/open_data)
    
 单条数据示例
 ```text
-p prefix  optional
+role one of user system function assistant
 q question optional
 a answer   must
 
@@ -76,9 +76,13 @@ a answer   must
 
 ```json
  {
-    "id": 0, 
-    "p": "我是qwen训练的模型",
+    "id": 0,
     "paragraph": [
+        {
+          "role": "system",
+           "q": "我是qwen训练的模型",
+           "a": ""
+        },
         {
            "q": "你好",
            "a": "我是机器人，有什么可以帮助你的？"
@@ -133,25 +137,25 @@ a answer   must
 
 ## training
 ```text
-    # 制作数据
-    cd scripts
-    bash train_full.sh -m dataset 
-    or
-    bash train_lora.sh -m dataset 
-    or
-    bash train_ptv2.sh -m dataset 
+# 制作数据
+cd scripts
+bash train_full.sh -m dataset 
+or
+bash train_lora.sh -m dataset 
+or
+bash train_ptv2.sh -m dataset 
+
+注: num_process_worker 为多进程制作数据 ， 如果数据量较大 ， 适当调大至cpu数量
+dataHelper.make_dataset_with_args(data_args.train_file,mixed_data=False, shuffle=True,mode='train',num_process_worker=0)
+
+# 全参数训练 
+    bash train_full.sh -m train
     
-    注: num_process_worker 为多进程制作数据 ， 如果数据量较大 ， 适当调大至cpu数量
-    dataHelper.make_dataset_with_args(data_args.train_file,mixed_data=False, shuffle=True,mode='train',num_process_worker=0)
+# lora adalora ia3 
+    bash train_lora.sh -m train
     
-    # 全参数训练 
-        bash train_full.sh -m train
-        
-    # lora adalora ia3 
-        bash train_lora.sh -m train
-        
-    # ptv2
-        bash train_ptv2.sh -m train
+# ptv2
+    bash train_ptv2.sh -m train
 ```
    
 ## 训练参数
