@@ -23,7 +23,14 @@
   - pip install -U -r requirements.txt
   - 如果无法安装， 可以切换官方源 pip install -i https://pypi.org/simple -U -r requirements.txt
 
+```text
 
+# flash-attention对显卡算例要求算力7.5 以上 ， 下面可选安装 ，如果卡不支持可以不安装。
+git clone -b https://github.com/Dao-AILab/flash-attention
+cd flash-attention && pip install .
+pip install csrc/layer_norm
+pip install csrc/rotary
+```
 
 ## weigtht select one is suitable for you
 支持且不限于以下权重    
