@@ -114,8 +114,11 @@ class TokenIdsMaker:
     def tunction(cls, tokenizer: PreTrainedTokenizer, config, sup, max_seq_length, examples):
         sptoken = [config.bos_token_id]
         ds = []
-        prefix, examples = examples
-        for sid, (q, a) in enumerate(examples):
+        prefix = None
+        for sid, (role,q,a) in enumerate(examples):
+            if role == 'system':
+                prefix = q
+                continue
             a_ids = tokenizer.encode(text=build_template(q,prefix=prefix,history=examples[:sid]), add_special_tokens=False)
             b_ids = tokenizer.encode(text=a, add_special_tokens=False)
             while len(a_ids) + len(b_ids) > max_seq_length - len(sptoken) - 1:
@@ -146,8 +149,11 @@ class TokenIdsMaker:
         assert sliding_size <= max_seq_length - len(sptoken)
 
         ds = []
-        prefix, examples = examples
-        for sid, (q, a) in enumerate(examples):
+        prefix = None
+        for sid, (role, q, a) in enumerate(examples):
+            if role == 'system':
+                prefix = q
+                continue
             a_ids = tokenizer.encode(text=build_template(q, prefix=prefix, history=examples[:sid]),add_special_tokens=False)
             b_ids = tokenizer.encode(text=a, add_special_tokens=False)
             if src_max_length and src_max_length > 0:
