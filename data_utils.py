@@ -308,5 +308,5 @@ if __name__ == '__main__':
     print('total', len(dataset))
     for i, d in enumerate(dataset):
         print(d)
-        if i > 3:
+        if i >= 1:
             break
