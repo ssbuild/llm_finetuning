@@ -2,6 +2,9 @@
 # @Author  : tk
 # @FileName: infer_ptuning
 import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__),'..'))
+
 import torch
 from deep_training.data_helper import ModelArguments
 from transformers import HfArgumentParser,AutoConfig
