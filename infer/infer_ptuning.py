@@ -18,7 +18,7 @@ if __name__ == '__main__':
     tokenizer, _, _, _ = dataHelper.load_tokenizer_and_config(config_kwargs={"torch_dtype": torch.float16})
     
 
-    train_weight_dir = './best_ckpt/last'
+    train_weight_dir = '../scripts/best_ckpt/last'
     config = AutoConfig.from_pretrained(train_weight_dir)
     prompt_args = PromptArguments.from_pretrained(train_weight_dir)
 

@@ -23,7 +23,7 @@ if __name__ == '__main__':
     tokenizer, _, _,_= dataHelper.load_tokenizer_and_config()
     
 
-    config = AutoConfig.from_pretrained('./best_ckpt')
+    config = AutoConfig.from_pretrained('../scripts/best_ckpt')
     pl_model = MyTransformer(config=config, model_args=model_args,torch_dtype=config.torch_dtype,)
 
     # deepspeed 权重使用转换脚本命令
@@ -31,8 +31,8 @@ if __name__ == '__main__':
     # cd best_ckpt/last
     # python zero_to_fp32.py . ../last.ckpt
 
-    train_weight = './best_ckpt/last.ckpt'
-    pl_model.load_sft_weight(train_weight,strict=True)
+    train_weight = '../scripts/best_ckpt/last.ckpt'
+    pl_model.load_sft_weight(train_weight,strict=False)
 
     # 保存hf权重
     # config.save_pretrained('convert/')
