@@ -36,7 +36,9 @@ if __name__ == '__main__':
                              new_num_tokens=new_num_tokens,
                              )
     # 加载sft权重
-    pl_model.load_sft_weight(train_weight_dir)
+    pl_model.load_sft_weight(train_weight_dir,is_trainable=True)
+    for n,p in pl_model.named_parameters():
+        print(n,p.requires_grad)
 
     pl_model.eval().half().cuda()
 
@@ -48,10 +50,10 @@ if __name__ == '__main__':
     text_list = ["写一个诗歌，关于冬天",
                  "晚上睡不着应该怎么办",
                  "从南京到上海的路线"]
+
     for input in text_list:
-        for input in text_list:
-            response = Generate.generate(model, query=build_template(input), tokenizer=tokenizer, max_length=512,
-                                         eos_token_id=config.eos_token_id,
-                                         do_sample=False, top_p=0.7, temperature=0.95, )
-            print('input', input)
-            print('output', response)
+        response = Generate.generate(model, query=build_template(input), tokenizer=tokenizer, max_length=512,
+                                     eos_token_id=config.eos_token_id,
+                                     do_sample=False, top_p=0.7, temperature=0.95, )
+        print('input', input)
+        print('output', response)
