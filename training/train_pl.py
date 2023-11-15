@@ -88,6 +88,8 @@ def main():
                              quantization_config=global_args["quantization_config"],
                              device_map={"": trainer.local_rank} if trainer.world_size > 1 else "auto",
                              torch_dtype=torch.float16,
+                             trust_remote_code=True,
+                             local_files_only=True,
                              new_num_tokens=len(tokenizer), # 可能扩充词
     )
 

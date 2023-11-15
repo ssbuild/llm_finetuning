@@ -40,6 +40,8 @@ if __name__ == '__main__':
     pl_model = MyTransformer(config=config, model_args=model_args,
                              lora_args=lora_args,
                              torch_dtype=config.torch_dtype,
+                             trust_remote_code=True,
+                             local_files_only=True,
                              new_num_tokens=new_num_tokens,
                              # load_in_8bit=global_args["load_in_8bit"],
                              # # device_map="auto",

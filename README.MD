@@ -2,6 +2,7 @@
    - [deep_training](https://github.com/ssbuild/deep_training)
 
 ```text
+    10-15 support load custom model , only modify config/constant_map.py
     10-09 support accelerator trainer
     10-07 support colossalai trainer
     09-26 support transformers trainer
@@ -38,6 +39,7 @@ pip install csrc/rotary
 - [mistral-7b-sft-beta](https://huggingface.co/HuggingFaceH4/mistral-7b-sft-beta)
 - [Yi-6B](https://huggingface.co/01-ai/Yi-6B) 
 - [Yi-34B](https://huggingface.co/01-ai/Yi-34B)
+- [LingoWhale-8B](https://www.modelscope.cn/models/DeepLang/LingoWhale-8B)
 - [CausalLM-14B](https://huggingface.co/CausalLM/14B)
 - [CausalLM-7B](https://huggingface.co/CausalLM/7B)
 - [BlueLM-7B-Chat](https://huggingface.co/vivo-ai/BlueLM-7B-Chat)
@@ -133,7 +135,7 @@ dataHelper.make_dataset_with_args(data_args.train_file,mixed_data=False, shuffle
 ## 友情链接
 
 - [pytorch-task-example](https://github.com/ssbuild/pytorch-task-example)
-- [chatmoss_finetuning](https://github.com/ssbuild/chatmoss_finetuning)
+- [moss_finetuning](https://github.com/ssbuild/moss_finetuning)
 - [chatglm_finetuning](https://github.com/ssbuild/chatglm_finetuning)
 - [chatglm2_finetuning](https://github.com/ssbuild/chatglm2_finetuning)
 - [chatglm3_finetuning](https://github.com/ssbuild/chatglm3_finetuning)

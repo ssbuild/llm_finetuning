@@ -34,11 +34,11 @@ if __name__ == '__main__':
     pl_model = MyTransformer(config=config, model_args=model_args,
                              prompt_args=prompt_args,
                              new_num_tokens=new_num_tokens,
+                             trust_remote_code=True,
+                             local_files_only=True,
                              )
     # 加载sft权重
     pl_model.load_sft_weight(train_weight_dir,is_trainable=True)
-    for n,p in pl_model.named_parameters():
-        print(n,p.requires_grad)
 
     pl_model.eval().half().cuda()
 

@@ -68,7 +68,11 @@ if __name__ == '__main__':
         # rope_args = RotaryLinearScaledArguments(name='rotary_emb',max_position_embeddings=2048, scale=4) # 扩展 8k
 
 
-    pl_model = MyTransformer(config=config, model_args=model_args,torch_dtype=config.torch_dtype,rope_args=rope_args)
+    pl_model = MyTransformer(config=config, model_args=model_args,
+                             torch_dtype=config.torch_dtype,
+                             trust_remote_code=True,
+                             local_files_only=True,
+                             rope_args=rope_args)
     model = pl_model.get_llm_model()
     model = model.eval()
     if hasattr(model,'quantize'):

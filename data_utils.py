@@ -55,8 +55,17 @@ class NN_DataHelper(DataHelper):
         super(NN_DataHelper, self).__init__(*args, **kwargs)
         assert data_conf[DataStrategy.slidding]['stride'] > 0
 
-    def load_tokenizer_and_config(self, *args, **kwargs):
-        ret = super().load_tokenizer_and_config(*args, **kwargs)
+    def load_tokenizer_and_config(self, *args, tokenizer_kwargs=None, config_kwargs=None, **kwargs):
+        if config_kwargs is None:
+            config_kwargs = {}
+        if tokenizer_kwargs is None:
+            tokenizer_kwargs = {}
+        if 'trust_remote_code' not in config_kwargs:
+            config_kwargs.update({"trust_remote_code": True, "local_files_only": True})
+        if 'trust_remote_code' not in tokenizer_kwargs:
+            tokenizer_kwargs.update({"trust_remote_code": True, "local_files_only": True})
+
+        ret = super().load_tokenizer_and_config(*args,tokenizer_kwargs=tokenizer_kwargs,config_kwargs=config_kwargs, **kwargs)
         self._preprocess_tokenizer_config()
         return ret
 
