@@ -23,7 +23,7 @@ if __name__ == '__main__':
     tokenizer, _, _,_= dataHelper.load_tokenizer_and_config()
     
 
-    config = AutoConfig.from_pretrained('../scripts/best_ckpt')
+    config = AutoConfig.from_pretrained('../scripts/best_ckpt', trust_remote_code=True,local_files_only=True,)
     pl_model = MyTransformer(config=config, model_args=model_args,
                              torch_dtype=config.torch_dtype,
                              trust_remote_code=True,

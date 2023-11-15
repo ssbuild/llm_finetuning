@@ -28,7 +28,8 @@ if __name__ == '__main__':
     weight_dir = '../scripts/best_ckpt'
     lora_weight_dir = os.path.join(weight_dir, "last")
 
-    config = AutoConfig.from_pretrained(weight_dir)
+    config = AutoConfig.from_pretrained(weight_dir, trust_remote_code=True,
+                             local_files_only=True,)
     lora_args = PetlArguments.from_pretrained(lora_weight_dir)
 
     assert lora_args.inference_mode == True

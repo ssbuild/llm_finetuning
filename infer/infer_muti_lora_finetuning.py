@@ -28,7 +28,8 @@ if __name__ == '__main__':
     # 一般根据时间排序选最新的权重文件夹
     ckpt_dir = './best_ckpt/last'
 
-    config = AutoConfig.from_pretrained(ckpt_dir)
+    config = AutoConfig.from_pretrained(ckpt_dir, trust_remote_code=True,
+                             local_files_only=True,)
     lora_args = PetlArguments.from_pretrained(ckpt_dir)
 
     assert lora_args.inference_mode == True

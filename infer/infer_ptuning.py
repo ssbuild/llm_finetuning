@@ -22,7 +22,8 @@ if __name__ == '__main__':
     
 
     train_weight_dir = '../scripts/best_ckpt/last'
-    config = AutoConfig.from_pretrained(train_weight_dir)
+    config = AutoConfig.from_pretrained(train_weight_dir, trust_remote_code=True,
+                             local_files_only=True,)
     prompt_args = PromptArguments.from_pretrained(train_weight_dir)
 
     assert prompt_args.inference_mode == True
