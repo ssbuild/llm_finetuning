@@ -2,7 +2,7 @@
    - [deep_training](https://github.com/ssbuild/deep_training)
 
 ```text
-    10-15 support load custom model , only modify config/constant_map.py
+    11-15 support load custom model , only modify config/constant_map.py
     10-09 support accelerator trainer
     10-07 support colossalai trainer
     09-26 support transformers trainer
