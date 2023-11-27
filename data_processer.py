@@ -16,7 +16,8 @@ class DataStrategy(Enum):
 
 
 class PromptBuilder:
-    def build_template_xverse(query, answer=None, prefix=None, history=None):
+    @classmethod
+    def build_template_xverse(cls, query, answer=None, prefix=None, history=None):
         prompt = prefix or ''
         if history is not None:
             for q, a in history:
@@ -25,6 +26,7 @@ class PromptBuilder:
         if answer is not None:
             prompt += answer
         return prompt
+
     @classmethod
     def build_template_bluelm(cls, query, answer=None, history=None, prefix=None):
         prompt = prefix or ''
@@ -37,7 +39,7 @@ class PromptBuilder:
         return prompt
 
     @classmethod
-    def build_template_default(query, answer=None, prefix=None, history=None):
+    def build_template_default(cls,query, answer=None, prefix=None, history=None):
         prompt = prefix or ''
         if history is not None:
             for q, a in history:
@@ -48,7 +50,7 @@ class PromptBuilder:
         return prompt
 
     @classmethod
-    def build_template_tiger(query, answer=None, prefix=None, history=None):
+    def build_template_tiger(cls,query, answer=None, prefix=None, history=None):
         prompt = prefix or ''
         tok_ins = "\n\n### Instruction:\n"
         tok_res = "\n\n### Response:\n"
@@ -62,7 +64,7 @@ class PromptBuilder:
         return prompt
 
     @classmethod
-    def build_template_openai(query, answer=None, history=None, prefix=None):
+    def build_template_openai(cls,query, answer=None, history=None, prefix=None):
         prompt = prefix or 'You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible.\nKnowledge cutoff: 2021-09-01\nCurrent date: 2023-03-01'
         if prompt:
             prompt = f"<|im_start|>system\n{prompt}<|im_end|>\n"
@@ -74,7 +76,21 @@ class PromptBuilder:
             prompt += answer + '<|im_end|>'
         return prompt
 
-    def build_template_internlm(query, answer=None, prefix=None, history=None):
+    @classmethod
+    def build_template_yi(cls, query, answer=None, history=None, prefix=None):
+        prompt = prefix or ''
+        if prompt:
+            prompt = f"<|im_start|>system\n{prompt}<|im_end|>\n"
+        if history is not None:
+            for q, a in history:
+                prompt += "<|im_start|>user\n{}<|im_end|>\n<|im_start|>assistant\n{}<|im_end|>".format(q, a)
+        prompt += "<|im_start|>user\n{}<|im_end|>\n<|im_start|>assistant\n".format(query)
+        if answer is not None:
+            prompt += answer + '<|im_end|>'
+        return prompt
+
+    @classmethod
+    def build_template_internlm(cls,query, answer=None, prefix=None, history=None):
         prompt = prefix or ''
         if history is not None:
             for q, a in history:

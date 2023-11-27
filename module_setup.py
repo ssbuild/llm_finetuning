@@ -10,7 +10,7 @@ from aigc_zoo.model_zoo.bluelm.llm_model import MyBlueLMForCausalLM,BlueLMTokeni
 from aigc_zoo.model_zoo.xverse.llm_model import MyXverseForCausalLM,XverseConfig
 from aigc_zoo.model_zoo.internlm.llm_model import MyInternLMForCausalLM,InternLMTokenizer,InternLMConfig
 from aigc_zoo.model_zoo.skywork.llm_model import MySkyworkForCausalLM,SkyworkConfig,SkyworkTokenizer
-from aigc_zoo.model_zoo.yi.llm_model import MyYiForCausalLM,YiConfig,YiTokenizer
+# from aigc_zoo.model_zoo.yi.llm_model import MyYiForCausalLM,YiConfig,YiTokenizer
 
 __all__ = [
     "module_setup"
@@ -37,6 +37,6 @@ def module_setup():
     register_transformer_model(MySkyworkForCausalLM, AutoModelForCausalLM)
     register_transformer_tokenizer(SkyworkConfig,SkyworkTokenizer,SkyworkTokenizer)
 
-    register_transformer_config(YiConfig)
-    register_transformer_model(MyYiForCausalLM, AutoModelForCausalLM)
-    register_transformer_tokenizer(YiConfig, YiTokenizer, YiTokenizer)
+    # register_transformer_config(YiConfig)
+    # register_transformer_model(MyYiForCausalLM, AutoModelForCausalLM)
+    # register_transformer_tokenizer(YiConfig, YiTokenizer, YiTokenizer)

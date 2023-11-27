@@ -2,6 +2,7 @@
    - [deep_training](https://github.com/ssbuild/deep_training)
 
 ```text
+    11-27 yi modle_type change to llama
     11-15 support load custom model , only modify config/constant_map.py
     10-09 support accelerator trainer
     10-07 support colossalai trainer
@@ -38,7 +39,10 @@ pip install csrc/rotary
 - [zephyr-7b-beta](https://huggingface.co/HuggingFaceH4/zephyr-7b-beta)
 - [mistral-7b-sft-beta](https://huggingface.co/HuggingFaceH4/mistral-7b-sft-beta)
 - [Yi-6B](https://huggingface.co/01-ai/Yi-6B) 
+- [Yi-6B-200K](https://huggingface.co/01-ai/Yi-6B-200K)
 - [Yi-34B](https://huggingface.co/01-ai/Yi-34B)
+- [Yi-34B-200K](https://huggingface.co/01-ai/Yi-34B-200K)
+- [Yi-34B-Chat](https://huggingface.co/01-ai/Yi-34B-Chat)
 - [LingoWhale-8B](https://www.modelscope.cn/models/DeepLang/LingoWhale-8B)
 - [CausalLM-14B](https://huggingface.co/CausalLM/14B)
 - [CausalLM-7B](https://huggingface.co/CausalLM/7B)
