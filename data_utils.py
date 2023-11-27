@@ -58,6 +58,15 @@ class NN_DataHelper(DataHelper):
     def load_tokenizer_and_config(self, *args, tokenizer_kwargs=None, config_kwargs=None, **kwargs):
         if config_kwargs is None:
             config_kwargs = {}
+        if "yi" in (model_args.config_name or model_args.model_name_or_path):
+            base_path = self.model_args.config_name or self.model_args.model_name_or_path
+            if os.path.isfile(base_path):
+                base_path = os.path.dirname(base_path)
+            gen_file = os.path.join(base_path, "generation_config.json")
+            if os.path.exists(gen_file):
+                with open(gen_file, mode='r', encoding='utf-8') as f:
+                    config_kwargs = json.loads(f.read())
+
         if tokenizer_kwargs is None:
             tokenizer_kwargs = {}
         if 'trust_remote_code' not in config_kwargs:
@@ -74,8 +83,6 @@ class NN_DataHelper(DataHelper):
         tokenizer = self.tokenizer
         config = self.config
 
-
-
         if "llama" in model_args.model_type.lower():
             special_tokens_dict = dict()
             if tokenizer.pad_token is None:
@@ -89,13 +96,6 @@ class NN_DataHelper(DataHelper):
 
             _ = tokenizer.add_special_tokens(special_tokens_dict)
 
-            # tokenizer.add_special_tokens({
-            #     "eos_token": DEFAULT_EOS_TOKEN,
-            #     "bos_token": DEFAULT_BOS_TOKEN,
-            #     "unk_token": DEFAULT_UNK_TOKEN,
-            # })
-            # if tokenizer.pad_token_id is None or tokenizer.pad_token_id == -1:
-            #     tokenizer.pad_token_id = tokenizer.eos_token_id
 
         if tokenizer.pad_token is None:
             tokenizer.add_special_tokens({
