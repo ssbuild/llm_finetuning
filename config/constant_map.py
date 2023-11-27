@@ -178,28 +178,28 @@ MODELS_MAP = {
 
     'Yi-6B': {
         'model_type': 'llama',
-        'model_name_or_path': '/data/nlp/pre_models/torch/yi/Yi-6B',
+        'model_name_or_path': '/data/nlp/pre_models/torch/llama/Yi-6B',
     },
 
     'Yi-6B-200K': {
         'model_type': 'llama',
-        'model_name_or_path': '/data/nlp/pre_models/torch/yi/Yi-6B-200K',
+        'model_name_or_path': '/data/nlp/pre_models/torch/llama/Yi-6B-200K',
     },
 
 
     'Yi-34B': {
         'model_type': 'llama',
-        'model_name_or_path': '/data/nlp/pre_models/torch/yi/Yi-34B',
+        'model_name_or_path': '/data/nlp/pre_models/torch/llama/Yi-34B',
     },
 
     'Yi-34B-200K': {
         'model_type': 'llama',
-        'model_name_or_path': '/data/nlp/pre_models/torch/yi/Yi-34B-200K',
+        'model_name_or_path': '/data/nlp/pre_models/torch/llama/Yi-34B-200K',
     },
 
     'Yi-34B-Chat': {
         'model_type': 'llama',
-        'model_name_or_path': '/data/nlp/pre_models/torch/yi/Yi-34B-Chat',
+        'model_name_or_path': '/data/nlp/pre_models/torch/llama/Yi-34B-Chat',
     },
 
 
