@@ -58,14 +58,16 @@ class NN_DataHelper(DataHelper):
     def load_tokenizer_and_config(self, *args, tokenizer_kwargs=None, config_kwargs=None, **kwargs):
         if config_kwargs is None:
             config_kwargs = {}
-        if "yi" in (model_args.config_name or model_args.model_name_or_path):
-            base_path = self.model_args.config_name or self.model_args.model_name_or_path
-            if os.path.isfile(base_path):
-                base_path = os.path.dirname(base_path)
+        base_path = model_args.config_name or model_args.model_name_or_path
+        if os.path.isfile(base_path):
+            base_path = os.path.dirname(base_path)
+
+        last_name = base_path.rsplit('/')[-1].lower()
+        if "yi" in last_name:
             gen_file = os.path.join(base_path, "generation_config.json")
             if os.path.exists(gen_file):
                 with open(gen_file, mode='r', encoding='utf-8') as f:
-                    config_kwargs = json.loads(f.read())
+                    config_kwargs.update(json.loads(f.read()))
 
         if tokenizer_kwargs is None:
             tokenizer_kwargs = {}
