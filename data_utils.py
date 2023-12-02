@@ -58,6 +58,9 @@ class NN_DataHelper(DataHelper):
     def load_tokenizer_and_config(self, *args, tokenizer_kwargs=None, config_kwargs=None, **kwargs):
         if config_kwargs is None:
             config_kwargs = {}
+        if tokenizer_kwargs is None:
+            tokenizer_kwargs = {}
+        model_args = self.model_args
         base_path = model_args.config_name or model_args.model_name_or_path
         if os.path.isfile(base_path):
             base_path = os.path.dirname(base_path)
@@ -69,8 +72,7 @@ class NN_DataHelper(DataHelper):
                 with open(gen_file, mode='r', encoding='utf-8') as f:
                     config_kwargs.update(json.loads(f.read()))
 
-        if tokenizer_kwargs is None:
-            tokenizer_kwargs = {}
+
         if 'trust_remote_code' not in config_kwargs:
             config_kwargs.update({"trust_remote_code": True, "local_files_only": True})
         if 'trust_remote_code' not in tokenizer_kwargs:
